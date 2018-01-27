@@ -1,0 +1,26 @@
+<project name="BacterialColonyGrowth" default="compile" basedir=".">
+    <property name="src" location="src/dg/bacterialcolonygrowth"/>
+    <property name="build" location="bin/"/>
+
+    <target name="clean">
+        <delete dir="${build}"/>
+        <delete file="BacterialColonySimulator.jar"/>
+    </target>
+
+    <target name="compile">
+        <mkdir dir="${build}"/>
+        <javac includeantruntime="false" srcdir="${src}" destdir="${build}"/>
+    </target>
+
+    <target name="jar" depends="compile">
+        <jar destfile="BacterialColonySimulator.jar" basedir="${build}">
+            <manifest>
+                <attribute name="Main-Class" value="dg.bacterialcolonygrowth.CellularAutomataGUI"/>
+            </manifest>
+        </jar>
+    </target>
+
+    <target name="run" depends="jar, compile">
+        <java jar="BacterialColonySimulator.jar" fork="true"/>
+    </target>
+</project>
