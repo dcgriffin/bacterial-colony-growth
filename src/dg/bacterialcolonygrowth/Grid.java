@@ -12,11 +12,18 @@ import javafx.scene.shape.Rectangle;
 public class Grid {
 
 	private Rectangle[][] cells;
+    private int gridSize;
 
-	// Constructor which creates a 40 by 40 array for the Rectangles.
-	public Grid() {
-		cells = new Rectangle[40][40];
+	// Constructor which creates a gridSize by gridSize array for the Rectangles.
+	public Grid(int sizeOfGrid) {
+        gridSize = sizeOfGrid;
+		cells = new Rectangle[gridSize][gridSize];
 	}
+
+    // Returns the size of the grid.
+    public int getGridSize() {
+        return gridSize;
+    }
 
 	// Adds a Rectangle to the array of cells in the grid.
 	public void add(Rectangle r, int x, int y) {
@@ -43,15 +50,15 @@ public class Grid {
 
     // Resets the grid so all the cells are white/dead.
     public void resetGrid() {
-        for (int x=0; x<40; x++)
-            for (int y=0; y<40; y++)
+        for (int x=0; x<gridSize; x++)
+            for (int y=0; y<gridSize; y++)
                 turnCellWhite(x,y);
     }
 
 	// Returns true if there are any live cells left in the grid visible to the user.
 	public Boolean gridStatus() {
-		for (int x=0; x<40; x++) {
-    		for (int y=1; y<40; y++) {
+		for (int x=0; x<gridSize; x++) {
+    		for (int y=1; y<gridSize; y++) {
 		        if (this.cellStatus(x, y) == true) {
 		        	return true;
 		        }
