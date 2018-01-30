@@ -13,13 +13,21 @@ package dg.bacterialcolonygrowth;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import org.jblas.FloatMatrix;
 
 public class CellularAutomataRules {
-    private int gridSize;
+    private int width;
+    private int height;
+    private int numberOfGridSpaces;
+    // Rate of diffusion (value should be between 0 and 1).
+    private int delta;
+    private FloatMatrix updateMatrixPeriodicBoundary;
 
-    // Constructor which creates a gridSize by gridSize array for the Rectangles.
-	public CellularAutomataRules(int sizeOfGrid) {
-        gridSize = sizeOfGrid;
+	public CellularAutomataRules(int x, int y) {
+        width = x;
+        height = y;
+        delta = 1;
+        updateMatrixPeriodicBoundary = FloatMatrix.zeros(width, height);
 	}
 
 	// Creates an updated grid of the current grid after applying the
@@ -34,24 +42,24 @@ public class CellularAutomataRules {
 		// Loops through each cell of the grid and checks if it is dead or alive.
 		// It then calls another function to handle that cell depending on
 		// whether it is dead or alive.
-        	for (int x=0; x<gridSize; x++) {
-        		for (int y=0; y<gridSize; y++) {
-    		        if (currentGrid.cellStatus(x, y) == true)
-    		        	liveCellNeighbourChecker(currentGrid, tempGrid, x, y);
-    		        else
-    		        	deadCellNeighbourChecker(currentGrid, tempGrid, x, y);
-        		}
-            }
+    	for (int x=0; x<width; x++) {
+    		for (int y=0; y<height; y++) {
+		        if (currentGrid.cellStatus(x, y) == true)
+		        	liveCellNeighbourChecker(currentGrid, tempGrid, x, y);
+		        else
+		        	deadCellNeighbourChecker(currentGrid, tempGrid, x, y);
+    		}
+        }
 
-        	copyTempGridToCurrentGrid(currentGrid, tempGrid);
+    	copyTempGridToCurrentGrid(currentGrid, tempGrid);
 	}
 
 	// Creates a Grid object which contains a 40 by 40 grid of Rectangles, all white.
 	public Grid createNewGrid() {
-		Grid newGrid = new Grid(gridSize);
+		Grid newGrid = new Grid(width, height);
 
-    	for (int x=0; x<gridSize; x++) {
-    		for (int y=0; y<gridSize; y++) {
+    	for (int x=0; x<width; x++) {
+    		for (int y=0; y<height; y++) {
 		        Rectangle r = new Rectangle(15,15, Color.WHITE);
 		        newGrid.add(r, x, y);
     		}
@@ -71,15 +79,15 @@ public class CellularAutomataRules {
                     int tempRow = row;
                     int tempCol = col;
 
-                    if (tempCol == gridSize)
+                    if (tempCol == width)
                         tempCol = 0;
                     else if (tempCol == -1)
-                        tempCol = gridSize - 1;
+                        tempCol = width - 1;
 
-                    if (tempRow == gridSize)
+                    if (tempRow == height)
                         tempRow = 0;
                     else if (tempRow == -1)
-                        tempRow = gridSize - 1;
+                        tempRow = height - 1;
 
     				if (currentGrid.cellStatus(tempCol, tempRow) == true)
     					numberOfNeighbours++;
@@ -100,15 +108,15 @@ public class CellularAutomataRules {
                 int tempRow = row;
                 int tempCol = col;
 
-                if (tempCol == gridSize)
+                if (tempCol == width)
                     tempCol = 0;
                 else if (tempCol == - 1)
-                    tempCol = gridSize - 1;
+                    tempCol = width - 1;
 
-                if (tempRow == gridSize)
+                if (tempRow == height)
                     tempRow = 0;
                 else if (tempRow == -1)
-                    tempRow = gridSize - 1;
+                    tempRow = height - 1;
 
                 if (currentGrid.cellStatus(tempCol, tempRow) == true)
                     numberOfNeighbours++;
@@ -123,8 +131,8 @@ public class CellularAutomataRules {
 	// has been fully completed to show the next stage after the what the
 	// currentGrid shows.
 	public void copyTempGridToCurrentGrid(Grid currentGrid, Grid tempGrid) {
-    	for (int x=0; x<gridSize; x++) {
-    		for (int y=0; y<gridSize; y++) {
+    	for (int x=0; x<width; x++) {
+    		for (int y=0; y<height; y++) {
 		        if (tempGrid.cellStatus(x, y) == true)
 		        	currentGrid.turnCellBlack(x, y);
 		        else

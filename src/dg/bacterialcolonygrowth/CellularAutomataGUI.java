@@ -33,8 +33,9 @@ public class CellularAutomataGUI extends Application {
 	private VBox rootPane;
 	private Stage mainStage;
 	private Scene mainScene;
-    private int gridSize = 100;
-    private CellularAutomataRules rules = new CellularAutomataRules(gridSize);
+    private int width = 10;
+    private int height = 10;
+    private CellularAutomataRules rules = new CellularAutomataRules(width, height);
 
     // Creates a Timeline that calls a function to continously update the grid
     // every 0.5 seconds.
@@ -47,12 +48,12 @@ public class CellularAutomataGUI extends Application {
     	mainStage = primaryStage;
     	squareGridPane = new GridPane();
         squareGridPane.setPadding(new Insets(10, 10, 0, 10));
-    	squareGrid = new Grid(gridSize);
+    	squareGrid = new Grid(width, height);
 
         // Creates a 40 by 40 grid of Cells and adds them to the Pane.
-    	for (int x=0; x<gridSize; x++) {
-    		for (int y=0; y<gridSize; y++) {
-		        Cell c = new Cell(5,5);
+    	for (int x=0; x<width; x++) {
+    		for (int y=0; y<height; y++) {
+		        Cell c = new Cell(15,15);
                 c.setStroke(Color.GRAY);
                 squareGridPane.add(c,x,y);
                 squareGrid.add(c,x,y);
