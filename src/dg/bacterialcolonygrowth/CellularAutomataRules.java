@@ -90,7 +90,18 @@ public class CellularAutomataRules {
 
     // Sets the values for the crowding function.
     public void setCrowdingFunctionValues() {
-        crowdingFunctionValues = new int[]{0, 40, 40, 30, 20, 10, 0, 0};
+        crowdingFunctionValues = new int[] {0, 40, 40, 30, 20, 10, 0, 0};
+    }
+
+    // Updates nutrients levels after bacteria have consummed some nutrient.
+    public void updateNutrientsLevelsAfterConsumption(Grid currentGrid) {
+        for (int x=0; x<width; x++) {
+    		for (int y=0; y<height; y++) {
+		        if (currentGrid.cellStatus(x, y) == true) {
+		        	// Reduce nutrient level in that cell
+                }
+    		}
+        }
     }
 
 	// Creates an updated grid of the current grid after applying the
