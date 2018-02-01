@@ -13,16 +13,20 @@ package dg.bacterialcolonygrowth;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import org.jblas.DoubleMatrix;
-//import java.lang.Math.*;
 
 public class CellularAutomataRules {
     private int width;
     private int height;
     private int numberOfCellsInGrid;
-    // Rate of diffusion (value should be between 0 and 1).
-    private double delta;
+
     private DoubleMatrix updateMatrixPeriodicBoundary;
     private DoubleMatrix nutrientLevels;
+    // Rate of diffusion (value should be between 0 and 1).
+    private double delta;
+
+    // Stores a value for each possible number of surrounding cells (0-8), which
+    // is then used to determine if cell division takes place.
+    private int[] crowdingFunctionValues;
 
 	public CellularAutomataRules(int x, int y) {
         width = x;
@@ -80,7 +84,11 @@ public class CellularAutomataRules {
     // Sets the initial nutrient levels.
     public void setNutrientLevels() {
         nutrientLevels.put((int)Math.floor(numberOfCellsInGrid/2), 100);
+    }
 
+    // Sets the values for the crowding function.
+    public void setCrowdingFunctionValues() {
+        crowdingFunctionValues = new int[]{0, 40, 40, 30, 20, 10, 0, 0};
     }
 
 	// Creates an updated grid of the current grid after applying the
@@ -93,6 +101,7 @@ public class CellularAutomataRules {
 		Grid tempGrid = createNewGrid();
 
         this.updateNutrientLevels();
+        this.setCrowdingFunctionValues();
 
 		// Loops through each cell of the grid and checks if it is dead or alive.
 		// It then calls another function to handle that cell depending on
