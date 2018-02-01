@@ -1,8 +1,7 @@
 /* *****************************************************************************
 * Description: A class used to simulate a bacterial colony.
-* It is not meant to be instantiated. It just contains static methods that carry
-* out the algorithm to simulate the rules of the game. The grid wraps around so
-* the bottom meets up with the top, and the left side meets up with the right side.
+* The grid wraps around so the bottom meets up with the top, and the left side
+* meets up with the right side.
 *
 * CURRENTLY IMPLEMENTS GAME OF LIFE AS A STARTING POINT
 *
@@ -32,7 +31,7 @@ public class CellularAutomataRules {
         delta = 0.4;
         updateMatrixPeriodicBoundary = DoubleMatrix.zeros(numberOfCellsInGrid, numberOfCellsInGrid);
         nutrientLevels = DoubleMatrix.zeros(numberOfCellsInGrid);
-        nutrientLevels.put((int)Math.floor(numberOfCellsInGrid/2), 100);
+        this.setNutrientLevels();
         this.createUpdateMatrixForPeriodicBoundary();
 	}
 
@@ -76,6 +75,12 @@ public class CellularAutomataRules {
     public void updateNutrientLevels() {
         System.out.println(nutrientLevels);
         nutrientLevels = updateMatrixPeriodicBoundary.mmul(nutrientLevels);
+    }
+
+    // Sets the initial nutrient levels.
+    public void setNutrientLevels() {
+        nutrientLevels.put((int)Math.floor(numberOfCellsInGrid/2), 100);
+
     }
 
 	// Creates an updated grid of the current grid after applying the
