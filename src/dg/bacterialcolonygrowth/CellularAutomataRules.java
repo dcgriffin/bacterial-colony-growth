@@ -13,22 +13,64 @@ package dg.bacterialcolonygrowth;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import org.jblas.FloatMatrix;
+import org.jblas.DoubleMatrix;
 
 public class CellularAutomataRules {
     private int width;
     private int height;
-    private int numberOfGridSpaces;
+    private int numberOfCellsInGrid;
     // Rate of diffusion (value should be between 0 and 1).
-    private int delta;
-    private FloatMatrix updateMatrixPeriodicBoundary;
+    private double delta;
+    private DoubleMatrix updateMatrixPeriodicBoundary;
 
 	public CellularAutomataRules(int x, int y) {
         width = x;
         height = y;
-        delta = 1;
-        updateMatrixPeriodicBoundary = FloatMatrix.zeros(width, height);
+        numberOfCellsInGrid = width * height;
+        delta = 0.4;
+        updateMatrixPeriodicBoundary = DoubleMatrix.zeros(numberOfCellsInGrid, numberOfCellsInGrid);
 	}
+
+    // Creates the update matrix for a cellular automata with a periodic boundary.
+    public void createUpdateMatrixForPeriodicBoundary() {
+        for (int i=0; i<numberOfCellsInGrid; i++) {
+            System.out.println(i);
+            // The cell itself.
+	        updateMatrixPeriodicBoundary.put(i, i, 1 - delta);
+            // Cell to the left.
+            System.out.println("left");
+            if (i % width == 0) {
+                updateMatrixPeriodicBoundary.put(i, i + width - 1, delta/4);
+            }
+            else {
+                updateMatrixPeriodicBoundary.put(i, i - 1, delta/4);
+            }
+            // Cell to the right.
+            System.out.println("right");
+            if ((i + 1) % width == 0) {
+                updateMatrixPeriodicBoundary.put(i, i - width + 1, delta/4);
+            }
+            else {
+                updateMatrixPeriodicBoundary.put(i, i + 1, delta/4);
+            }
+            // Cell above.
+            System.out.println("above");
+            if (i + width > numberOfCellsInGrid - 1) {
+                updateMatrixPeriodicBoundary.put(i, i - numberOfCellsInGrid + width, delta/4);
+            }
+            else {
+                updateMatrixPeriodicBoundary.put(i, i + width, delta/4);
+            }
+            // Cell below.
+            System.out.println("below");
+            if (i - width < 0) {
+                updateMatrixPeriodicBoundary.put(i, i + numberOfCellsInGrid - width, delta/4);
+            }
+            else {
+                updateMatrixPeriodicBoundary.put(i, i - width, delta/4);
+            }
+        }
+    }
 
 	// Creates an updated grid of the current grid after applying the
     // rules of the game. The rules are:
@@ -38,6 +80,10 @@ public class CellularAutomataRules {
     // -Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
 	public void createUpdatedGrid(Grid currentGrid) {
 		Grid tempGrid = createNewGrid();
+
+        System.out.println(updateMatrixPeriodicBoundary);
+        this.createUpdateMatrixForPeriodicBoundary();
+        System.out.println(updateMatrixPeriodicBoundary);
 
 		// Loops through each cell of the grid and checks if it is dead or alive.
 		// It then calls another function to handle that cell depending on
