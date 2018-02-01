@@ -33,8 +33,8 @@ public class CellularAutomataGUI extends Application {
 	private VBox rootPane;
 	private Stage mainStage;
 	private Scene mainScene;
-    private int width = 3;
-    private int height = 3;
+    private int width = 10;
+    private int height = 10;
     private CellularAutomataRules rules = new CellularAutomataRules(width, height);
 
     // Creates a Timeline that calls a function to continously update the grid

@@ -14,6 +14,7 @@ package dg.bacterialcolonygrowth;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import org.jblas.DoubleMatrix;
+//import java.lang.Math.*;
 
 public class CellularAutomataRules {
     private int width;
@@ -22,6 +23,7 @@ public class CellularAutomataRules {
     // Rate of diffusion (value should be between 0 and 1).
     private double delta;
     private DoubleMatrix updateMatrixPeriodicBoundary;
+    private DoubleMatrix nutrientLevels;
 
 	public CellularAutomataRules(int x, int y) {
         width = x;
@@ -29,16 +31,17 @@ public class CellularAutomataRules {
         numberOfCellsInGrid = width * height;
         delta = 0.4;
         updateMatrixPeriodicBoundary = DoubleMatrix.zeros(numberOfCellsInGrid, numberOfCellsInGrid);
+        nutrientLevels = DoubleMatrix.zeros(numberOfCellsInGrid);
+        nutrientLevels.put((int)Math.floor(numberOfCellsInGrid/2), 100);
+        this.createUpdateMatrixForPeriodicBoundary();
 	}
 
     // Creates the update matrix for a cellular automata with a periodic boundary.
     public void createUpdateMatrixForPeriodicBoundary() {
         for (int i=0; i<numberOfCellsInGrid; i++) {
-            System.out.println(i);
             // The cell itself.
 	        updateMatrixPeriodicBoundary.put(i, i, 1 - delta);
             // Cell to the left.
-            System.out.println("left");
             if (i % width == 0) {
                 updateMatrixPeriodicBoundary.put(i, i + width - 1, delta/4);
             }
@@ -46,7 +49,6 @@ public class CellularAutomataRules {
                 updateMatrixPeriodicBoundary.put(i, i - 1, delta/4);
             }
             // Cell to the right.
-            System.out.println("right");
             if ((i + 1) % width == 0) {
                 updateMatrixPeriodicBoundary.put(i, i - width + 1, delta/4);
             }
@@ -54,7 +56,6 @@ public class CellularAutomataRules {
                 updateMatrixPeriodicBoundary.put(i, i + 1, delta/4);
             }
             // Cell above.
-            System.out.println("above");
             if (i + width > numberOfCellsInGrid - 1) {
                 updateMatrixPeriodicBoundary.put(i, i - numberOfCellsInGrid + width, delta/4);
             }
@@ -62,7 +63,6 @@ public class CellularAutomataRules {
                 updateMatrixPeriodicBoundary.put(i, i + width, delta/4);
             }
             // Cell below.
-            System.out.println("below");
             if (i - width < 0) {
                 updateMatrixPeriodicBoundary.put(i, i + numberOfCellsInGrid - width, delta/4);
             }
@@ -70,6 +70,12 @@ public class CellularAutomataRules {
                 updateMatrixPeriodicBoundary.put(i, i - width, delta/4);
             }
         }
+    }
+
+    // Updates the nutrient levels after a single time step.
+    public void updateNutrientLevels() {
+        System.out.println(nutrientLevels);
+        nutrientLevels = updateMatrixPeriodicBoundary.mmul(nutrientLevels);
     }
 
 	// Creates an updated grid of the current grid after applying the
@@ -81,9 +87,7 @@ public class CellularAutomataRules {
 	public void createUpdatedGrid(Grid currentGrid) {
 		Grid tempGrid = createNewGrid();
 
-        System.out.println(updateMatrixPeriodicBoundary);
-        this.createUpdateMatrixForPeriodicBoundary();
-        System.out.println(updateMatrixPeriodicBoundary);
+        this.updateNutrientLevels();
 
 		// Loops through each cell of the grid and checks if it is dead or alive.
 		// It then calls another function to handle that cell depending on
