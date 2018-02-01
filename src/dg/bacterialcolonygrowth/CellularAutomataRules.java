@@ -83,7 +83,9 @@ public class CellularAutomataRules {
 
     // Sets the initial nutrient levels.
     public void setNutrientLevels() {
-        nutrientLevels.put((int)Math.floor(numberOfCellsInGrid/2), 100);
+        for (int i=0; i<numberOfCellsInGrid; i++) {
+            nutrientLevels.put(i, 100);
+        }
     }
 
     // Sets the values for the crowding function.
