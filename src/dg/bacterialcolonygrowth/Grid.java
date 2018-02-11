@@ -35,6 +35,11 @@ public class Grid {
 	public void add(Rectangle r, int x, int y) {
 		cells[x][y] = r;
 	}
+	
+	// Sets the colour of the specified cell using hue, saturation and brightness.
+	public void setColour(int x, int y, double hue, double saturation, double brightness) {
+		cells[x][y].setFill(Color.hsb(hue, saturation, brightness));
+	}
 
 	// Turns a cell white to represent a dead state.
 	public void turnCellWhite (int x, int y) {

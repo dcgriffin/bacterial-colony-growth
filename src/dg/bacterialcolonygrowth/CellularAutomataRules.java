@@ -16,6 +16,8 @@ import sun.security.util.Length;
 
 import org.jblas.DoubleMatrix;
 
+import com.sun.org.apache.bcel.internal.generic.RETURN;
+
 public class CellularAutomataRules {
     private int width;
     private int height;
@@ -76,11 +78,33 @@ public class CellularAutomataRules {
             }
         }
     }
+    
+    // From 1D nutrient level matrix position, function returns the coordinates of the position within the 2D
+    // cellular automata.
+//    public int[] returnCoordinatesWithin2DCellularAutomata(int i) {
+//    		int [] coordinates = {(i/width), i % width};
+//    		return coordinates;
+//    }
+    
+    // From 2D coordinates of a grid position, return the position this corresponds to in the 1D nutrient
+    // matrix.
+//    public int returnPositionInNutrientMatrix(int x, int y) {
+//    		return x + y*height;
+//    }
 
     // Updates the nutrient levels after a single time step.
-    public void updateNutrientLevels() {
+    public void updateNutrientLevels(Grid currentGrid) {
         System.out.println(nutrientLevels);
         nutrientLevels = updateMatrixPeriodicBoundary.mmul(nutrientLevels);
+        
+        // Updates the visual appearance of the cellular automata. It converts x and y coordinates to the 
+        // corresponding position in the nutrient matrix, then divides the nutrient level value by 100 to 
+        // give a saturation value.
+        for (int x=0; x<width; x++) {
+	    		for (int y=0; y<height; y++) {
+	    			currentGrid.setColour(x, y, 0, returnNutrientLevelOfCell(x + y*height)/100, 1);
+	    		}
+        }
     }
 
     // Sets the initial nutrient levels.
@@ -90,8 +114,8 @@ public class CellularAutomataRules {
          }
     }
 
-    public double returnNutrientLevelOfCell (int x) {
-        return nutrientLevels.get(x);
+    public double returnNutrientLevelOfCell (int i) {
+        return nutrientLevels.get(i);
     }
 
     // Sets the values for the crowding function.
@@ -100,15 +124,15 @@ public class CellularAutomataRules {
     }
 
     // Updates nutrients levels after bacteria have consummed some nutrient.
-    public void updateNutrientsLevelsAfterConsumption(Grid currentGrid) {
-        for (int x=0; x<width; x++) {
-    		for (int y=0; y<height; y++) {
-		        if (currentGrid.cellStatus(x, y) == true) {
-		        	// Reduce nutrient level in that cell
-                }
-    		}
-        }
-    }
+//    public void updateNutrientsLevelsAfterConsumption(Grid currentGrid) {
+//        for (int x=0; x<width; x++) {
+//	    		for (int y=0; y<height; y++) {
+//			        if (currentGrid.cellStatus(x, y) == true) {
+//			        	// Reduce nutrient level in that cell
+//	                }
+//	    		}
+//        }
+//    }
 
 	// Creates an updated grid of the current grid after applying the
     // rules of the game. The rules are:
@@ -119,25 +143,25 @@ public class CellularAutomataRules {
 	public void createUpdatedGrid(Grid currentGrid) {
 		Grid tempGrid = createNewGrid();
 
-        this.updateNutrientLevels();
+        this.updateNutrientLevels(currentGrid);
         this.setCrowdingFunctionValues();
 
 		// Loops through each cell of the grid and checks if it is dead or alive.
 		// It then calls another function to handle that cell depending on
 		// whether it is dead or alive.
-        for (int x=0; x<width; x++) {
-	    		for (int y=0; y<height; y++) {
-		        if (currentGrid.cellStatus(x, y) == true)
-		        	liveCellNeighbourChecker(currentGrid, tempGrid, x, y);
-		        else
-		        	deadCellNeighbourChecker(currentGrid, tempGrid, x, y);
-	    		}
-	    }
-
-    	copyTempGridToCurrentGrid(currentGrid, tempGrid);
+//        for (int x=0; x<width; x++) {
+//	    		for (int y=0; y<height; y++) {
+//		        if (currentGrid.cellStatus(x, y) == true)
+//		        		liveCellNeighbourChecker(currentGrid, tempGrid, x, y);
+//		        else
+//		        		deadCellNeighbourChecker(currentGrid, tempGrid, x, y);
+//	    		}
+//	    }
+//
+//    	copyTempGridToCurrentGrid(currentGrid, tempGrid);
 	}
 
-	// Creates a Grid object which contains a 40 by 40 grid of Rectangles, all white.
+	// Creates a Grid object which contains a grid of Rectangles of size width*height, all white.
 	public Grid createNewGrid() {
 		Grid newGrid = new Grid(width, height);
 
@@ -217,9 +241,9 @@ public class CellularAutomataRules {
 	    	for (int x=0; x<width; x++) {
 	    		for (int y=0; y<height; y++) {
 		        if (tempGrid.cellStatus(x, y) == true)
-		        	currentGrid.turnCellBlack(x, y);
+		        		currentGrid.turnCellBlack(x, y);
 		        else
-		        	currentGrid.turnCellWhite(x, y);
+		        		currentGrid.turnCellWhite(x, y);
 	    		}
 	    }
 	}

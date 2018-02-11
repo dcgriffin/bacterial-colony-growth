@@ -35,7 +35,7 @@ public class CellularAutomataGUI extends Application {
 	private Scene mainScene;
     private int width = 10;
     private int height = 10;
-    private double[] initialNutrientLevels = new double[] {0,0,0,0,100};
+    private double[] initialNutrientLevels = new double[] {100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100};
     private CellularAutomataRules rules = new CellularAutomataRules(width, height, initialNutrientLevels);
 
     // Creates a Timeline that calls a function to continously update the grid
