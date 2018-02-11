@@ -12,6 +12,8 @@ package dg.bacterialcolonygrowth;
 
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import sun.security.util.Length;
+
 import org.jblas.DoubleMatrix;
 
 public class CellularAutomataRules {
@@ -28,14 +30,14 @@ public class CellularAutomataRules {
     // is then used to determine if cell division takes place.
     private int[] crowdingFunctionValues;
 
-	public CellularAutomataRules(int x, int y) {
+	public CellularAutomataRules(int x, int y, double initialNutrientLevels[]) {
         width = x;
         height = y;
         numberOfCellsInGrid = width * height;
         delta = 0.4;
         updateMatrixPeriodicBoundary = DoubleMatrix.zeros(numberOfCellsInGrid, numberOfCellsInGrid);
         nutrientLevels = DoubleMatrix.zeros(numberOfCellsInGrid);
-        this.setNutrientLevels();
+        this.setNutrientLevels(initialNutrientLevels);
         this.createUpdateMatrixForPeriodicBoundary();
 	}
 
@@ -82,11 +84,10 @@ public class CellularAutomataRules {
     }
 
     // Sets the initial nutrient levels.
-    public void setNutrientLevels() {
-    //     for (int i=0; i<numberOfCellsInGrid; i++) {
-    //         nutrientLevels.put(i, 100);
-    //     }
-    nutrientLevels.put(40,100);
+    public void setNutrientLevels(double[] initialNutrientLevels) {
+         for (int i=0; i<initialNutrientLevels.length; i++) {
+             nutrientLevels.put(i, initialNutrientLevels[i]);
+         }
     }
 
     public double returnNutrientLevelOfCell (int x) {
@@ -124,14 +125,14 @@ public class CellularAutomataRules {
 		// Loops through each cell of the grid and checks if it is dead or alive.
 		// It then calls another function to handle that cell depending on
 		// whether it is dead or alive.
-    	for (int x=0; x<width; x++) {
-    		for (int y=0; y<height; y++) {
+        for (int x=0; x<width; x++) {
+	    		for (int y=0; y<height; y++) {
 		        if (currentGrid.cellStatus(x, y) == true)
 		        	liveCellNeighbourChecker(currentGrid, tempGrid, x, y);
 		        else
 		        	deadCellNeighbourChecker(currentGrid, tempGrid, x, y);
-    		}
-        }
+	    		}
+	    }
 
     	copyTempGridToCurrentGrid(currentGrid, tempGrid);
 	}
@@ -141,11 +142,11 @@ public class CellularAutomataRules {
 		Grid newGrid = new Grid(width, height);
 
     	for (int x=0; x<width; x++) {
-    		for (int y=0; y<height; y++) {
-		        Rectangle r = new Rectangle(15,15, Color.WHITE);
-		        newGrid.add(r, x, y);
-    		}
-        }
+		for (int y=0; y<height; y++) {
+	        Rectangle r = new Rectangle(15,15, Color.WHITE);
+	        newGrid.add(r, x, y);
+		}
+    }
 
     	return newGrid;
 	}
@@ -186,7 +187,7 @@ public class CellularAutomataRules {
 
         // Loops through 9 cells. The cell in question along with the surrounding 8.
         for (int col = (x-1); col<(x+2); col++) {
-        	for (int row = (y-1); row<(y+2); row++) {
+	        	for (int row = (y-1); row<(y+2); row++) {
                 int tempRow = row;
                 int tempCol = col;
 
@@ -202,7 +203,7 @@ public class CellularAutomataRules {
 
                 if (currentGrid.cellStatus(tempCol, tempRow) == true)
                     numberOfNeighbours++;
-        	}
+	        	}
         }
 
 		if (numberOfNeighbours == 3)
@@ -213,13 +214,13 @@ public class CellularAutomataRules {
 	// has been fully completed to show the next stage after the what the
 	// currentGrid shows.
 	public void copyTempGridToCurrentGrid(Grid currentGrid, Grid tempGrid) {
-    	for (int x=0; x<width; x++) {
-    		for (int y=0; y<height; y++) {
+	    	for (int x=0; x<width; x++) {
+	    		for (int y=0; y<height; y++) {
 		        if (tempGrid.cellStatus(x, y) == true)
 		        	currentGrid.turnCellBlack(x, y);
 		        else
 		        	currentGrid.turnCellWhite(x, y);
-    		}
-        }
+	    		}
+	    }
 	}
 }
