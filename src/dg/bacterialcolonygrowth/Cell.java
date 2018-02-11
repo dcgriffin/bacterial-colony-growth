@@ -13,8 +13,8 @@ import javafx.scene.shape.Rectangle;
 public class Cell extends Rectangle {
 
     // Constructor which creates a new Cell.
-    public Cell(int cellHeight, int cellWidth) {
-        super(cellHeight, cellWidth, Color.WHITE);
+    public Cell(int cellHeight, int cellWidth, Color color) {
+        super(cellHeight, cellWidth, color);
     }
 
     // Returns 'true' if cell is alive and 'false' if it is dead.

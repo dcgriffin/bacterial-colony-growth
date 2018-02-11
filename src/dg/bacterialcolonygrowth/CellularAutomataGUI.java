@@ -54,7 +54,7 @@ public class CellularAutomataGUI extends Application {
         // Creates a 40 by 40 grid of Cells and adds them to the Pane.
     	for (int x=0; x<width; x++) {
     		for (int y=0; y<height; y++) {
-		        Cell c = new Cell(15,15);
+		        Cell c = new Cell(15,15, Color.WHITE);
                 c.setStroke(Color.GRAY);
                 squareGridPane.add(c,x,y);
                 squareGrid.add(c,x,y);

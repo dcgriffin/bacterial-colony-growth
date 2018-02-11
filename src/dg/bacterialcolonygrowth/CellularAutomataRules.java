@@ -167,8 +167,8 @@ public class CellularAutomataRules {
 
     	for (int x=0; x<width; x++) {
 		for (int y=0; y<height; y++) {
-	        Rectangle r = new Rectangle(15,15, Color.WHITE);
-	        newGrid.add(r, x, y);
+	        Cell c = new Cell(15,15, Color.WHITE);
+	        newGrid.add(c, x, y);
 		}
     }
 

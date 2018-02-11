@@ -11,14 +11,14 @@ import javafx.scene.shape.Rectangle;
 
 public class Grid {
 
-	private Rectangle[][] cells;
+	private Cell[][] cells;
     private int width, height;
 
 	// Constructor which creates an x by y sized array of Rectangles.
 	public Grid(int x, int y) {
         width = x;
         height = y;
-		cells = new Rectangle[width][height];
+		cells = new Cell[width][height];
 	}
 
     // Returns the width of the grid.
@@ -32,8 +32,8 @@ public class Grid {
     }
 
 	// Adds a Rectangle to the array of cells in the grid.
-	public void add(Rectangle r, int x, int y) {
-		cells[x][y] = r;
+	public void add(Cell c, int x, int y) {
+		cells[x][y] = c;
 	}
 	
 	// Sets the colour of the specified cell using hue, saturation and brightness.
