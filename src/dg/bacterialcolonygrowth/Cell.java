@@ -28,6 +28,9 @@ public class Cell extends StackPane { //extends StackPane
     
     public void setColorOfCell(double hue, double saturation, double brightness) {
     		cellArea.setFill(Color.hsb(hue, saturation, brightness));
+    		if (this.cellStatus() == false) {
+    			bacteria.setFill(Color.hsb(hue, saturation, brightness));
+    		}
     }
 
     // Returns 'true' if cell is alive and 'false' if it is dead.

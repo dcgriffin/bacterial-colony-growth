@@ -6,6 +6,8 @@
 
 package dg.bacterialcolonygrowth;
 
+import static org.junit.Assert.assertFalse;
+
 import javafx.scene.paint.Color;
 
 public class Grid {
@@ -36,7 +38,7 @@ public class Grid {
 	}
 	
 	// Sets the colour of the specified cell using hue, saturation and brightness.
-	public void setNutrientColorLevel(int x, int y, double hue, double saturation, double brightness) {
+	public void setNutrientLevelColor(int x, int y, double hue, double saturation, double brightness) {
 		cells[x][y].setColorOfCell(hue, saturation, brightness);
 	}
 
