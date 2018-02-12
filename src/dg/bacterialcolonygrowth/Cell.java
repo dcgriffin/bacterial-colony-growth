@@ -32,7 +32,7 @@ public class Cell extends StackPane { //extends StackPane
 
     // Returns 'true' if cell is alive and 'false' if it is dead.
     public Boolean cellStatus() {
-        if (cellArea.getFill() == Color.BLACK)
+        if (bacteria.getFill() == Color.BLACK)
             return true;
         else
             return false;
@@ -40,12 +40,12 @@ public class Cell extends StackPane { //extends StackPane
 
     // Turns a cell black to represent an alive state.
     public void turnCellBlack () {
-        cellArea.setFill(Color.BLACK);
+        bacteria.setFill(Color.BLACK);
     }
 
     // Turns a cell white to represent a dead state.
     public void turnCellWhite () {
-        cellArea.setFill(Color.WHITE);
+        bacteria.setFill(Color.WHITE);
     }
 
     // A method that is called when a cell is clicked. It changes the dead/alive
