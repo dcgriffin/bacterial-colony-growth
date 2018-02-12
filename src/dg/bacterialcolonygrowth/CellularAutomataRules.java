@@ -11,12 +11,8 @@
 package dg.bacterialcolonygrowth;
 
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
-import sun.security.util.Length;
-
 import org.jblas.DoubleMatrix;
 
-import com.sun.org.apache.bcel.internal.generic.RETURN;
 
 public class CellularAutomataRules {
     private int width;
@@ -161,18 +157,18 @@ public class CellularAutomataRules {
 //    	copyTempGridToCurrentGrid(currentGrid, tempGrid);
 	}
 
-	// Creates a Grid object which contains a grid of Rectangles of size width*height, all white.
+	// Creates a Grid object which contains a grid of Cells of size width*height, all white.
 	public Grid createNewGrid() {
 		Grid newGrid = new Grid(width, height);
 
-    	for (int x=0; x<width; x++) {
-		for (int y=0; y<height; y++) {
-	        Cell c = new Cell(15,15, Color.WHITE);
-	        newGrid.add(c, x, y);
-		}
-    }
-
-    	return newGrid;
+	    	for (int x=0; x<width; x++) {
+			for (int y=0; y<height; y++) {
+		        Cell c = new Cell(15,15, Color.WHITE);
+		        newGrid.add(c, x, y);
+			}
+	    	}
+	    	
+	    	return newGrid;
 	}
 
 	// Checks the neighbours of alive cells and updates the tempGrid accordingly.

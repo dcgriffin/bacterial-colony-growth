@@ -7,14 +7,13 @@
 package dg.bacterialcolonygrowth;
 
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 
 public class Grid {
 
 	private Cell[][] cells;
     private int width, height;
 
-	// Constructor which creates an x by y sized array of Rectangles.
+	// Constructor which creates an x by y sized array of Cells.
 	public Grid(int x, int y) {
         width = x;
         height = y;
@@ -31,7 +30,7 @@ public class Grid {
         return height;
     }
 
-	// Adds a Rectangle to the array of cells in the grid.
+	// Adds a Cell to the array of cells in the grid.
 	public void add(Cell c, int x, int y) {
 		cells[x][y] = c;
 	}

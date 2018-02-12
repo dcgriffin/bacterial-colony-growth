@@ -15,14 +15,11 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.util.Duration;
-import javafx.animation.KeyValue;
-import javafx.animation.PauseTransition;
 import javafx.geometry.Insets;
 
 
@@ -48,7 +45,7 @@ public class CellularAutomataGUI extends Application {
     public void start(Stage primaryStage) {
     	mainStage = primaryStage;
     	squareGridPane = new GridPane();
-        squareGridPane.setPadding(new Insets(10, 10, 0, 10));
+    squareGridPane.setPadding(new Insets(10, 10, 0, 10));
     	squareGrid = new Grid(width, height);
 
         // Creates a 40 by 40 grid of Cells and adds them to the Pane.

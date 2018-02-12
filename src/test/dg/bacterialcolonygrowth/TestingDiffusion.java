@@ -6,8 +6,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import sun.net.www.content.audio.x_aiff;
-
 public class TestingDiffusion {
 	
 	private CellularAutomataRules bacteriaSimulation;
