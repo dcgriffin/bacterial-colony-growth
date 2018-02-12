@@ -98,7 +98,7 @@ public class CellularAutomataRules {
         // give a saturation value.
         for (int x=0; x<width; x++) {
 	    		for (int y=0; y<height; y++) {
-	    			currentGrid.setColour(x, y, 0, returnNutrientLevelOfCell(x + y*height)/100, 1);
+	    			currentGrid.setNutrientColorLevel(x, y, 0, returnNutrientLevelOfCell(x + y*height)/100, 1);
 	    		}
         }
     }

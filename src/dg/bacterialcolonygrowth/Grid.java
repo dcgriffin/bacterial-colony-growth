@@ -36,26 +36,23 @@ public class Grid {
 	}
 	
 	// Sets the colour of the specified cell using hue, saturation and brightness.
-	public void setColour(int x, int y, double hue, double saturation, double brightness) {
-		cells[x][y].setFill(Color.hsb(hue, saturation, brightness));
+	public void setNutrientColorLevel(int x, int y, double hue, double saturation, double brightness) {
+		cells[x][y].setColorOfCell(hue, saturation, brightness);
 	}
 
 	// Turns a cell white to represent a dead state.
 	public void turnCellWhite (int x, int y) {
-		cells[x][y].setFill(Color.WHITE);
+		cells[x][y].turnCellWhite();
 	}
 
 	// Turns a cell black to represent an alive state.
 	public void turnCellBlack (int x, int y) {
-		cells[x][y].setFill(Color.BLACK);
+		cells[x][y].turnCellBlack();
 	}
 
 	// Returns 'true' if cell is alive and 'false' if it is dead.
 	public Boolean cellStatus(int x, int y) {
-		if (cells[x][y].getFill() == Color.BLACK)
-			return true;
-		else
-			return false;
+		return cells[x][y].cellStatus();
 	}
 
     // Resets the grid so all the cells are white/dead.
