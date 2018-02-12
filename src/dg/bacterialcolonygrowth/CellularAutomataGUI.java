@@ -52,7 +52,6 @@ public class CellularAutomataGUI extends Application {
     	for (int x=0; x<width; x++) {
     		for (int y=0; y<height; y++) {
 		        Cell c = new Cell(15,15, Color.WHITE);
-                c.setStroke(Color.GRAY);
                 squareGridPane.add(c,x,y);
                 squareGrid.add(c,x,y);
 
