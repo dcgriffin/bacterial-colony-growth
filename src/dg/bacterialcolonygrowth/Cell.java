@@ -22,7 +22,7 @@ public class Cell extends StackPane { //extends StackPane
         cellArea  = new Rectangle(cellHeight, cellWidth, color);
         cellArea.setStroke(Color.GRAY);
         bacteria = new Circle(cellWidth/3);
-        bacteria.setFill(Color.BLACK);
+        bacteria.setFill(Color.WHITE);
         this.getChildren().addAll(cellArea, bacteria);
     }
     

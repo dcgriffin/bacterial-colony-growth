@@ -28,11 +28,11 @@ public class CellularAutomataRules {
     // is then used to determine if cell division takes place.
     private int[] crowdingFunctionValues;
 
-	public CellularAutomataRules(int x, int y, double initialNutrientLevels[]) {
+	public CellularAutomataRules(int x, int y, double initialNutrientLevels[], double valueOfDelta) {
         width = x;
         height = y;
         numberOfCellsInGrid = width * height;
-        delta = 0.4;
+        delta = valueOfDelta;
         updateMatrixPeriodicBoundary = DoubleMatrix.zeros(numberOfCellsInGrid, numberOfCellsInGrid);
         nutrientLevels = DoubleMatrix.zeros(numberOfCellsInGrid);
         this.setNutrientLevels(initialNutrientLevels);
@@ -98,7 +98,7 @@ public class CellularAutomataRules {
         // give a saturation value.
         for (int x=0; x<width; x++) {
 	    		for (int y=0; y<height; y++) {
-	    			currentGrid.setNutrientLevelColor(x, y, 0, returnNutrientLevelOfCell(x + y*height)/100, 1);
+	    			currentGrid.setNutrientLevelColor(x, y, 0, getNutrientLevelOfCell(x + y*height)/100, 1);
 	    		}
         }
     }
@@ -110,7 +110,7 @@ public class CellularAutomataRules {
          }
     }
 
-    public double returnNutrientLevelOfCell (int i) {
+    public double getNutrientLevelOfCell (int i) {
         return nutrientLevels.get(i);
     }
 

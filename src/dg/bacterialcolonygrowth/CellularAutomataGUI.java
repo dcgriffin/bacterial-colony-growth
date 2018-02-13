@@ -30,10 +30,11 @@ public class CellularAutomataGUI extends Application {
 	private VBox rootPane;
 	private Stage mainStage;
 	private Scene mainScene;
-    private int width = 10;
-    private int height = 10;
+    private int width = 40;
+    private int height = 40;
+    private double delta = 0.4;
     private double[] initialNutrientLevels = new double[] {100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100,100};
-    private CellularAutomataRules rules = new CellularAutomataRules(width, height, initialNutrientLevels);
+    private CellularAutomataRules rules = new CellularAutomataRules(width, height, initialNutrientLevels, delta);
 
     // Creates a Timeline that calls a function to continously update the grid
     // every 0.5 seconds.
@@ -48,10 +49,10 @@ public class CellularAutomataGUI extends Application {
     squareGridPane.setPadding(new Insets(10, 10, 0, 10));
     	squareGrid = new Grid(width, height);
 
-        // Creates a 40 by 40 grid of Cells and adds them to the Pane.
+        // Creates a width by height grid of Cells and adds them to the Pane.
     	for (int x=0; x<width; x++) {
     		for (int y=0; y<height; y++) {
-		        Cell c = new Cell(15,15, Color.WHITE);
+		        Cell c = new Cell(10,10, Color.WHITE);
                 squareGridPane.add(c,x,y);
                 squareGrid.add(c,x,y);
 
@@ -62,7 +63,7 @@ public class CellularAutomataGUI extends Application {
                     }
                 });
     		}
-        }
+    }
 
     	Button startButton = new Button("Start");
 
