@@ -49,7 +49,7 @@ public class CellularAutomataGUI extends Application {
     squareGridPane.setPadding(new Insets(10, 10, 0, 10));
     	squareGrid = new Grid(width, height);
 
-        // Creates a width by height grid of Cells and adds them to the Pane.
+    // Creates a width by height grid of Cells and adds them to the Pane.
     	for (int x=0; x<width; x++) {
     		for (int y=0; y<height; y++) {
 		        Cell c = new Cell(10,10, Color.WHITE);

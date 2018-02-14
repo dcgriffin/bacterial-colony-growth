@@ -56,4 +56,13 @@ public class TestingCellAndGridClasses {
 		grid.setBacteriumDead(0, 0);
 		assertFalse(grid.cellStatus(0, 0));		
 	}
+	
+	// Test correct size grid is created.
+	@Test
+	public void testCorrectSizedGridIsCreated() {
+		Grid grid = new Grid(5, 5);
+		
+		assertEquals(5, grid.getGridHeight(), 0);
+		assertEquals(5, grid.getGridWidth(), 0);
+	}
 }

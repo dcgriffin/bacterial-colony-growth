@@ -67,11 +67,11 @@ public class Grid {
 	// Returns true if there are any live cells left in the grid visible to the user.
 	public Boolean gridStatus() {
 		for (int x=0; x<width; x++) {
-    		for (int y=0; y<height; y++) {
-		        if (this.cellStatus(x, y) == true) {
-		        	return true;
-		        }
-    		}
+	    		for (int y=0; y<height; y++) {
+			        if (this.cellStatus(x, y) == true) {
+			        		return true;
+			        }
+	    		}
         }
 		return false;
 	}
