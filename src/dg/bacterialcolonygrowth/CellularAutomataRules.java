@@ -18,6 +18,10 @@ public class CellularAutomataRules {
     private int width;
     private int height;
     private int numberOfCellsInGrid;
+    
+    private int nutrientForSustenance = 10;
+    private int nutrientForGrowth = 60;
+    private int thresholdForDivision = 2200;
 
     private DoubleMatrix updateMatrixPeriodicBoundary;
     private DoubleMatrix nutrientLevels;
@@ -103,15 +107,26 @@ public class CellularAutomataRules {
         }
     }
 
-    // Sets the initial nutrient levels.
+    // Sets the initial nutrient levels, passing empty array means every cell starts at 100.
     public void setNutrientLevels(double[] initialNutrientLevels) {
-         for (int i=0; i<initialNutrientLevels.length; i++) {
-             nutrientLevels.put(i, initialNutrientLevels[i]);
-         }
+    		if (initialNutrientLevels.length == 0) {
+    			for (int i=0; i<nutrientLevels.length; i++) {
+   	             nutrientLevels.put(i, 100);
+   	         }
+    		}
+    		else {
+	         for (int i=0; i<initialNutrientLevels.length; i++) {
+	             nutrientLevels.put(i, initialNutrientLevels[i]);
+	         }
+    		}
     }
 
     public double getNutrientLevelOfCell (int i) {
         return nutrientLevels.get(i);
+    }
+    
+    public void setNutrientLevelOfCell (int i, double newNutrientLevel) {
+    		nutrientLevels.put(i, newNutrientLevel);
     }
 
     // Sets the values for the crowding function.
