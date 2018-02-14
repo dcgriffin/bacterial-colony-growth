@@ -18,11 +18,6 @@ public class TestingCellularAutomataRules {
 //	public void tearDown() throws Exception {
 //	}
 	
-	@Test
-	public void exampleTest() {
-		assertEquals(0, 0);
-	}
-	
 	// Test nutrient levels are set correctly.
 	@Test
 	public void testNutrientLevelsAreSetCorrectly() {

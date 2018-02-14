@@ -198,7 +198,7 @@ public class CellularAutomataRules {
     		}
 
 		if (numberOfNeighbours == 2 || numberOfNeighbours == 3)
-			tempGrid.turnCellBlack(x, y);
+			tempGrid.setBacteriumAlive(x, y);
 	}
 
 	// Checks the neighbours of dead cells and updates the tempGrid accordingly.
@@ -227,7 +227,7 @@ public class CellularAutomataRules {
         }
 
 		if (numberOfNeighbours == 3)
-			tempGrid.turnCellBlack(x, y);
+			tempGrid.setBacteriumAlive(x, y);
 	}
 
 	// Copies the tempGrid to the currentGrid. This is done once the tempGrid
@@ -237,9 +237,9 @@ public class CellularAutomataRules {
 	    	for (int x=0; x<width; x++) {
 	    		for (int y=0; y<height; y++) {
 		        if (tempGrid.cellStatus(x, y) == true)
-		        		currentGrid.turnCellBlack(x, y);
+		        		currentGrid.setBacteriumAlive(x, y);
 		        else
-		        		currentGrid.turnCellWhite(x, y);
+		        		currentGrid.setBacteriumDead(x, y);
 	    		}
 	    }
 	}

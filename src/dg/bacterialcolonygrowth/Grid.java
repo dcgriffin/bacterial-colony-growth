@@ -43,13 +43,13 @@ public class Grid {
 	}
 
 	// Turns a cell white to represent a dead state.
-	public void turnCellWhite (int x, int y) {
-		cells[x][y].turnCellWhite();
+	public void setBacteriumDead (int x, int y) {
+		cells[x][y].setBacteriumDead();
 	}
 
 	// Turns a cell black to represent an alive state.
-	public void turnCellBlack (int x, int y) {
-		cells[x][y].turnCellBlack();
+	public void setBacteriumAlive (int x, int y) {
+		cells[x][y].setBacteriumAlive();
 	}
 
 	// Returns 'true' if cell is alive and 'false' if it is dead.
@@ -61,7 +61,7 @@ public class Grid {
     public void resetGrid() {
         for (int x=0; x<width; x++)
             for (int y=0; y<height; y++)
-                turnCellWhite(x,y);
+            		setBacteriumDead(x,y);
     }
 
 	// Returns true if there are any live cells left in the grid visible to the user.

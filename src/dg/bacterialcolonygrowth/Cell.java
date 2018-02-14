@@ -12,7 +12,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 
-public class Cell extends StackPane { //extends StackPane
+public class Cell extends StackPane {
 	
 	private Rectangle cellArea;
 	private Circle bacteria;
@@ -41,13 +41,13 @@ public class Cell extends StackPane { //extends StackPane
             return false;
     }
 
-    // Turns a cell black to represent an alive state.
-    public void turnCellBlack () {
+    // Turns the bacteria part of a cell black to represent an alive state.
+    public void setBacteriumAlive () {
         bacteria.setFill(Color.BLACK);
     }
 
-    // Turns a cell white to represent a dead state.
-    public void turnCellWhite () {
+    // Turns the bacteria part of the cell white to represent a dead state.
+    public void setBacteriumDead () {
         bacteria.setFill(Color.WHITE);
     }
 
@@ -55,8 +55,8 @@ public class Cell extends StackPane { //extends StackPane
     // status of the cell.
     public void cellClicked () {
         if (this.cellStatus() == true)
-            this.turnCellWhite();
+            this.setBacteriumDead();
         else
-            this.turnCellBlack();
+            this.setBacteriumAlive();
     }
 }
