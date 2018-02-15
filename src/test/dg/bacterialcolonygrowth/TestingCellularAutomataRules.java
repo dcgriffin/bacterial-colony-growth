@@ -26,6 +26,7 @@ public class TestingCellularAutomataRules {
 	    double delta = 0.4;
 	    double[] initialNutrientLevels = new double[] {0,10.5,45.8,100.0,0.3,98,100,64.2,25};
 	    CellularAutomataRules rules = new CellularAutomataRules(width, height, initialNutrientLevels, delta);
+	    
 	    assertEquals(rules.getNutrientLevelOfCell(0), 0, 0);
 	    assertEquals(rules.getNutrientLevelOfCell(1), 10.5, 0);
 	    assertEquals(rules.getNutrientLevelOfCell(2), 45.8, 0);
@@ -85,5 +86,55 @@ public class TestingCellularAutomataRules {
 		assertEquals(rules.getNutrientLevelOfCell(7), 10, 0);
 		assertEquals(rules.getNutrientLevelOfCell(8), 10, 0);
 		
+	}
+	
+	// Tests the number of alive neighbours function works correctly.
+	@Test
+	public void testNumberOfAliveNeighboursFunctionForPeriodicBoundary() {
+		int width = 3;
+		int height = 3;
+		double delta = 0.5;
+		double[] initialNutrientLevels = new double[] {0,0,0,0,90};
+		CellularAutomataRules rules = new CellularAutomataRules(width, height, initialNutrientLevels, delta);
+		
+		Grid grid = new Grid(width, height);
+		
+		// Add the cells to the grid.
+		for (int x=0; x<width; x++) {
+    			for (int y=0; y<height; y++) {
+		        Cell c = new Cell(10,10, Color.WHITE);
+		        c.setBacteriumAlive();
+                grid.add(c,x,y);
+    			}
+		}
+		
+		// Check each cell has 8 live neighbours.
+		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 0, 0), 8, 0);
+		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 0, 1), 8, 0);
+		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 0, 2), 8, 0);
+		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 1, 0), 8, 0);
+		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 1, 1), 8, 0);
+		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 1, 2), 8, 0);
+		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 2, 0), 8, 0);
+		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 2, 1), 8, 0);
+		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 2, 2), 8, 0);
+		
+		// Change all bacteria to dead.
+		for (int x=0; x<width; x++) {
+    			for (int y=0; y<height; y++) {
+		        grid.setBacteriumDead(x, y);
+    			}
+		}
+		
+		// Check each cell has 8 live neighbours.
+		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 0, 0), -1, 0);
+		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 0, 1), -1, 0);
+		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 0, 2), -1, 0);
+		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 1, 0), -1, 0);
+		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 1, 1), -1, 0);
+		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 1, 2), -1, 0);
+		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 2, 0), -1, 0);
+		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 2, 1), -1, 0);
+		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 2, 2), -1, 0);
 	}
 }

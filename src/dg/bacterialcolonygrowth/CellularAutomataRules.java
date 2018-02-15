@@ -19,6 +19,11 @@ public class CellularAutomataRules {
     private int height;
     private int numberOfCellsInGrid;
     
+    // Every m time steps cell division occurs, the following two variables are used to keep track of when
+    // cell division should occur.
+    private int timeStepForDiffusionCounter = 0;
+    private int numberOfTimeStepsForCellDivision = 8;
+    
     private int nutrientForSustenance = 10;
     private int nutrientForGrowth = 60;
     private int thresholdForDivision = 2600;
@@ -95,7 +100,6 @@ public class CellularAutomataRules {
 
     // Updates the nutrient levels for diffusion after a single time step.
     public void updateNutrientLevelsAfterDiffusion() {
-        System.out.println(nutrientLevels);
         nutrientLevels = updateMatrixPeriodicBoundary.mmul(nutrientLevels);
     }
 
@@ -144,15 +148,40 @@ public class CellularAutomataRules {
 	    		}
         }
     }
-    // Updates the visual appearance of the cellular automata. It divides the nutrient level value by 
-    // 100 to give a saturation value.
-//    public void updateVisualRepresentationOfNutrient(Grid currentGrid) {
-//        for (int x=0; x<width; x++) {
-//	    		for (int y=0; y<height; y++) {
-//	    			currentGrid.setNutrientLevelColor(x, y, 0, getNutrientLevelOfCell(returnPositionInNutrientMatrix(x, y))/100, 1);
-//	    		}
-//        }
-//    }
+    
+    // Checks whether the conditions for cell division to occur are met.
+    public boolean shouldCellDivisionOccur() {
+    		return false;
+    }
+    
+    // Returns the number of alive neighbours of cell x,y in the grid passed to this function.
+    // Will return -1 if the cell itself and all its neighbours are dead.
+    public int returnNumberOfAliveNeighboursForPeriodicGrid(Grid currentGrid, int x, int y) {
+    		// Set to -1 as it will count the cell itself in the loop below.
+		int numberOfNeighbours = -1;
+
+		// Loops through 9 cells. The cell in question along with the surrounding 8.
+    		for (int col = (x-1); col<(x+2); col++) {
+    			for (int row = (y-1); row<(y+2); row++) {
+                    int tempRow = row;
+                    int tempCol = col;
+
+                    if (tempCol == width)
+                        tempCol = 0;
+                    else if (tempCol == -1)
+                        tempCol = width - 1;
+
+                    if (tempRow == height)
+                        tempRow = 0;
+                    else if (tempRow == -1)
+                        tempRow = height - 1;
+
+    				if (currentGrid.cellStatus(tempCol, tempRow) == true)
+    					numberOfNeighbours++;
+    			}
+    		}
+    		return numberOfNeighbours;
+    }
 
 	// Creates an updated grid of the current grid after applying the
     // rules of the game. The rules are:
@@ -163,9 +192,9 @@ public class CellularAutomataRules {
 	public void createUpdatedGrid(Grid currentGrid) {
 		Grid tempGrid = createNewGrid();
 
+		timeStepForDiffusionCounter += 1;
         this.updateNutrientLevelsAfterDiffusion();
         this.updateBacteriaAndNutrientAfterConsumption(currentGrid);
-        //this.updateVisualRepresentationOfNutrient(currentGrid);
 
 		// Loops through each cell of the grid and checks if it is dead or alive.
 		// It then calls another function to handle that cell depending on
