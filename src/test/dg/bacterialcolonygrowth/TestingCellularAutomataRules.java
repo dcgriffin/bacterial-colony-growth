@@ -137,4 +137,41 @@ public class TestingCellularAutomataRules {
 		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 2, 1), -1, 0);
 		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 2, 2), -1, 0);
 	}
+	
+	// Test nutrient levels correctly update for bacteria consumption of nutrient.
+	@Test
+	public void testNutrientLevelsUpdateCorrectlyForBacteriaConsumption() {
+		int width = 3;
+		int height = 3;
+		double delta = 0.5;
+		double[] initialNutrientLevels = new double[] {50,50,50,50,50,50,50,50,50};
+		CellularAutomataRules rules = new CellularAutomataRules(width, height, initialNutrientLevels, delta);
+		
+		Grid grid = new Grid(width, height);
+		
+		// Add the cells to the grid.
+		for (int x=0; x<width; x++) {
+    			for (int y=0; y<height; y++) {
+		        Cell c = new Cell(10,10, Color.WHITE);
+		        c.setBacteriumAlive();
+                grid.add(c,x,y);
+    			}
+		}
+		
+		grid.setBacteriumDead(0, 1);
+		grid.setBacteriumDead(1, 2);
+		grid.setBacteriumDead(2, 2);
+		
+		rules.updateBacteriaAndNutrientAfterConsumption(grid);
+		
+		assertEquals(rules.getNutrientLevelOfCell(0), 40, 0);
+		assertEquals(rules.getNutrientLevelOfCell(1), 40, 0);
+		assertEquals(rules.getNutrientLevelOfCell(2), 40, 0);
+		assertEquals(rules.getNutrientLevelOfCell(3), 50, 0);
+		assertEquals(rules.getNutrientLevelOfCell(4), 40, 0);
+		assertEquals(rules.getNutrientLevelOfCell(5), 40, 0);
+		assertEquals(rules.getNutrientLevelOfCell(6), 40, 0);
+		assertEquals(rules.getNutrientLevelOfCell(7), 50, 0);
+		assertEquals(rules.getNutrientLevelOfCell(8), 50, 0);
+	}
 }
