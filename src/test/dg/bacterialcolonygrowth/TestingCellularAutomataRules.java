@@ -46,18 +46,8 @@ public class TestingCellularAutomataRules {
 		double[] initialNutrientLevels = new double[] {0,0,0,0,90};
 		CellularAutomataRules rules = new CellularAutomataRules(width, height, initialNutrientLevels, delta);
 		
-		Grid grid = new Grid(width, height);
-		
-		// Add the cells of the grid.
-		for (int x=0; x<width; x++) {
-    			for (int y=0; y<height; y++) {
-		        Cell c = new Cell(5,5, Color.WHITE);
-                grid.add(c,x,y);
-    			}
-		}
-		
 		// After one time step
-		rules.updateNutrientLevels(grid);
+		rules.updateNutrientLevelsAfterDiffusion();
 		assertEquals(rules.getNutrientLevelOfCell(0), 0, 0);
 		assertEquals(rules.getNutrientLevelOfCell(1), 11.25, 0);
 		assertEquals(rules.getNutrientLevelOfCell(2), 0, 0);
@@ -69,7 +59,7 @@ public class TestingCellularAutomataRules {
 		assertEquals(rules.getNutrientLevelOfCell(8), 0, 0);
 		
 		// After two time steps
-		rules.updateNutrientLevels(grid);
+		rules.updateNutrientLevelsAfterDiffusion();
 		assertEquals(rules.getNutrientLevelOfCell(0), 2.8125, 0);
 		assertEquals(rules.getNutrientLevelOfCell(1), 12.65625, 0);
 		assertEquals(rules.getNutrientLevelOfCell(2), 2.8125, 0);
@@ -82,7 +72,7 @@ public class TestingCellularAutomataRules {
 		
 		// After 100 time steps
 		for (int i=0; i<100; i++) {
-			rules.updateNutrientLevels(grid);
+			rules.updateNutrientLevelsAfterDiffusion();
 		}
 		
 		assertEquals(rules.getNutrientLevelOfCell(0), 10, 0);

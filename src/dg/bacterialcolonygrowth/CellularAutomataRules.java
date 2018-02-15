@@ -21,7 +21,7 @@ public class CellularAutomataRules {
     
     private int nutrientForSustenance = 10;
     private int nutrientForGrowth = 60;
-    private int thresholdForDivision = 2200;
+    private int thresholdForDivision = 2600;
 
     private DoubleMatrix updateMatrixPeriodicBoundary;
     private DoubleMatrix nutrientLevels;
@@ -41,6 +41,7 @@ public class CellularAutomataRules {
         nutrientLevels = DoubleMatrix.zeros(numberOfCellsInGrid);
         this.setNutrientLevels(initialNutrientLevels);
         this.createUpdateMatrixForPeriodicBoundary();
+        this.setCrowdingFunctionValues();
 	}
 
     // Creates the update matrix for a cellular automata with a periodic boundary.
@@ -88,23 +89,14 @@ public class CellularAutomataRules {
     
     // From 2D coordinates of a grid position, return the position this corresponds to in the 1D nutrient
     // matrix.
-//    public int returnPositionInNutrientMatrix(int x, int y) {
-//    		return x + y*height;
-//    }
+    public int returnPositionInNutrientMatrix(int x, int y) {
+    		return x + y*height;
+    }
 
-    // Updates the nutrient levels after a single time step.
-    public void updateNutrientLevels(Grid currentGrid) {
+    // Updates the nutrient levels for diffusion after a single time step.
+    public void updateNutrientLevelsAfterDiffusion() {
         System.out.println(nutrientLevels);
         nutrientLevels = updateMatrixPeriodicBoundary.mmul(nutrientLevels);
-        
-        // Updates the visual appearance of the cellular automata. It converts x and y coordinates to the 
-        // corresponding position in the nutrient matrix, then divides the nutrient level value by 100 to 
-        // give a saturation value.
-        for (int x=0; x<width; x++) {
-	    		for (int y=0; y<height; y++) {
-	    			currentGrid.setNutrientLevelColor(x, y, 0, getNutrientLevelOfCell(x + y*height)/100, 1);
-	    		}
-        }
     }
 
     // Sets the initial nutrient levels, passing empty array means every cell starts at 100.
@@ -135,12 +127,29 @@ public class CellularAutomataRules {
     }
 
     // Updates nutrients levels after bacteria have consummed some nutrient.
-//    public void updateNutrientsLevelsAfterConsumption(Grid currentGrid) {
+    public void updateBacteriaAndNutrientAfterConsumption(Grid currentGrid) {
+        for (int x=0; x<width; x++) {
+	    		for (int y=0; y<height; y++) {
+	    			if (currentGrid.cellStatus(x, y) == true) {
+	    				if (nutrientLevels.get(returnPositionInNutrientMatrix(x, y)) >= 10) {
+	    					setNutrientLevelOfCell(returnPositionInNutrientMatrix(x, y), 
+	    						nutrientLevels.get(returnPositionInNutrientMatrix(x, y))-nutrientForSustenance);
+	    				}
+	    				else {
+	    					currentGrid.setBacteriumDead(x, y);
+	    					setNutrientLevelOfCell(returnPositionInNutrientMatrix(x, y),0);
+	    				}
+	    			}
+	    			currentGrid.setNutrientLevelColor(x, y, 0, getNutrientLevelOfCell(returnPositionInNutrientMatrix(x, y))/100, 1);
+	    		}
+        }
+    }
+    // Updates the visual appearance of the cellular automata. It divides the nutrient level value by 
+    // 100 to give a saturation value.
+//    public void updateVisualRepresentationOfNutrient(Grid currentGrid) {
 //        for (int x=0; x<width; x++) {
 //	    		for (int y=0; y<height; y++) {
-//			        if (currentGrid.cellStatus(x, y) == true) {
-//			        	// Reduce nutrient level in that cell
-//	                }
+//	    			currentGrid.setNutrientLevelColor(x, y, 0, getNutrientLevelOfCell(returnPositionInNutrientMatrix(x, y))/100, 1);
 //	    		}
 //        }
 //    }
@@ -154,8 +163,9 @@ public class CellularAutomataRules {
 	public void createUpdatedGrid(Grid currentGrid) {
 		Grid tempGrid = createNewGrid();
 
-        this.updateNutrientLevels(currentGrid);
-        this.setCrowdingFunctionValues();
+        this.updateNutrientLevelsAfterDiffusion();
+        this.updateBacteriaAndNutrientAfterConsumption(currentGrid);
+        //this.updateVisualRepresentationOfNutrient(currentGrid);
 
 		// Loops through each cell of the grid and checks if it is dead or alive.
 		// It then calls another function to handle that cell depending on
