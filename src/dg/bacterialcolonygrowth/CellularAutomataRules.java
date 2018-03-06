@@ -12,6 +12,7 @@ package dg.bacterialcolonygrowth;
 
 import javafx.scene.paint.Color;
 import org.jblas.DoubleMatrix;
+import java.util.Random;
 
 
 public class CellularAutomataRules {
@@ -130,7 +131,7 @@ public class CellularAutomataRules {
         crowdingFunctionValues = new int[] {0, 40, 40, 30, 20, 10, 0, 0};
     }
 
-    // Updates nutrients levels after bacteria have consummed some nutrient.
+    // Updates nutrients levels after bacteria have consumed some nutrient.
     public void updateBacteriaAndNutrientAfterConsumption(Grid currentGrid) {
         for (int x=0; x<width; x++) {
 	    		for (int y=0; y<height; y++) {
@@ -144,13 +145,30 @@ public class CellularAutomataRules {
 	    					setNutrientLevelOfCell(returnPositionInNutrientMatrix(x, y),0);
 	    				}
 	    			}
+	    			else {
+	    				shouldCellDivisionOccur(currentGrid, x, y);
+	    			}
 	    			currentGrid.setNutrientLevelColor(x, y, 0, getNutrientLevelOfCell(returnPositionInNutrientMatrix(x, y))/100, 1);
 	    		}
         }
     }
     
     // Checks whether the conditions for cell division to occur are met.
-    public boolean shouldCellDivisionOccur() {
+    // Cell growth may take place in a grid space, if for that cell the product of the crowding function 
+    // and the food in the cell, is greater than a given threshold for division. If it is greater than the
+    // threshold then bacterium cell will appear in the grid space with probability 50%.
+    public boolean shouldCellDivisionOccur(Grid currentGrid, int x, int y) {
+    		double nutrientInCell = nutrientLevels.get(returnPositionInNutrientMatrix(x, y));
+    		int numberOfNeighbours = returnNumberOfAliveNeighboursForPeriodicGrid(currentGrid, x, y);
+    		
+    		// Check if crowding function * nutrient level is greater than threshold.
+    		if (crowdingFunctionValues[numberOfNeighbours] * nutrientInCell > thresholdForDivision) {
+    			// If a random number from 0 up to 1 is greater than 0.5 then cell division takes place.
+    			if (Math.random() >= 0.5) {
+    				return true;
+    			}
+    		}
+    		
     		return false;
     }
     
