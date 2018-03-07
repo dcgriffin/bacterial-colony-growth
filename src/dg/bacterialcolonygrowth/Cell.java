@@ -7,6 +7,8 @@
 
 package dg.bacterialcolonygrowth;
 
+import com.sun.org.apache.bcel.internal.generic.RETURN;
+
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -21,24 +23,33 @@ public class Cell extends StackPane {
     public Cell(int cellHeight, int cellWidth, Color color) {
         cellArea  = new Rectangle(cellHeight, cellWidth, color);
         cellArea.setStroke(Color.GRAY);
-        bacteria = new Circle(cellWidth/3);
+        bacteria = new Circle(cellWidth/2.5);
         bacteria.setFill(Color.WHITE);
         this.getChildren().addAll(cellArea, bacteria);
     }
     
     public void setColorOfCell(double hue, double saturation, double brightness) {
     		cellArea.setFill(Color.hsb(hue, saturation, brightness));
-    		if (this.cellStatus() == false) {
+    		if (this.cellAliveOrContainsRemains() == false) {
     			bacteria.setFill(Color.hsb(hue, saturation, brightness));
     		}
     }
 
     // Returns 'true' if cell is alive and 'false' if it is dead.
-    public Boolean cellStatus() {
+    public boolean cellAlive() {
         if (bacteria.getFill() == Color.BLACK)
             return true;
         else
             return false;
+    }
+    
+    // Return true if an alive or the dead remains of a bacterium cell occupy the grid cell.
+    public boolean cellAliveOrContainsRemains() {
+    		if (bacteria.getFill() == Color.BLACK || bacteria.getFill() == Color.GREY) {
+    			return true;
+    		}
+    		
+    		return false;
     }
 
     // Turns the bacteria part of a cell black to represent an alive state.
@@ -46,16 +57,21 @@ public class Cell extends StackPane {
         bacteria.setFill(Color.BLACK);
     }
 
-    // Turns the bacteria part of the cell white to represent a dead state.
+    // Turns the bacteria part of the cell grey to represent a dead bacterium cell.
     public void setBacteriumDead () {
+        bacteria.setFill(Color.GREY);
+    }
+    
+    // Turns the bacteria part of the cell white to represent no bacteria existing there.
+    public void setBacteriumEmpty () {
         bacteria.setFill(Color.WHITE);
     }
 
     // A method that is called when a cell is clicked. It changes the dead/alive
     // status of the cell.
     public void cellClicked () {
-        if (this.cellStatus() == true)
-            this.setBacteriumDead();
+        if (this.cellAlive() == true)
+            this.setBacteriumEmpty();
         else
             this.setBacteriumAlive();
     }

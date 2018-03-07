@@ -6,10 +6,6 @@
 
 package dg.bacterialcolonygrowth;
 
-import static org.junit.Assert.assertFalse;
-
-import javafx.scene.paint.Color;
-
 public class Grid {
 
 	private Cell[][] cells;
@@ -53,9 +49,14 @@ public class Grid {
 	}
 
 	// Returns 'true' if cell is alive and 'false' if it is dead.
-	public Boolean cellStatus(int x, int y) {
-		return cells[x][y].cellStatus();
+	public Boolean cellAlive(int x, int y) {
+		return cells[x][y].cellAlive();
 	}
+	
+	// Returns 'true' if cell is alive and 'false' if it is dead.
+		public Boolean cellAliveOrContainsRemains(int x, int y) {
+			return cells[x][y].cellAliveOrContainsRemains();
+		}
 
     // Resets the grid so all the cells are white/dead.
     public void resetGrid() {
@@ -65,10 +66,10 @@ public class Grid {
     }
 
 	// Returns true if there are any live cells left in the grid visible to the user.
-	public Boolean gridStatus() {
+	public boolean gridStatus() {
 		for (int x=0; x<width; x++) {
 	    		for (int y=0; y<height; y++) {
-			        if (this.cellStatus(x, y) == true) {
+			        if (this.cellAlive(x, y) == true) {
 			        		return true;
 			        }
 	    		}

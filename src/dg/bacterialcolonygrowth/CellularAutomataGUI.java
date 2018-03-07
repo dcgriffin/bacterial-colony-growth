@@ -30,8 +30,8 @@ public class CellularAutomataGUI extends Application {
 	private VBox rootPane;
 	private Stage mainStage;
 	private Scene mainScene;
-    private int width = 40;
-    private int height = 40;
+    private int width = 80;
+    private int height = 80;
     private double delta = 0.4;
     private double[] initialNutrientLevels = new double[] {};
     private CellularAutomataRules rules = new CellularAutomataRules(width, height, initialNutrientLevels, delta);
@@ -52,7 +52,7 @@ public class CellularAutomataGUI extends Application {
     // Creates a width by height grid of Cells and adds them to the Pane.
     	for (int x=0; x<width; x++) {
     		for (int y=0; y<height; y++) {
-		        Cell c = new Cell(10,10, Color.WHITE);
+		        Cell c = new Cell(5,5, Color.WHITE);
                 squareGridPane.add(c,x,y);
                 squareGrid.add(c,x,y);
 

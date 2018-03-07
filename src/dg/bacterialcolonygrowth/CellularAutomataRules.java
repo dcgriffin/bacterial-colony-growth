@@ -12,7 +12,6 @@ package dg.bacterialcolonygrowth;
 
 import javafx.scene.paint.Color;
 import org.jblas.DoubleMatrix;
-import java.util.Random;
 
 
 public class CellularAutomataRules {
@@ -129,6 +128,7 @@ public class CellularAutomataRules {
     // Sets the values for the crowding function.
     public void setCrowdingFunctionValues() {
         crowdingFunctionValues = new int[] {0, 40, 40, 40, 30, 20, 10, 0, 0};
+        System.out.println(crowdingFunctionValues[1]);
     }
 
     // Updates nutrients levels after bacteria have consumed some nutrient.
@@ -144,7 +144,7 @@ public class CellularAutomataRules {
 		// Loops through all the grid spaces in the cellular automata.
         for (int x=0; x<width; x++) {
 	    		for (int y=0; y<height; y++) {
-	    			if (currentGrid.cellStatus(x, y) == true) {
+	    			if (currentGrid.cellAlive(x, y) == true) {
 	    				if (nutrientLevels.get(returnPositionInNutrientMatrix(x, y)) >= 10) {
 	    					setNutrientLevelOfCell(returnPositionInNutrientMatrix(x, y), 
 	    						nutrientLevels.get(returnPositionInNutrientMatrix(x, y))-nutrientForSustenance);
@@ -154,8 +154,9 @@ public class CellularAutomataRules {
 	    					setNutrientLevelOfCell(returnPositionInNutrientMatrix(x, y),0);
 	    				}
 	    			}
-	    			// In the case where they is no bacterium cell occupying the grid space.
-	    			else {
+	    			// In the case where they is no alive or previosuly alive bacterium cell occupying the 
+	    			// grid space.
+	    			else if (currentGrid.cellAliveOrContainsRemains(x, y) == false) {
 	    				// Check value of flag used to indicate that cell division may occur this times step.
 	    				if (checkForCellDivision == true) {
 	    					if (shouldCellDivisionOccur(currentGrid, x, y) && nutrientLevels.get(returnPositionInNutrientMatrix(x, y)) >= 60) {
@@ -220,13 +221,13 @@ public class CellularAutomataRules {
                     else if (tempRow == -1)
                         tempRow = height - 1;
 
-    				if (currentGrid.cellStatus(tempCol, tempRow) == true)
+    				if (currentGrid.cellAlive(tempCol, tempRow) == true)
     					numberOfNeighbours++;
     			}
     		}
     		
     		// If number of neighbours is still -1 at the end it means there are no neighbours and no bacterium
-    		// in the cell itself. So should return 0.
+    		// in the cell itself, so should return 0.
     		if (numberOfNeighbours == -1) {
     			numberOfNeighbours = 0;
     		}
@@ -277,10 +278,9 @@ public class CellularAutomataRules {
 
 	// Checks the neighbours of alive cells and updates the tempGrid accordingly.
 	public void liveCellNeighbourChecker(Grid currentGrid, Grid tempGrid, int x, int y) {
-		// Set to -1 as it will count the cell itself in the loop below.
-		int numberOfNeighbours = -1;
-
-		// Loops through 9 cells. The cell in question along with the surrounding 8.
+		int numberOfNeighbours = 0;
+		
+		// Loops through 9 cells, the cell in question along with the surrounding 8.
     		for (int col = (x-1); col<(x+2); col++) {
     			for (int row = (y-1); row<(y+2); row++) {
                     int tempRow = row;
@@ -296,7 +296,7 @@ public class CellularAutomataRules {
                     else if (tempRow == -1)
                         tempRow = height - 1;
 
-    				if (currentGrid.cellStatus(tempCol, tempRow) == true)
+    				if (currentGrid.cellAlive(tempCol, tempRow) == true)
     					numberOfNeighbours++;
     			}
     		}
@@ -325,26 +325,12 @@ public class CellularAutomataRules {
                 else if (tempRow == -1)
                     tempRow = height - 1;
 
-                if (currentGrid.cellStatus(tempCol, tempRow) == true)
+                if (currentGrid.cellAlive(tempCol, tempRow) == true)
                     numberOfNeighbours++;
 	        	}
         }
 
 		if (numberOfNeighbours == 3)
 			tempGrid.setBacteriumAlive(x, y);
-	}
-
-	// Copies the tempGrid to the currentGrid. This is done once the tempGrid
-	// has been fully completed to show the next stage after the what the
-	// currentGrid shows.
-	public void copyTempGridToCurrentGrid(Grid currentGrid, Grid tempGrid) {
-	    	for (int x=0; x<width; x++) {
-	    		for (int y=0; y<height; y++) {
-		        if (tempGrid.cellStatus(x, y) == true)
-		        		currentGrid.setBacteriumAlive(x, y);
-		        else
-		        		currentGrid.setBacteriumDead(x, y);
-	    		}
-	    }
 	}
 }
