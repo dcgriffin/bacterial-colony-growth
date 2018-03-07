@@ -22,7 +22,7 @@ public class CellularAutomataRules {
     
     // Every m time steps cell division occurs, the following two variables are used to keep track of when
     // cell division should occur.
-    private int timeStepForDiffusionCounter = 0;
+    private int timeStepForCellDivisionCounter = 0;
     private int numberOfTimeStepsForCellDivision = 8;
     
     private int nutrientForSustenance = 10;
@@ -145,8 +145,14 @@ public class CellularAutomataRules {
 	    					setNutrientLevelOfCell(returnPositionInNutrientMatrix(x, y),0);
 	    				}
 	    			}
+	    			// In the case where they is no bacterium cell occupying the grid space.
 	    			else {
-	    				shouldCellDivisionOccur(currentGrid, x, y);
+	    				// Check if it is the correct time step for cell division to take place.
+	    				if (timeStepForCellDivisionCounter == numberOfTimeStepsForCellDivision) {
+	    					
+	    					// Reset counter.
+	    					timeStepForCellDivisionCounter = 0;
+	    				}
 	    			}
 	    			currentGrid.setNutrientLevelColor(x, y, 0, getNutrientLevelOfCell(returnPositionInNutrientMatrix(x, y))/100, 1);
 	    		}
@@ -198,6 +204,13 @@ public class CellularAutomataRules {
     					numberOfNeighbours++;
     			}
     		}
+    		
+    		// If number of neighbours is still -1 at the end it means there are no neighbours and no bacterium
+    		// in the cell itself. So should return 0.
+    		if (numberOfNeighbours == -1) {
+    			numberOfNeighbours = 0;
+    		}
+    		
     		return numberOfNeighbours;
     }
 
@@ -210,7 +223,7 @@ public class CellularAutomataRules {
 	public void createUpdatedGrid(Grid currentGrid) {
 		Grid tempGrid = createNewGrid();
 
-		timeStepForDiffusionCounter += 1;
+		timeStepForCellDivisionCounter += 1;
         this.updateNutrientLevelsAfterDiffusion();
         this.updateBacteriaAndNutrientAfterConsumption(currentGrid);
 
