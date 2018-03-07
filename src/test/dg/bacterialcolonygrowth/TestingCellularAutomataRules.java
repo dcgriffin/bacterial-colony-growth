@@ -126,16 +126,16 @@ public class TestingCellularAutomataRules {
     			}
 		}
 		
-		// Check each cell has 8 live neighbours.
-		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 0, 0), -1, 0);
-		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 0, 1), -1, 0);
-		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 0, 2), -1, 0);
-		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 1, 0), -1, 0);
-		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 1, 1), -1, 0);
-		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 1, 2), -1, 0);
-		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 2, 0), -1, 0);
-		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 2, 1), -1, 0);
-		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 2, 2), -1, 0);
+		// Check each cell has 0 live neighbours.
+		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 0, 0), 0, 0);
+		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 0, 1), 0, 0);
+		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 0, 2), 0, 0);
+		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 1, 0), 0, 0);
+		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 1, 1), 0, 0);
+		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 1, 2), 0, 0);
+		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 2, 0), 0, 0);
+		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 2, 1), 0, 0);
+		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 2, 2), 0, 0);
 	}
 	
 	// Test nutrient levels correctly update for bacteria consumption of nutrient.

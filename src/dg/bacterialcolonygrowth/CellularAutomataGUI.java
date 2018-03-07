@@ -38,7 +38,7 @@ public class CellularAutomataGUI extends Application {
 
     // Creates a Timeline that calls a function to continously update the grid
     // every 0.5 seconds.
-    private Timeline timeline = new Timeline(new KeyFrame( Duration.seconds(0.5),
+    private Timeline timeline = new Timeline(new KeyFrame( Duration.seconds(0.25),
         timelineEvent -> {rules.createUpdatedGrid(squareGrid); }));
 
 	// Displays the stage and creates the initial scene within it.

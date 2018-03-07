@@ -22,7 +22,7 @@ public class CellularAutomataRules {
     
     // Every m time steps cell division occurs, the following two variables are used to keep track of when
     // cell division should occur.
-    private int timeStepForCellDivisionCounter = 0;
+    private int timeStepForCellDivisionCounter = 1;
     private int numberOfTimeStepsForCellDivision = 8;
     
     private int nutrientForSustenance = 10;
@@ -128,11 +128,20 @@ public class CellularAutomataRules {
 
     // Sets the values for the crowding function.
     public void setCrowdingFunctionValues() {
-        crowdingFunctionValues = new int[] {0, 40, 40, 30, 20, 10, 0, 0};
+        crowdingFunctionValues = new int[] {0, 40, 40, 40, 30, 20, 10, 0, 0};
     }
 
     // Updates nutrients levels after bacteria have consumed some nutrient.
     public void updateBacteriaAndNutrientAfterConsumption(Grid currentGrid) {
+    		// Variable that is set to true during time steps where cell division can occur.
+    		boolean checkForCellDivision = false;
+    		
+    		// Check if it is the correct time step for cell division to take place.
+		if (timeStepForCellDivisionCounter == numberOfTimeStepsForCellDivision) {
+			checkForCellDivision = true;
+		}
+		
+		// Loops through all the grid spaces in the cellular automata.
         for (int x=0; x<width; x++) {
 	    		for (int y=0; y<height; y++) {
 	    			if (currentGrid.cellStatus(x, y) == true) {
@@ -147,16 +156,28 @@ public class CellularAutomataRules {
 	    			}
 	    			// In the case where they is no bacterium cell occupying the grid space.
 	    			else {
-	    				// Check if it is the correct time step for cell division to take place.
-	    				if (timeStepForCellDivisionCounter == numberOfTimeStepsForCellDivision) {
-	    					
-	    					// Reset counter.
-	    					timeStepForCellDivisionCounter = 0;
+	    				// Check value of flag used to indicate that cell division may occur this times step.
+	    				if (checkForCellDivision == true) {
+	    					if (shouldCellDivisionOccur(currentGrid, x, y) && nutrientLevels.get(returnPositionInNutrientMatrix(x, y)) >= 60) {
+	    						currentGrid.setBacteriumAlive(x, y);
+	    						setNutrientLevelOfCell(returnPositionInNutrientMatrix(x, y), 
+	    	    						nutrientLevels.get(returnPositionInNutrientMatrix(x, y))-nutrientForGrowth);
+	    					}
 	    				}
 	    			}
 	    			currentGrid.setNutrientLevelColor(x, y, 0, getNutrientLevelOfCell(returnPositionInNutrientMatrix(x, y))/100, 1);
 	    		}
         }
+        
+        // Reset the cell division counter and variable flag if necessary, otherwise increment cell
+        // division counter.
+ 		if (checkForCellDivision == true) {
+ 			checkForCellDivision = false;
+ 			timeStepForCellDivisionCounter = 1;
+ 		}
+ 		else {
+ 			timeStepForCellDivisionCounter += 1;
+ 		}   
     }
     
     // Checks whether the conditions for cell division to occur are met.
@@ -166,7 +187,6 @@ public class CellularAutomataRules {
     public boolean shouldCellDivisionOccur(Grid currentGrid, int x, int y) {
     		double nutrientInCell = nutrientLevels.get(returnPositionInNutrientMatrix(x, y));
     		int numberOfNeighbours = returnNumberOfAliveNeighboursForPeriodicGrid(currentGrid, x, y);
-    		
     		// Check if crowding function * nutrient level is greater than threshold.
     		if (crowdingFunctionValues[numberOfNeighbours] * nutrientInCell > thresholdForDivision) {
     			// If a random number from 0 up to 1 is greater than 0.5 then cell division takes place.
@@ -223,7 +243,6 @@ public class CellularAutomataRules {
 	public void createUpdatedGrid(Grid currentGrid) {
 		Grid tempGrid = createNewGrid();
 
-		timeStepForCellDivisionCounter += 1;
         this.updateNutrientLevelsAfterDiffusion();
         this.updateBacteriaAndNutrientAfterConsumption(currentGrid);
 
