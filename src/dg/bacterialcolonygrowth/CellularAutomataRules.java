@@ -128,7 +128,6 @@ public class CellularAutomataRules {
     // Sets the values for the crowding function.
     public void setCrowdingFunctionValues() {
         crowdingFunctionValues = new int[] {0, 40, 40, 40, 30, 20, 10, 0, 0};
-        System.out.println(crowdingFunctionValues[1]);
     }
 
     // Updates nutrients levels after bacteria have consumed some nutrient.
@@ -202,34 +201,31 @@ public class CellularAutomataRules {
     // Returns the number of alive neighbours of cell x,y in the grid passed to this function.
     // Will return -1 if the cell itself and all its neighbours are dead.
     public int returnNumberOfAliveNeighboursForPeriodicGrid(Grid currentGrid, int x, int y) {
-    		// Set to -1 as it will count the cell itself in the loop below.
-		int numberOfNeighbours = -1;
+		int numberOfNeighbours = 0;
 
-		// Loops through 9 cells. The cell in question along with the surrounding 8.
+		// Loops through 9 cells, the cell in question along with the surrounding 8.
     		for (int col = (x-1); col<(x+2); col++) {
     			for (int row = (y-1); row<(y+2); row++) {
-                    int tempRow = row;
-                    int tempCol = col;
+                int tempRow = row;
+                int tempCol = col;
 
-                    if (tempCol == width)
-                        tempCol = 0;
-                    else if (tempCol == -1)
-                        tempCol = width - 1;
+                if (tempCol == width)
+                    tempCol = 0;
+                else if (tempCol == -1)
+                    tempCol = width - 1;
 
-                    if (tempRow == height)
-                        tempRow = 0;
-                    else if (tempRow == -1)
-                        tempRow = height - 1;
+                if (tempRow == height)
+                    tempRow = 0;
+                else if (tempRow == -1)
+                    tempRow = height - 1;
 
-    				if (currentGrid.cellAlive(tempCol, tempRow) == true)
-    					numberOfNeighbours++;
+                if (currentGrid.cellAlive(tempCol, tempRow) == true) {
+    					// Make sure it is not the cell itself that is being counted.
+    					if (tempCol != x || tempRow != y) {
+    						numberOfNeighbours++;
+    					}
+				}
     			}
-    		}
-    		
-    		// If number of neighbours is still -1 at the end it means there are no neighbours and no bacterium
-    		// in the cell itself, so should return 0.
-    		if (numberOfNeighbours == -1) {
-    			numberOfNeighbours = 0;
     		}
     		
     		return numberOfNeighbours;
@@ -246,20 +242,6 @@ public class CellularAutomataRules {
 
         this.updateNutrientLevelsAfterDiffusion();
         this.updateBacteriaAndNutrientAfterConsumption(currentGrid);
-
-		// Loops through each cell of the grid and checks if it is dead or alive.
-		// It then calls another function to handle that cell depending on
-		// whether it is dead or alive.
-//        for (int x=0; x<width; x++) {
-//	    		for (int y=0; y<height; y++) {
-//		        if (currentGrid.cellStatus(x, y) == true)
-//		        		liveCellNeighbourChecker(currentGrid, tempGrid, x, y);
-//		        else
-//		        		deadCellNeighbourChecker(currentGrid, tempGrid, x, y);
-//	    		}
-//	    }
-//
-//    	copyTempGridToCurrentGrid(currentGrid, tempGrid);
 	}
 
 	// Creates a Grid object which contains a grid of Cells of size width*height, all white.
@@ -274,63 +256,5 @@ public class CellularAutomataRules {
 	    	}
 	    	
 	    	return newGrid;
-	}
-
-	// Checks the neighbours of alive cells and updates the tempGrid accordingly.
-	public void liveCellNeighbourChecker(Grid currentGrid, Grid tempGrid, int x, int y) {
-		int numberOfNeighbours = 0;
-		
-		// Loops through 9 cells, the cell in question along with the surrounding 8.
-    		for (int col = (x-1); col<(x+2); col++) {
-    			for (int row = (y-1); row<(y+2); row++) {
-                    int tempRow = row;
-                    int tempCol = col;
-
-                    if (tempCol == width)
-                        tempCol = 0;
-                    else if (tempCol == -1)
-                        tempCol = width - 1;
-
-                    if (tempRow == height)
-                        tempRow = 0;
-                    else if (tempRow == -1)
-                        tempRow = height - 1;
-
-    				if (currentGrid.cellAlive(tempCol, tempRow) == true)
-    					numberOfNeighbours++;
-    			}
-    		}
-
-		if (numberOfNeighbours == 2 || numberOfNeighbours == 3)
-			tempGrid.setBacteriumAlive(x, y);
-	}
-
-	// Checks the neighbours of dead cells and updates the tempGrid accordingly.
-	public void deadCellNeighbourChecker(Grid currentGrid, Grid tempGrid, int x, int y) {
-		int numberOfNeighbours = 0;
-
-        // Loops through 9 cells. The cell in question along with the surrounding 8.
-        for (int col = (x-1); col<(x+2); col++) {
-	        	for (int row = (y-1); row<(y+2); row++) {
-                int tempRow = row;
-                int tempCol = col;
-
-                if (tempCol == width)
-                    tempCol = 0;
-                else if (tempCol == - 1)
-                    tempCol = width - 1;
-
-                if (tempRow == height)
-                    tempRow = 0;
-                else if (tempRow == -1)
-                    tempRow = height - 1;
-
-                if (currentGrid.cellAlive(tempCol, tempRow) == true)
-                    numberOfNeighbours++;
-	        	}
-        }
-
-		if (numberOfNeighbours == 3)
-			tempGrid.setBacteriumAlive(x, y);
 	}
 }
