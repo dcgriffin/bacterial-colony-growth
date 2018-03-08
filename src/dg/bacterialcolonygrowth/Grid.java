@@ -6,6 +6,8 @@
 
 package dg.bacterialcolonygrowth;
 
+import javafx.scene.paint.Color;
+
 public class Grid {
 
 	private Cell[][] cells;
@@ -17,6 +19,23 @@ public class Grid {
         height = y;
 		cells = new Cell[width][height];
 	}
+	
+	// Constructor used to create a deep copy of the grid passed to it.
+	public Grid(Grid currentGrid) {
+		width = currentGrid.getGridWidth();
+        height = currentGrid.getGridHeight();
+        Cell[][] currentGridCells = currentGrid.getCells();
+        cells = new Cell[width][height];
+        
+        // For every cell in the original grid a new cell is created that is a copy, and then added to the 
+        // new grid.
+        for (int i=0; i<width; i++) {
+        		for (int j=0; j<height; j++) {
+        			Cell c = new Cell(currentGridCells[i][j]);
+        			this.add(c, i, j);
+        		}
+        }
+    }
 
     // Returns the width of the grid.
     public int getGridWidth() {
@@ -26,6 +45,11 @@ public class Grid {
     // Returns the height of the grid.
     public int getGridHeight() {
         return height;
+    }
+    
+    // Returns the Cell array.
+    public Cell[][] getCells() {
+    		return cells;
     }
 
 	// Adds a Cell to the array of cells in the grid.
@@ -38,7 +62,7 @@ public class Grid {
 		cells[x][y].setColorOfCell(hue, saturation, brightness);
 	}
 
-	// Turns a cell white to represent a dead state.
+	// Turns a cell grey to represent a previously alive state.
 	public void setBacteriumDead (int x, int y) {
 		cells[x][y].setBacteriumDead();
 	}
@@ -47,6 +71,11 @@ public class Grid {
 	public void setBacteriumAlive (int x, int y) {
 		cells[x][y].setBacteriumAlive();
 	}
+	
+	// Turns the bacteria part of the cell white to represent no bacteria existing there.
+    public void setBacteriumEmpty (int x, int y) {
+    		cells[x][y].setBacteriumEmpty();
+    }
 
 	// Returns 'true' if cell is alive and 'false' if it is dead.
 	public Boolean cellAlive(int x, int y) {
