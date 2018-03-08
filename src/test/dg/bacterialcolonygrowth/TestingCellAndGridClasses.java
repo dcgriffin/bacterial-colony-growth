@@ -65,4 +65,49 @@ public class TestingCellAndGridClasses {
 		assertEquals(5, grid.getGridHeight(), 0);
 		assertEquals(5, grid.getGridWidth(), 0);
 	}
+	
+	// Tests that the deep copy constructor correctly creates a deep copy of the grid passed to it.
+	@Test
+	public void testDeepCopyContructorForGrid() {
+		Grid grid = new Grid(2,2);
+		Cell cell = new Cell(5, 5, Color.WHITE);
+		Cell cell2 = new Cell(5, 5, Color.WHITE);
+		Cell cell3 = new Cell(5, 5, Color.WHITE);
+		Cell cell4 = new Cell(5, 5, Color.WHITE);
+		
+		cell.setBacteriumAlive();
+		grid.add(cell, 0, 0);
+		grid.add(cell2, 0, 1);
+		grid.add(cell3, 1, 0);
+		grid.add(cell4, 1, 1);
+		
+		// Test initial alive or non existent status for the bacteria is set correctly.
+		assertTrue(grid.cellAlive(0, 0));
+		assertFalse(grid.cellAlive(0, 1));
+		
+		// Create a deep copy of grid.
+		Grid deepCopyGrid = new Grid(grid);
+		
+		// Test deepCopyGrid has the correct size.
+		assertEquals(2, deepCopyGrid.getGridHeight());
+		assertEquals(2, deepCopyGrid.getGridWidth());
+		
+		// Change values in deep copy and check that it doesn't change the values in the original object.
+		deepCopyGrid.setBacteriumAlive(0, 1);
+		deepCopyGrid.setBacteriumEmpty(0, 0);
+		
+		assertTrue(grid.cellAlive(0, 0));
+		assertFalse(grid.cellAlive(0, 1));
+	}
+	
+	// Tests that the deep copy constructor correctly creates a deep copy of the cell passed to it.
+	@Test
+	public void testDeepCopyContructorForCell() {
+		Cell cell = new Cell(5, 5, Color.WHITE);
+		Cell deepCopyCell = new Cell(cell);
+		
+		// Change colour of the cell and make sure that the original cell hasn't changed colour.
+		deepCopyCell.setColorOfCell(53, 0.5, 1);
+		assertEquals(Color.WHITE, cell.getCellAreaColor());
+	}
 }
