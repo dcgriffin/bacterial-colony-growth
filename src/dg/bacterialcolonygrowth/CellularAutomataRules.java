@@ -245,28 +245,4 @@ public class CellularAutomataRules {
         this.updateNutrientLevelsAfterDiffusion();
         this.updateBacteriaAndNutrientAfterConsumption(currentGrid, copyOfCurrentGrid);
 	}
-
-	// Creates a Grid object which contains a grid of Cells of size width*height, all white.
-	public Grid createNewGrid() {
-		Grid newGrid = new Grid(width, height);
-
-	    	for (int x=0; x<width; x++) {
-			for (int y=0; y<height; y++) {
-		        Cell c = new Cell(5,5, Color.WHITE);
-		        newGrid.add(c, x, y);
-			}
-	    	}
-	    	
-	    	return newGrid;
-	}
-	
-//	// Copies the currentGrid Bacteria information to tempGrid
-//	public Grid copyCurrentGridBacteriaInfoToTempGrid(Grid currentGrid, Grid tempGrid) {
-//	    	for (int x=0; x<width; x++) {
-//			for (int y=0; y<height; y++) {
-//		        Cell c = new Cell(5,5, currentGrid.);
-//		        newGrid.add(c, x, y);
-//			}
-//	    	}
-//	}
 }

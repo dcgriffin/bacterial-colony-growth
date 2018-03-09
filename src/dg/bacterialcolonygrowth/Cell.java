@@ -7,9 +7,6 @@
 
 package dg.bacterialcolonygrowth;
 
-import com.sun.org.apache.bcel.internal.generic.RETURN;
-import com.sun.tracing.dtrace.ProviderAttributes;
-
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;

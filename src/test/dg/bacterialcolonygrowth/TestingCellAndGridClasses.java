@@ -1,10 +1,7 @@
 package dg.bacterialcolonygrowth;
 
 import static org.junit.Assert.*;
-
 import org.junit.Test;
-
-import com.sun.imageio.plugins.gif.GIFImageReader;
 
 import javafx.scene.paint.Color;
 
