@@ -86,13 +86,13 @@ public class CellularAutomataGUI extends Application {
             }
         });
 
-        Button resetButton = new Button("Reset");
+        Button showOnlyBacteriaButton = new Button("Show Only Bacteria");
 
         // Stops the simulation and resets the grid to all dead cells.
-        resetButton.setOnAction(new EventHandler<ActionEvent>() {
+        showOnlyBacteriaButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                squareGrid.resetGrid();
+                squareGrid.showOnlyBacteria();
                 timeline.stop();
             }
         });
@@ -103,7 +103,7 @@ public class CellularAutomataGUI extends Application {
         buttonPane.setPadding(new Insets(0, 0, 0, 180));
         buttonPane.add(startButton,1,1);
         buttonPane.add(stopButton,2,1);
-        buttonPane.add(resetButton,3,1);
+        buttonPane.add(showOnlyBacteriaButton,3,1);
 
         rootPane = new VBox(5);
         rootPane.getChildren().addAll(squareGridPane, buttonPane);

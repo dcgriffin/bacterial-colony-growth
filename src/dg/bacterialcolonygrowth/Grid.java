@@ -87,11 +87,14 @@ public class Grid {
 			return cells[x][y].cellAliveOrContainsRemains();
 		}
 
-    // Resets the grid so all the cells are white/dead.
-    public void resetGrid() {
-        for (int x=0; x<width; x++)
-            for (int y=0; y<height; y++)
-            		setBacteriumDead(x,y);
+    // Shows only bacteria and removes the nutrient.
+    public void showOnlyBacteria() {
+        for (int x=0; x<width; x++) {
+            for (int y=0; y<height; y++) {
+            		cells[x][y].setColorOfCell(0, 0, 1);
+        			cells[x][y].setGridSpaceBorderColor(Color.WHITE);
+            }
+        }
     }
 
 	// Returns true if there are any live cells left in the grid visible to the user.

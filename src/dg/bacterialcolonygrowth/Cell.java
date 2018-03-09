@@ -71,6 +71,11 @@ public class Cell extends StackPane {
 		return bacteria.getFill();
     }
     
+    // Sets the border colour of the grid space.
+    public void setGridSpaceBorderColor(Color color) {
+    		cellArea.setStroke(color);
+    }
+    
     // Sets the colour of the grid cell, excluding the bacteria part if one is present.
     public void setColorOfCell(double hue, double saturation, double brightness) {
     		cellArea.setFill(Color.hsb(hue, saturation, brightness));
