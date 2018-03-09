@@ -7,55 +7,104 @@
 package dg.bacterialcolonygrowth;
 
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 
 public class Grid {
 
-	private Rectangle[][] cells;
+	private Cell[][] cells;
+    private int width, height;
 
-	// Constructor which creates a 40 by 40 array for the Rectangles.
-	public Grid() {
-		cells = new Rectangle[40][40];
+	// Constructor which creates an x by y sized array of Cells.
+	public Grid(int x, int y) {
+        width = x;
+        height = y;
+		cells = new Cell[width][height];
+	}
+	
+	// Constructor used to create a deep copy of the grid passed to it.
+	public Grid(Grid currentGrid) {
+		width = currentGrid.getGridWidth();
+        height = currentGrid.getGridHeight();
+        Cell[][] currentGridCells = currentGrid.getCells();
+        cells = new Cell[width][height];
+        
+        // For every cell in the original grid a new cell is created that is a copy, and then added to the 
+        // new grid.
+        for (int i=0; i<width; i++) {
+        		for (int j=0; j<height; j++) {
+        			Cell c = new Cell(currentGridCells[i][j]);
+        			this.add(c, i, j);
+        		}
+        }
+    }
+
+    // Returns the width of the grid.
+    public int getGridWidth() {
+        return width;
+    }
+
+    // Returns the height of the grid.
+    public int getGridHeight() {
+        return height;
+    }
+    
+    // Returns the Cell array.
+    public Cell[][] getCells() {
+    		return cells;
+    }
+
+	// Adds a Cell to the array of cells in the grid.
+	public void add(Cell c, int x, int y) {
+		cells[x][y] = c;
+	}
+	
+	// Sets the colour of the specified cell using hue, saturation and brightness.
+	public void setNutrientLevelColor(int x, int y, double hue, double saturation, double brightness) {
+		cells[x][y].setColorOfCell(hue, saturation, brightness);
 	}
 
-	// Adds a Rectangle to the array of cells in the grid.
-	public void add(Rectangle r, int x, int y) {
-		cells[x][y] = r;
-	}
-
-	// Turns a cell white to represent a dead state.
-	public void turnCellWhite (int x, int y) {
-		cells[x][y].setFill(Color.WHITE);
+	// Turns a cell grey to represent a previously alive state.
+	public void setBacteriumDead (int x, int y) {
+		cells[x][y].setBacteriumDead();
 	}
 
 	// Turns a cell black to represent an alive state.
-	public void turnCellBlack (int x, int y) {
-		cells[x][y].setFill(Color.BLACK);
+	public void setBacteriumAlive (int x, int y) {
+		cells[x][y].setBacteriumAlive();
 	}
+	
+	// Turns the bacteria part of the cell white to represent no bacteria existing there.
+    public void setBacteriumEmpty (int x, int y) {
+    		cells[x][y].setBacteriumEmpty();
+    }
 
 	// Returns 'true' if cell is alive and 'false' if it is dead.
-	public Boolean cellStatus(int x, int y){
-		if (cells[x][y].getFill() == Color.BLACK)
-			return true;
-		else
-			return false;
+	public Boolean cellAlive(int x, int y) {
+		return cells[x][y].cellAlive();
 	}
+	
+	// Returns 'true' if cell is alive and 'false' if it is dead.
+		public Boolean cellAliveOrContainsRemains(int x, int y) {
+			return cells[x][y].cellAliveOrContainsRemains();
+		}
 
-    // Resets the grid so all the cells are white/dead.
-    public void resetGrid() {
-        for (int x=0; x<40; x++)
-            for (int y=0; y<40; y++)
-                turnCellWhite(x,y);
+    // Shows only bacteria and removes the nutrient.
+    public void showOnlyBacteria() {
+        for (int x=0; x<width; x++) {
+            for (int y=0; y<height; y++) {
+            		cells[x][y].setColorOfCell(0, 0, 1);
+        			cells[x][y].setGridSpaceBorderColor(Color.WHITE);
+            }
+        }
     }
 
 	// Returns true if there are any live cells left in the grid visible to the user.
-	public Boolean gridStatus() {
-		for (int x=0; x<40; x++) {
-    		for (int y=1; y<40; y++) {
-		        if (this.cellStatus(x, y) == true) {
-		        	return true;
-		        }
-    		}
+	public boolean gridStatus() {
+		for (int x=0; x<width; x++) {
+	    		for (int y=0; y<height; y++) {
+			        if (this.cellAlive(x, y) == true) {
+			        		return true;
+			        }
+	    		}
         }
 		return false;
 	}

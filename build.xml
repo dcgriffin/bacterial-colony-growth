@@ -1,6 +1,13 @@
 <project name="BacterialColonyGrowth" default="compile" basedir=".">
     <property name="src" location="src/dg/bacterialcolonygrowth"/>
-    <property name="build" location="bin/"/>
+    <property name="build" location="bin/classes"/>
+    <property name="libs" location="lib/"/>
+
+    <path id="compile.classpath">
+      <fileset dir="${libs}">
+        <include name="**/*.jar" />
+      </fileset>
+    </path>
 
     <target name="clean">
         <delete dir="${build}"/>
@@ -9,11 +16,14 @@
 
     <target name="compile">
         <mkdir dir="${build}"/>
-        <javac includeantruntime="false" srcdir="${src}" destdir="${build}"/>
+        <javac includeantruntime="false" srcdir="${src}" destdir="${build}">
+            <classpath refid="compile.classpath"/>
+        </javac>
     </target>
 
     <target name="jar" depends="compile">
         <jar destfile="BacterialColonySimulator.jar" basedir="${build}">
+            <zipgroupfileset dir="lib" includes="**/*.jar" />
             <manifest>
                 <attribute name="Main-Class" value="dg.bacterialcolonygrowth.CellularAutomataGUI"/>
             </manifest>
