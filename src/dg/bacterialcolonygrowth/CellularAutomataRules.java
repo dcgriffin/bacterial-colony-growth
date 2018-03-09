@@ -131,7 +131,7 @@ public class CellularAutomataRules {
     }
 
     // Updates nutrients levels after bacteria have consumed some nutrient.
-    public void updateBacteriaAndNutrientAfterConsumption(Grid currentGrid) {
+    public void updateBacteriaAndNutrientAfterConsumption(Grid currentGrid, Grid gridBeforeThisUpdate) {
     		// Variable that is set to true during time steps where cell division can occur.
     		boolean checkForCellDivision = false;
     		
@@ -143,7 +143,7 @@ public class CellularAutomataRules {
 		// Loops through all the grid spaces in the cellular automata.
         for (int x=0; x<width; x++) {
 	    		for (int y=0; y<height; y++) {
-	    			if (currentGrid.cellAlive(x, y) == true) {
+	    			if (gridBeforeThisUpdate.cellAlive(x, y) == true) {
 	    				if (nutrientLevels.get(returnPositionInNutrientMatrix(x, y)) >= 10) {
 	    					setNutrientLevelOfCell(returnPositionInNutrientMatrix(x, y), 
 	    						nutrientLevels.get(returnPositionInNutrientMatrix(x, y))-nutrientForSustenance);
@@ -153,12 +153,12 @@ public class CellularAutomataRules {
 	    					setNutrientLevelOfCell(returnPositionInNutrientMatrix(x, y),0);
 	    				}
 	    			}
-	    			// In the case where they is no alive or previosuly alive bacterium cell occupying the 
+	    			// In the case where they is no alive or previously alive bacterium cell occupying the 
 	    			// grid space.
-	    			else if (currentGrid.cellAliveOrContainsRemains(x, y) == false) {
+	    			else if (gridBeforeThisUpdate.cellAliveOrContainsRemains(x, y) == false) {
 	    				// Check value of flag used to indicate that cell division may occur this times step.
 	    				if (checkForCellDivision == true) {
-	    					if (shouldCellDivisionOccur(currentGrid, x, y) && nutrientLevels.get(returnPositionInNutrientMatrix(x, y)) >= 60) {
+	    					if (shouldCellDivisionOccur(gridBeforeThisUpdate, x, y) && nutrientLevels.get(returnPositionInNutrientMatrix(x, y)) >= 60) {
 	    						currentGrid.setBacteriumAlive(x, y);
 	    						setNutrientLevelOfCell(returnPositionInNutrientMatrix(x, y), 
 	    	    						nutrientLevels.get(returnPositionInNutrientMatrix(x, y))-nutrientForGrowth);
@@ -184,9 +184,10 @@ public class CellularAutomataRules {
     // Cell growth may take place in a grid space, if for that cell the product of the crowding function 
     // and the food in the cell, is greater than a given threshold for division. If it is greater than the
     // threshold then bacterium cell will appear in the grid space with probability 50%.
-    public boolean shouldCellDivisionOccur(Grid currentGrid, int x, int y) {
+    public boolean shouldCellDivisionOccur(Grid gridBeforeUpdate, int x, int y) {   	
     		double nutrientInCell = nutrientLevels.get(returnPositionInNutrientMatrix(x, y));
-    		int numberOfNeighbours = returnNumberOfAliveNeighboursForPeriodicGrid(currentGrid, x, y);
+    		int numberOfNeighbours = returnNumberOfAliveNeighboursForPeriodicGrid(gridBeforeUpdate, x, y);
+    		
     		// Check if crowding function * nutrient level is greater than threshold.
     		if (crowdingFunctionValues[numberOfNeighbours] * nutrientInCell > thresholdForDivision) {
     			// If a random number from 0 up to 1 is greater than 0.5 then cell division takes place.
@@ -238,10 +239,11 @@ public class CellularAutomataRules {
     // -Any live cell with more than three live neighbours dies, as if by over-population.
     // -Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
 	public void createUpdatedGrid(Grid currentGrid) {
-		Grid tempGrid = createNewGrid();
+		// Creates a copy of the current grid.
+		Grid copyOfCurrentGrid = new Grid(currentGrid);
 
         this.updateNutrientLevelsAfterDiffusion();
-        this.updateBacteriaAndNutrientAfterConsumption(currentGrid);
+        this.updateBacteriaAndNutrientAfterConsumption(currentGrid, copyOfCurrentGrid);
 	}
 
 	// Creates a Grid object which contains a grid of Cells of size width*height, all white.
@@ -250,11 +252,21 @@ public class CellularAutomataRules {
 
 	    	for (int x=0; x<width; x++) {
 			for (int y=0; y<height; y++) {
-		        Cell c = new Cell(15,15, Color.WHITE);
+		        Cell c = new Cell(5,5, Color.WHITE);
 		        newGrid.add(c, x, y);
 			}
 	    	}
 	    	
 	    	return newGrid;
 	}
+	
+//	// Copies the currentGrid Bacteria information to tempGrid
+//	public Grid copyCurrentGridBacteriaInfoToTempGrid(Grid currentGrid, Grid tempGrid) {
+//	    	for (int x=0; x<width; x++) {
+//			for (int y=0; y<height; y++) {
+//		        Cell c = new Cell(5,5, currentGrid.);
+//		        newGrid.add(c, x, y);
+//			}
+//	    	}
+//	}
 }
