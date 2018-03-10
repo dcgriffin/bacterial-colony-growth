@@ -148,7 +148,7 @@ public class TestingCellularAutomataRules {
 		
 		Grid copyOfGrid = new Grid(grid);
 		
-		rules.updateBacteriaAndNutrientAfterConsumption(grid, copyOfGrid);
+		rules.updateBacteriaAndNutrientAfterConsumptionAndCellDivision(grid, copyOfGrid);
 		
 		assertEquals(rules.getNutrientLevelOfCell(0), 40, 0);
 		assertEquals(rules.getNutrientLevelOfCell(1), 40, 0);

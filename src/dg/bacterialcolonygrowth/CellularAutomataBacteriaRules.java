@@ -98,13 +98,6 @@ public class CellularAutomataBacteriaRules {
         }
     }
     
-    // From 1D nutrient level matrix position, function returns the coordinates of the position within the 2D
-    // cellular automata.
-//    public int[] returnCoordinatesWithin2DCellularAutomata(int i) {
-//    		int [] coordinates = {(i/width), i % width};
-//    		return coordinates;
-//    }
-    
     // From 2D coordinates of a grid position, return the position this corresponds to in the 1D nutrient
     // matrix.
     public int returnPositionInNutrientMatrix(int x, int y) {
@@ -144,7 +137,7 @@ public class CellularAutomataBacteriaRules {
     }
 
     // Updates nutrients levels after bacteria have consumed some nutrient.
-    public void updateBacteriaAndNutrientAfterConsumption(Grid currentGrid, Grid gridBeforeThisUpdate) {
+    public void updateBacteriaAndNutrientAfterConsumptionAndCellDivision(Grid currentGrid, Grid gridBeforeThisUpdate) {
     		// Variable that is set to true during time steps where cell division can occur.
     		boolean checkForCellDivision = false;
     		
@@ -156,6 +149,8 @@ public class CellularAutomataBacteriaRules {
 		// Loops through all the grid spaces in the cellular automata.
         for (int x=0; x<width; x++) {
 	    		for (int y=0; y<height; y++) {
+	    			// If grid is alive, then bacteria eat nutrient of the required amount to survive. If there
+	    			// is not enough they will consume all the nutrient and then die.
 	    			if (gridBeforeThisUpdate.cellAlive(x, y) == true) {
 	    				if (nutrientLevels.get(returnPositionInNutrientMatrix(x, y)) >= 10) {
 	    					setNutrientLevelOfCell(returnPositionInNutrientMatrix(x, y), 
@@ -245,17 +240,12 @@ public class CellularAutomataBacteriaRules {
     		return numberOfNeighbours;
     }
 
-	// Creates an updated grid of the current grid after applying the
-    // rules of the game. The rules are:
-    // -Any live cell with fewer than two live neighbours dies, as if caused by under-population.
-    // -Any live cell with two or three live neighbours lives on to the next generation.
-    // -Any live cell with more than three live neighbours dies, as if by over-population.
-    // -Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.
+	// Creates an updated grid after one iteration of the rules governing the bacterial colony.
 	public void createUpdatedGrid(Grid currentGrid) {
 		// Creates a copy of the current grid.
 		Grid copyOfCurrentGrid = new Grid(currentGrid);
 
         this.updateNutrientLevelsAfterDiffusion();
-        this.updateBacteriaAndNutrientAfterConsumption(currentGrid, copyOfCurrentGrid);
+        this.updateBacteriaAndNutrientAfterConsumptionAndCellDivision(currentGrid, copyOfCurrentGrid);
 	}
 }
