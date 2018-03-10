@@ -20,7 +20,7 @@ public class TestingCellularAutomataRules {
 	    int height = 3;
 	    double delta = 0.4;
 	    double[] initialNutrientLevels = new double[] {0,10.5,45.8,100.0,0.3,98,100,64.2,25};
-	    CellularAutomataRules rules = new CellularAutomataRules(width, height, initialNutrientLevels, delta);
+	    CellularAutomataBacteriaRules rules = new CellularAutomataBacteriaRules(width, height, initialNutrientLevels, delta);
 	    
 	    assertEquals(rules.getNutrientLevelOfCell(0), 0, 0);
 	    assertEquals(rules.getNutrientLevelOfCell(1), 10.5, 0);
@@ -40,7 +40,7 @@ public class TestingCellularAutomataRules {
 		int height = 3;
 		double delta = 0.5;
 		double[] initialNutrientLevels = new double[] {0,0,0,0,90};
-		CellularAutomataRules rules = new CellularAutomataRules(width, height, initialNutrientLevels, delta);
+		CellularAutomataBacteriaRules rules = new CellularAutomataBacteriaRules(width, height, initialNutrientLevels, delta);
 		
 		// After one time step
 		rules.updateNutrientLevelsAfterDiffusion();
@@ -90,7 +90,7 @@ public class TestingCellularAutomataRules {
 		int height = 3;
 		double delta = 0.5;
 		double[] initialNutrientLevels = new double[] {0,0,0,0,90};
-		CellularAutomataRules rules = new CellularAutomataRules(width, height, initialNutrientLevels, delta);
+		CellularAutomataBacteriaRules rules = new CellularAutomataBacteriaRules(width, height, initialNutrientLevels, delta);
 		
 		Grid grid = new Grid(width, height, 7, 7);
 	
@@ -131,7 +131,7 @@ public class TestingCellularAutomataRules {
 		int height = 3;
 		double delta = 0.5;
 		double[] initialNutrientLevels = new double[] {50,50,50,50,50,50,50,50,50};
-		CellularAutomataRules rules = new CellularAutomataRules(width, height, initialNutrientLevels, delta);
+		CellularAutomataBacteriaRules rules = new CellularAutomataBacteriaRules(width, height, initialNutrientLevels, delta);
 		
 		Grid grid = new Grid(width, height, 7, 7);
 		

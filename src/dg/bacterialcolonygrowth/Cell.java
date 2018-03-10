@@ -1,6 +1,6 @@
 /* *****************************************************************************
 * Description: A class used to represent and store the details of the cells in
-* a cellular automata grid. It extends the Rectangle Class.
+* a cellular automata grid.
 *
 * Author: Daniel Griffin
 ******************************************************************************/
@@ -12,6 +12,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+
 
 public class Cell extends StackPane {
 	

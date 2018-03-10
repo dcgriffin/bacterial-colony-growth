@@ -24,25 +24,26 @@ import javafx.geometry.Insets;
 
 public class CellularAutomataGUI extends Application {
 
+	// Properties of the GUI Simulation/visual setup.
 	private GridPane gridPane, buttonPane;
 	private VBox rootPane;
 	private Stage mainStage;
 	private Scene mainScene;
-	// TODO: variable for update time.
+	private double gridUpdateRate = 0.25; // In seconds.
 	
+	// Visual properties of the cellular automata grid in the GUI.
 	private Grid grid;
     private int gridWidth = 10;
     private int gridHeight = 10;
     private int cellHeight = 15;
     private int cellWidth = 15;
     
-    private double delta = 0.4;
-    private double[] initialNutrientLevels = new double[] {};
-    private CellularAutomataRules rules = new CellularAutomataRules(gridWidth, gridHeight, initialNutrientLevels, delta);
+    private CellularAutomataBacteriaRules rules = new CellularAutomataBacteriaRules(gridWidth, gridHeight);
 
-    // Creates a Timeline that calls a function to continously update the grid every "updateTime" seconds.
-    private Timeline timeline = new Timeline(new KeyFrame( Duration.seconds(0.25),
-        timelineEvent -> {rules.createUpdatedGrid(grid); }));
+    // Creates a Timeline that calls a function to continuously updates the grid every "gridUpdateRate" 
+    // seconds.
+    private Timeline timeline = new Timeline(new KeyFrame( Duration.seconds(gridUpdateRate),
+    								timelineEvent -> {rules.createUpdatedGrid(grid); }));
 
 	// Displays the stage and creates the initial scene within it.
     @Override
@@ -95,7 +96,7 @@ public class CellularAutomataGUI extends Application {
 	
 	    Button showOnlyBacteriaButton = new Button("Show Only Bacteria");
 	
-	    // Stops the simulation and resets the grid to all dead cells.
+	    // Stops the simulation and calls a function to show only bacteria cells.
 	    showOnlyBacteriaButton.setOnAction(new EventHandler<ActionEvent>() {
 	        @Override
 	        public void handle(ActionEvent event) {
@@ -104,6 +105,7 @@ public class CellularAutomataGUI extends Application {
 	        }
 	    });
 	
+	    // Adds the buttons to the button pane.
 	    buttonPane = new GridPane();
 	    buttonPane.setHgap(10);
 	    buttonPane.setVgap(10);
@@ -112,11 +114,14 @@ public class CellularAutomataGUI extends Application {
 	    buttonPane.add(stopButton,2,1);
 	    buttonPane.add(showOnlyBacteriaButton,3,1);
 	
+	    // Add the grid and buttons to the rootPane.
 	    rootPane = new VBox(5);
 	    rootPane.getChildren().addAll(gridPane, buttonPane);
 	
+	    // Adds the rootpane to the scene.
 	    mainScene = new Scene(rootPane,700,700);
 	
+	    // Adds the scene to the stage and shows the stage.
 	    mainStage.setTitle("Bacterial Colony Simulator");
 	    mainStage.setScene(mainScene);
 	    mainStage.show();

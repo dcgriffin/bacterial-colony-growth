@@ -8,6 +8,7 @@ package dg.bacterialcolonygrowth;
 
 import javafx.scene.paint.Color;
 
+
 public class Grid {
 
 	private Cell[][] cells;
@@ -16,8 +17,7 @@ public class Grid {
 	// Constructor which creates an x by y sized array of Cells.
 	public Grid(int x, int y, int cellHeight, int cellWidth) {
         width = x;
-        height = y;
-        
+        height = y;   
         cells = new Cell[width][height];
         
         // Adds each cell to the cells array.
@@ -25,8 +25,7 @@ public class Grid {
 	    		for (int j=0; j<height; j++) {
 	    			cells[i][j] = new Cell(cellHeight, cellWidth, Color.WHITE);
 	    		}
-        }
-		
+        }	
 	}
 	
 	// Constructor used to create a deep copy of the grid passed to it.

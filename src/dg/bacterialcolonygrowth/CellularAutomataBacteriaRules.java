@@ -1,9 +1,7 @@
 /* *****************************************************************************
-* Description: A class used to simulate a bacterial colony.
+* Description: A class used to simulate the rules of a bacterial colony.
 * The grid wraps around so the bottom meets up with the top, and the left side
 * meets up with the right side.
-*
-* CURRENTLY IMPLEMENTS GAME OF LIFE AS A STARTING POINT
 *
 * Author: Daniel Griffin
 ******************************************************************************/
@@ -13,7 +11,7 @@ package dg.bacterialcolonygrowth;
 import org.jblas.DoubleMatrix;
 
 
-public class CellularAutomataRules {
+public class CellularAutomataBacteriaRules {
     private int width;
     private int height;
     private int numberOfCellsInGrid;
@@ -29,20 +27,36 @@ public class CellularAutomataRules {
 
     private DoubleMatrix updateMatrixPeriodicBoundary;
     private DoubleMatrix nutrientLevels;
+    
     // Rate of diffusion (value should be between 0 and 1).
-    private double delta;
+    private double delta = 0.4;
 
     // Stores a value for each possible number of surrounding cells (0-8), which
     // is then used to determine if cell division takes place.
     private int[] crowdingFunctionValues;
 
-	public CellularAutomataRules(int x, int y, double initialNutrientLevels[], double valueOfDelta) {
+    // Constructor which create a new rules object.
+	public CellularAutomataBacteriaRules(int x, int y) {
         width = x;
         height = y;
         numberOfCellsInGrid = width * height;
-        delta = valueOfDelta;
         updateMatrixPeriodicBoundary = DoubleMatrix.zeros(numberOfCellsInGrid, numberOfCellsInGrid);
         nutrientLevels = DoubleMatrix.zeros(numberOfCellsInGrid);
+        
+        this.setInitialDefaultNutrientLevels();
+        this.createUpdateMatrixForPeriodicBoundary();
+        this.setCrowdingFunctionValues();
+	}
+	
+	// Constructor which creates a new rules object with specified conditions.
+	public CellularAutomataBacteriaRules(int x, int y, double[] initialNutrientLevels, double deltaValue) {
+        width = x;
+        height = y;
+        numberOfCellsInGrid = width * height;
+        updateMatrixPeriodicBoundary = DoubleMatrix.zeros(numberOfCellsInGrid, numberOfCellsInGrid);
+        delta = deltaValue;
+        nutrientLevels = DoubleMatrix.zeros(numberOfCellsInGrid);
+        
         this.setNutrientLevels(initialNutrientLevels);
         this.createUpdateMatrixForPeriodicBoundary();
         this.setCrowdingFunctionValues();
@@ -102,18 +116,18 @@ public class CellularAutomataRules {
         nutrientLevels = updateMatrixPeriodicBoundary.mmul(nutrientLevels);
     }
 
-    // Sets the initial nutrient levels, passing empty array means every cell starts at 100.
+    // Sets the initial nutrient levels based on the array of values passes to it.
     public void setNutrientLevels(double[] initialNutrientLevels) {
-    		if (initialNutrientLevels.length == 0) {
-    			for (int i=0; i<nutrientLevels.length; i++) {
-   	             nutrientLevels.put(i, 100);
-   	         }
-    		}
-    		else {
-	         for (int i=0; i<initialNutrientLevels.length; i++) {
-	             nutrientLevels.put(i, initialNutrientLevels[i]);
-	         }
-    		}
+         for (int i=0; i<initialNutrientLevels.length; i++) {
+             nutrientLevels.put(i, initialNutrientLevels[i]);
+         }
+    }
+    
+    // Sets every cell to have 100 nutrient level.
+    public void setInitialDefaultNutrientLevels() {
+		for (int i=0; i<nutrientLevels.length; i++) {
+			nutrientLevels.put(i, 100);
+		}
     }
 
     public double getNutrientLevelOfCell (int i) {
