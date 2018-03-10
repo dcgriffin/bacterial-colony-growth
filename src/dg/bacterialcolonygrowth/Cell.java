@@ -25,7 +25,7 @@ public class Cell extends StackPane {
 	private int width;
 
     // Constructor which creates a new Cell.
-    public Cell(int cellHeight, int cellWidth, Color color) {
+    public Cell(int cellWidth, int cellHeight, Color color) {
     		height = cellHeight;
     		width = cellWidth;
         cellArea = new Rectangle(height, width, color);

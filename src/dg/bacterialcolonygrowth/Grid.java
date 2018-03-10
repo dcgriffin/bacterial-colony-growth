@@ -14,10 +14,19 @@ public class Grid {
     private int width, height;
 
 	// Constructor which creates an x by y sized array of Cells.
-	public Grid(int x, int y) {
+	public Grid(int x, int y, int cellHeight, int cellWidth) {
         width = x;
         height = y;
-		cells = new Cell[width][height];
+        
+        cells = new Cell[width][height];
+        
+        // Adds each cell to the cells array.
+        for (int i=0; i<width; i++) {
+	    		for (int j=0; j<height; j++) {
+	    			cells[i][j] = new Cell(cellHeight, cellWidth, Color.WHITE);
+	    		}
+        }
+		
 	}
 	
 	// Constructor used to create a deep copy of the grid passed to it.

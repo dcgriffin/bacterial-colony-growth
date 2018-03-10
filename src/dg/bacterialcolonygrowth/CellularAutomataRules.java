@@ -10,7 +10,6 @@
 
 package dg.bacterialcolonygrowth;
 
-import javafx.scene.paint.Color;
 import org.jblas.DoubleMatrix;
 
 

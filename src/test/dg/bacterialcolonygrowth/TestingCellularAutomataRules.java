@@ -3,8 +3,6 @@ package dg.bacterialcolonygrowth;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-import javafx.scene.paint.Color;
-
 public class TestingCellularAutomataRules {
 
 //	@Before
@@ -94,36 +92,9 @@ public class TestingCellularAutomataRules {
 		double[] initialNutrientLevels = new double[] {0,0,0,0,90};
 		CellularAutomataRules rules = new CellularAutomataRules(width, height, initialNutrientLevels, delta);
 		
-		Grid grid = new Grid(width, height);
-		
-		// Add the cells to the grid.
-		for (int x=0; x<width; x++) {
-    			for (int y=0; y<height; y++) {
-		        Cell c = new Cell(10,10, Color.WHITE);
-		        c.setBacteriumAlive();
-                grid.add(c,x,y);
-    			}
-		}
-		
-		// Check each cell has 8 live neighbours.
-		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 0, 0), 8, 0);
-		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 0, 1), 8, 0);
-		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 0, 2), 8, 0);
-		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 1, 0), 8, 0);
-		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 1, 1), 8, 0);
-		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 1, 2), 8, 0);
-		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 2, 0), 8, 0);
-		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 2, 1), 8, 0);
-		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 2, 2), 8, 0);
-		
-		// Change all bacteria to dead.
-		for (int x=0; x<width; x++) {
-    			for (int y=0; y<height; y++) {
-		        grid.setBacteriumDead(x, y);
-    			}
-		}
-		
-		// Check each cell has 0 live neighbours.
+		Grid grid = new Grid(width, height, 7, 7);
+	
+		// No bacteria should initially be present, so check each cell has 0 live neighbours.
 		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 0, 0), 0, 0);
 		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 0, 1), 0, 0);
 		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 0, 2), 0, 0);
@@ -133,6 +104,24 @@ public class TestingCellularAutomataRules {
 		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 2, 0), 0, 0);
 		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 2, 1), 0, 0);
 		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 2, 2), 0, 0);
+		
+		// Add the cells to the grid.
+		for (int x=0; x<width; x++) {
+    			for (int y=0; y<height; y++) {
+		        grid.setBacteriumAlive(x, y);
+    			}
+		}
+		
+		// Check each cell now has 8 live neighbours.
+		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 0, 0), 8, 0);
+		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 0, 1), 8, 0);
+		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 0, 2), 8, 0);
+		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 1, 0), 8, 0);
+		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 1, 1), 8, 0);
+		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 1, 2), 8, 0);
+		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 2, 0), 8, 0);
+		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 2, 1), 8, 0);
+		assertEquals(rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 2, 2), 8, 0);
 	}
 	
 	// Test nutrient levels correctly update for bacteria consumption of nutrient.
@@ -144,14 +133,12 @@ public class TestingCellularAutomataRules {
 		double[] initialNutrientLevels = new double[] {50,50,50,50,50,50,50,50,50};
 		CellularAutomataRules rules = new CellularAutomataRules(width, height, initialNutrientLevels, delta);
 		
-		Grid grid = new Grid(width, height);
+		Grid grid = new Grid(width, height, 7, 7);
 		
 		// Add the cells to the grid.
 		for (int x=0; x<width; x++) {
     			for (int y=0; y<height; y++) {
-		        Cell c = new Cell(10,10, Color.WHITE);
-		        c.setBacteriumAlive();
-                grid.add(c,x,y);
+		        grid.setBacteriumAlive(x,y);
     			}
 		}
 		
