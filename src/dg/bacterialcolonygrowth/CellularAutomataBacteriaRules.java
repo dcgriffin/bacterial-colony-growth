@@ -33,7 +33,7 @@ public class CellularAutomataBacteriaRules {
 
     // Stores a value for each possible number of surrounding cells (0-8), which
     // is then used to determine if cell division takes place.
-    private int[] crowdingFunctionValues;
+    private int[] crowdingFunctionValues = {0, 40, 40, 40, 30, 20, 10, 0, 0};
 
     // Constructor which create a new rules object.
 	public CellularAutomataBacteriaRules(int x, int y) {
@@ -45,7 +45,6 @@ public class CellularAutomataBacteriaRules {
         
         this.setInitialDefaultNutrientLevels();
         this.createUpdateMatrixForPeriodicBoundary();
-        this.setCrowdingFunctionValues();
 	}
 	
 	// Constructor which creates a new rules object with specified conditions.
@@ -57,13 +56,12 @@ public class CellularAutomataBacteriaRules {
         delta = deltaValue;
         nutrientLevels = DoubleMatrix.zeros(numberOfCellsInGrid);
         
-        this.setNutrientLevels(initialNutrientLevels);
+        this.setInitialNutrientLevels(initialNutrientLevels);
         this.createUpdateMatrixForPeriodicBoundary();
-        this.setCrowdingFunctionValues();
 	}
 
     // Creates the update matrix for a cellular automata with a periodic boundary.
-    public void createUpdateMatrixForPeriodicBoundary() {
+    private void createUpdateMatrixForPeriodicBoundary() {
         for (int i=0; i<numberOfCellsInGrid; i++) {
             // The cell itself.
 	        updateMatrixPeriodicBoundary.put(i, i, 1 - delta);
@@ -110,14 +108,14 @@ public class CellularAutomataBacteriaRules {
     }
 
     // Sets the initial nutrient levels based on the array of values passes to it.
-    public void setNutrientLevels(double[] initialNutrientLevels) {
+    private void setInitialNutrientLevels(double[] initialNutrientLevels) {
          for (int i=0; i<initialNutrientLevels.length; i++) {
              nutrientLevels.put(i, initialNutrientLevels[i]);
          }
     }
     
     // Sets every cell to have 100 nutrient level.
-    public void setInitialDefaultNutrientLevels() {
+    private void setInitialDefaultNutrientLevels() {
 		for (int i=0; i<nutrientLevels.length; i++) {
 			nutrientLevels.put(i, 100);
 		}
@@ -129,11 +127,6 @@ public class CellularAutomataBacteriaRules {
     
     public void setNutrientLevelOfCell (int i, double newNutrientLevel) {
     		nutrientLevels.put(i, newNutrientLevel);
-    }
-
-    // Sets the values for the crowding function.
-    public void setCrowdingFunctionValues() {
-        crowdingFunctionValues = new int[] {0, 40, 40, 40, 30, 20, 10, 0, 0};
     }
 
     // Updates nutrients levels after bacteria have consumed some nutrient.
@@ -244,8 +237,11 @@ public class CellularAutomataBacteriaRules {
 	public void createUpdatedGrid(Grid currentGrid) {
 		// Creates a copy of the current grid.
 		Grid copyOfCurrentGrid = new Grid(currentGrid);
-
+		
+		// Update for diffusion.
         this.updateNutrientLevelsAfterDiffusion();
+        
+        // Update for bacteria consuming nutrient and reproducing.
         this.updateBacteriaAndNutrientAfterConsumptionAndCellDivision(currentGrid, copyOfCurrentGrid);
 	}
 }

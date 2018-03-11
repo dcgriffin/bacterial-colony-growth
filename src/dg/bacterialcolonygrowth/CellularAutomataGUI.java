@@ -33,8 +33,8 @@ public class CellularAutomataGUI extends Application {
 	
 	// Visual properties of the cellular automata grid in the GUI.
 	private Grid grid;
-    private int gridWidth = 10;
-    private int gridHeight = 10;
+    private int gridWidth = 40;
+    private int gridHeight = 40;
     private int cellHeight = 15;
     private int cellWidth = 15;
     
