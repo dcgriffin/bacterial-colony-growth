@@ -95,13 +95,23 @@ public class Grid {
 			return cells[x][y].cellAliveOrContainsRemains();
 		}
 
-    // Shows only bacteria and removes the nutrient.
-    public void showOnlyBacteria() {
+    // Shows only bacteria as squares and removes the nutrient as a way of viewing the final image.
+    public void showOnlyBacteriaAsSquares() {
         for (int x=0; x<width; x++) {
             for (int y=0; y<height; y++) {
-            		cells[x][y].setColorOfCell(0, 0, 1);
-        			cells[x][y].setGridSpaceBorderColor(Color.WHITE);
+            		// If cell contains either alive or dead bacteria, then remove the bacteria circle and
+            		// set the grid space & border to be completely black.
+	            	if (cells[x][y].cellAliveOrContainsRemains()) {
+	            		cells[x][y].setBacteriumEmpty();
+	            		cells[x][y].setColorOfCell(0, 0, 0);
+	            		cells[x][y].setGridSpaceBorderColor(Color.BLACK);
+	            	}
+	            	else {
+	            		// Set colour of cell and border to white.
+	            		cells[x][y].setColorOfCell(0, 0, 1);
+	            		cells[x][y].setGridSpaceBorderColor(Color.WHITE);
+	            	}           	
             }
-        }
+        }	
     }
 }

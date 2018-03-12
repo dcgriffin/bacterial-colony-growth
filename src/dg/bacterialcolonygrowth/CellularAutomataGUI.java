@@ -29,7 +29,7 @@ public class CellularAutomataGUI extends Application {
 	private VBox rootPane;
 	private Stage mainStage;
 	private Scene mainScene;
-	private double gridUpdateRate = 0.5; // In seconds.
+	private double gridUpdateRate = 0.1; // In seconds.
 	
 	// Visual properties of the cellular automata grid in the GUI.
 	private Grid grid;
@@ -94,13 +94,13 @@ public class CellularAutomataGUI extends Application {
 	        }
 	    });
 	
-	    Button showOnlyBacteriaButton = new Button("Show Only Bacteria");
+	    Button showOnlyBacteriaButton = new Button("End Simulation: Show Only Bacteria");
 	
 	    // Stops the simulation and calls a function to show only bacteria cells.
 	    showOnlyBacteriaButton.setOnAction(new EventHandler<ActionEvent>() {
 	        @Override
 	        public void handle(ActionEvent event) {
-	            grid.showOnlyBacteria();
+	            grid.showOnlyBacteriaAsSquares();
 	            timeline.stop();
 	        }
 	    });

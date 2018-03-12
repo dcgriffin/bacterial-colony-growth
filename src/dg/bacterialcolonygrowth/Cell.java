@@ -30,6 +30,7 @@ public class Cell extends StackPane {
     		height = cellHeight;
     		width = cellWidth;
         cellArea = new Rectangle(height, width, color);
+        cellArea.setStrokeWidth(1);
         cellArea.setStroke(Color.GRAY);
         bacteria = new Circle(width/2);
         bacteria.setFill(Color.WHITE);
