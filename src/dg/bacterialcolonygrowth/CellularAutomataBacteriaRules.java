@@ -8,7 +8,7 @@
 
 package dg.bacterialcolonygrowth;
 
-import org.jblas.DoubleMatrix;
+import org.jblas.FloatMatrix;
 
 
 public class CellularAutomataBacteriaRules {
@@ -25,11 +25,11 @@ public class CellularAutomataBacteriaRules {
     private int nutrientForGrowth = 60;
     private int thresholdForDivision = 2600;
 
-    private DoubleMatrix updateMatrixPeriodicBoundary;
-    private DoubleMatrix nutrientLevels;
+    private FloatMatrix updateMatrixPeriodicBoundary;
+    private FloatMatrix nutrientLevels;
     
     // Rate of diffusion (value should be between 0 and 1).
-    private double delta = 0.4;
+    private float delta = 0.4f;
 
     // Stores a value for each possible number of surrounding cells (0-8), which
     // is then used to determine if cell division takes place.
@@ -40,21 +40,21 @@ public class CellularAutomataBacteriaRules {
         width = x;
         height = y;
         numberOfCellsInGrid = width * height;
-        updateMatrixPeriodicBoundary = DoubleMatrix.zeros(numberOfCellsInGrid, numberOfCellsInGrid);
-        nutrientLevels = DoubleMatrix.zeros(numberOfCellsInGrid);
+        updateMatrixPeriodicBoundary = FloatMatrix.zeros(numberOfCellsInGrid, numberOfCellsInGrid);
+        nutrientLevels = FloatMatrix.zeros(numberOfCellsInGrid);
         
         this.setInitialDefaultNutrientLevels();
         this.createUpdateMatrixForPeriodicBoundary();
 	}
 	
 	// Constructor which creates a new rules object with specified conditions.
-	public CellularAutomataBacteriaRules(int x, int y, double[] initialNutrientLevels, double deltaValue) {
+	public CellularAutomataBacteriaRules(int x, int y, float[] initialNutrientLevels, float deltaValue) {
         width = x;
         height = y;
         numberOfCellsInGrid = width * height;
-        updateMatrixPeriodicBoundary = DoubleMatrix.zeros(numberOfCellsInGrid, numberOfCellsInGrid);
+        updateMatrixPeriodicBoundary = FloatMatrix.zeros(numberOfCellsInGrid, numberOfCellsInGrid);
         delta = deltaValue;
-        nutrientLevels = DoubleMatrix.zeros(numberOfCellsInGrid);
+        nutrientLevels = FloatMatrix.zeros(numberOfCellsInGrid);
         
         this.setInitialNutrientLevels(initialNutrientLevels);
         this.createUpdateMatrixForPeriodicBoundary();
@@ -108,7 +108,7 @@ public class CellularAutomataBacteriaRules {
     }
 
     // Sets the initial nutrient levels based on the array of values passes to it.
-    private void setInitialNutrientLevels(double[] initialNutrientLevels) {
+    private void setInitialNutrientLevels(float[] initialNutrientLevels) {
          for (int i=0; i<initialNutrientLevels.length; i++) {
              nutrientLevels.put(i, initialNutrientLevels[i]);
          }
@@ -120,12 +120,14 @@ public class CellularAutomataBacteriaRules {
 			nutrientLevels.put(i, 100);
 		}
     }
-
+    
+    // Returns the nutrient level in the cell specified as an argument.
     public double getNutrientLevelOfCell (int i) {
         return nutrientLevels.get(i);
     }
     
-    public void setNutrientLevelOfCell (int i, double newNutrientLevel) {
+    // Sets the nutrient level of the specified cell, to the amount of nutrient specified.
+    public void setNutrientLevelOfCell (int i, float newNutrientLevel) {
     		nutrientLevels.put(i, newNutrientLevel);
     }
 
@@ -178,7 +180,7 @@ public class CellularAutomataBacteriaRules {
  		}
  		else {
  			timeStepForCellDivisionCounter += 1;
- 		}   
+ 		}
     }
     
     // Checks whether the conditions for cell division to occur are met.
@@ -235,13 +237,37 @@ public class CellularAutomataBacteriaRules {
 
 	// Creates an updated grid after one iteration of the rules governing the bacterial colony.
 	public void createUpdatedGrid(Grid currentGrid) {
+		long startTime = System.currentTimeMillis();
+		
+		long startTime4 = System.currentTimeMillis();
+		
 		// Creates a copy of the current grid.
 		Grid copyOfCurrentGrid = new Grid(currentGrid);
+		
+		long stopTime4 = System.currentTimeMillis();
+        long elapsedTime4 = stopTime4 - startTime4;
+        System.out.println("Time to make a copy of current grid: " + elapsedTime4);
+		
+		long startTime2 = System.currentTimeMillis();
 		
 		// Update for diffusion.
         this.updateNutrientLevelsAfterDiffusion();
         
+        long stopTime2 = System.currentTimeMillis();
+        long elapsedTime2 = stopTime2 - startTime2;
+        System.out.println("Time to for matrix multiplication: " + elapsedTime2);
+        
+        long startTime3 = System.currentTimeMillis();
+        
         // Update for bacteria consuming nutrient and reproducing.
         this.updateBacteriaAndNutrientAfterConsumptionAndCellDivision(currentGrid, copyOfCurrentGrid);
+        
+        long stopTime3 = System.currentTimeMillis();
+        long elapsedTime3 = stopTime3 - startTime3;
+        System.out.println("Time to update grid with new nutrient levels and bacteria: " + elapsedTime3);
+        
+        long stopTime = System.currentTimeMillis();
+        long elapsedTime = stopTime - startTime;
+        System.out.println("Time for overall update of grid: " + elapsedTime);
 	}
 }

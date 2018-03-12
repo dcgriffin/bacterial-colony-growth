@@ -29,14 +29,14 @@ public class CellularAutomataGUI extends Application {
 	private VBox rootPane;
 	private Stage mainStage;
 	private Scene mainScene;
-	private double gridUpdateRate = 0.25; // In seconds.
+	private double gridUpdateRate = 0.5; // In seconds.
 	
 	// Visual properties of the cellular automata grid in the GUI.
 	private Grid grid;
-    private int gridWidth = 40;
-    private int gridHeight = 40;
-    private int cellHeight = 15;
-    private int cellWidth = 15;
+    private int gridWidth = 80;
+    private int gridHeight = 80;
+    private int cellHeight = 5;
+    private int cellWidth = 5;
     
     private CellularAutomataBacteriaRules rules = new CellularAutomataBacteriaRules(gridWidth, gridHeight);
 
