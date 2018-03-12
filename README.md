@@ -4,7 +4,7 @@ Uses a cellular automata to model the growth of bacterial cell colonies and obse
 
 ### Requirements to run the program
 
-- A Java 8.0+ Runtime Environment 
+- A Java Development Kit (JDK) version 8.0+, including JavaFX (this comes as standard with Oracle JDK 8, but may not be installed as standard with OpenJDK).
 - Apache Ant
 - A JAR file of the jblas library, this can be downloaded from http://jblas.org/download.html
 
