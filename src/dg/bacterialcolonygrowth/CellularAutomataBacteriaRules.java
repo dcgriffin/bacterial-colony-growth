@@ -147,27 +147,17 @@ public class CellularAutomataBacteriaRules {
 	    			// If grid is alive, then bacteria eat nutrient of the required amount to survive. If there
 	    			// is not enough they will consume all the nutrient and then die.
 	    			if (gridBeforeThisUpdate.cellAlive(x, y) == true) {
-	    				if (nutrientLevels.get(returnPositionInNutrientMatrix(x, y)) >= 10) {
-	    					setNutrientLevelOfCell(returnPositionInNutrientMatrix(x, y), 
-	    						nutrientLevels.get(returnPositionInNutrientMatrix(x, y))-nutrientForSustenance);
-	    				}
-	    				else {
-	    					currentGrid.setBacteriumDead(x, y);
-	    					setNutrientLevelOfCell(returnPositionInNutrientMatrix(x, y),0);
-	    				}
+	    				updateAliveGridSpace(currentGrid, x, y);
 	    			}
 	    			// In the case where they is no alive or previously alive bacterium cell occupying the 
 	    			// grid space.
 	    			else if (gridBeforeThisUpdate.cellAliveOrContainsRemains(x, y) == false) {
 	    				// Check value of flag used to indicate that cell division may occur this times step.
 	    				if (checkForCellDivision == true) {
-	    					if (shouldCellDivisionOccur(gridBeforeThisUpdate, x, y) && nutrientLevels.get(returnPositionInNutrientMatrix(x, y)) >= 60) {
-	    						currentGrid.setBacteriumAlive(x, y);
-	    						setNutrientLevelOfCell(returnPositionInNutrientMatrix(x, y), 
-	    	    						nutrientLevels.get(returnPositionInNutrientMatrix(x, y))-nutrientForGrowth);
-	    					}
+	    					updateEmptyGridSpace(currentGrid,gridBeforeThisUpdate, x, y);
 	    				}
 	    			}
+	    			// Set the colour of the grid cell.
 	    			currentGrid.setNutrientLevelColor(x, y, 0, getNutrientLevelOfCell(returnPositionInNutrientMatrix(x, y))/100, 1);
 	    		}
         }
@@ -181,6 +171,33 @@ public class CellularAutomataBacteriaRules {
  		else {
  			timeStepForCellDivisionCounter += 1;
  		}
+    }
+    
+    
+    // Carries out the necessary updates to the nutrient matrix and to the bacteria for a grid space that
+    // contains an alive cell.
+    public void updateAliveGridSpace(Grid currentGrid, int x, int y) {
+    		// Checks if there is enough food for the bacteria to survive, and then updates the nutrient
+    		// and bacteria accordingly.
+	    	if (nutrientLevels.get(returnPositionInNutrientMatrix(x, y)) >= 10) {
+			setNutrientLevelOfCell(returnPositionInNutrientMatrix(x, y), 
+			nutrientLevels.get(returnPositionInNutrientMatrix(x, y))-nutrientForSustenance);
+		}
+		else {
+			currentGrid.setBacteriumDead(x, y);
+			setNutrientLevelOfCell(returnPositionInNutrientMatrix(x, y),0);
+		}
+    }
+    
+    // Carries out the necessary update for an empty grid cell, for time steps in which cell division can
+    // occur.
+    public void updateEmptyGridSpace(Grid currentGrid, Grid gridBeforeThisUpdate, int x, int y) {
+    		// Checks if cell division conditions are met.
+	    	if (shouldCellDivisionOccur(gridBeforeThisUpdate, x, y) && nutrientLevels.get(returnPositionInNutrientMatrix(x, y)) >= 60) {
+			currentGrid.setBacteriumAlive(x, y);
+			setNutrientLevelOfCell(returnPositionInNutrientMatrix(x, y), 
+						nutrientLevels.get(returnPositionInNutrientMatrix(x, y))-nutrientForGrowth);
+		}
     }
     
     // Checks whether the conditions for cell division to occur are met.

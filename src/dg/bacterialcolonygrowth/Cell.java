@@ -31,7 +31,7 @@ public class Cell extends StackPane {
     		width = cellWidth;
         cellArea = new Rectangle(height, width, color);
         cellArea.setStroke(Color.GRAY);
-        bacteria = new Circle(width/2.5);
+        bacteria = new Circle(width/2);
         bacteria.setFill(Color.WHITE);
         this.getChildren().addAll(cellArea, bacteria);
     }
