@@ -25,11 +25,11 @@ public class CellularAutomataBacteriaRules {
     private int nutrientForGrowth = 60; // Default = 60
     private int thresholdForDivision = 2600; // Default = 2600
     
-    private CRSMatrix update;
-    private DenseVector nutrientlvl;
+    private CRSMatrix updateMatrixPeriodicBoundary;
+    private DenseVector nutrientLevels;
     
     // Rate of diffusion (value should be between 0 and 1).
-    private float delta = 0.4f; // Default = 0.4
+    private double delta = 0.4; // Default = 0.4
 
     // Stores a value for each possible number of surrounding cells (0-8), which
     // is then used to determine if cell division takes place.
@@ -41,22 +41,22 @@ public class CellularAutomataBacteriaRules {
         height = y;
         numberOfCellsInGrid = width * height;
         
-        update = CRSMatrix.zero(numberOfCellsInGrid, numberOfCellsInGrid);
-        nutrientlvl = DenseVector.unit(numberOfCellsInGrid);
+        updateMatrixPeriodicBoundary = CRSMatrix.zero(numberOfCellsInGrid, numberOfCellsInGrid);
+        nutrientLevels = DenseVector.unit(numberOfCellsInGrid);
         
         this.setInitialDefaultNutrientLevels();
         this.createUpdateMatrixForPeriodicBoundary();
 	}
 	
 	// Constructor which creates a new rules object with specified conditions.
-	public CellularAutomataBacteriaRules(int x, int y, double[] initialNutrientLevels, float deltaValue) {
+	public CellularAutomataBacteriaRules(int x, int y, double[] initialNutrientLevels, double deltaValue) {
         width = x;
         height = y;
         numberOfCellsInGrid = width * height;
 
         delta = deltaValue;
-        update = CRSMatrix.zero(numberOfCellsInGrid, numberOfCellsInGrid);
-        nutrientlvl = DenseVector.unit(numberOfCellsInGrid);
+        updateMatrixPeriodicBoundary = CRSMatrix.zero(numberOfCellsInGrid, numberOfCellsInGrid);
+        nutrientLevels = DenseVector.unit(numberOfCellsInGrid);
         
         this.setInitialNutrientLevels(initialNutrientLevels);
         this.createUpdateMatrixForPeriodicBoundary();
@@ -66,34 +66,34 @@ public class CellularAutomataBacteriaRules {
     private void createUpdateMatrixForPeriodicBoundary() {
         for (int i=0; i<numberOfCellsInGrid; i++) {
             // The cell itself.
-	        update.set(i, i, 1 - delta);
+	        updateMatrixPeriodicBoundary.set(i, i, 1 - delta);
             // Cell to the left.
             if (i % width == 0) {
-                update.set(i, i + width - 1, delta/4);
+                updateMatrixPeriodicBoundary.set(i, i + width - 1, delta/4);
             }
             else {
-                update.set(i, i - 1, delta/4);
+                updateMatrixPeriodicBoundary.set(i, i - 1, delta/4);
             }
             // Cell to the right.
             if ((i + 1) % width == 0) {
-                update.set(i, i - width + 1, delta/4);
+                updateMatrixPeriodicBoundary.set(i, i - width + 1, delta/4);
             }
             else {
-                update.set(i, i + 1, delta/4);
+                updateMatrixPeriodicBoundary.set(i, i + 1, delta/4);
             }
             // Cell above.
             if (i + width > numberOfCellsInGrid - 1) {
-                update.set(i, i - numberOfCellsInGrid + width, delta/4);
+                updateMatrixPeriodicBoundary.set(i, i - numberOfCellsInGrid + width, delta/4);
             }
             else {
-                update.set(i, i + width, delta/4);
+                updateMatrixPeriodicBoundary.set(i, i + width, delta/4);
             }
             // Cell below.
             if (i - width < 0) {
-                update.set(i, i + numberOfCellsInGrid - width, delta/4);
+                updateMatrixPeriodicBoundary.set(i, i + numberOfCellsInGrid - width, delta/4);
             }
             else {
-                update.set(i, i - width, delta/4);
+                updateMatrixPeriodicBoundary.set(i, i - width, delta/4);
             }
         }
     }
@@ -106,38 +106,31 @@ public class CellularAutomataBacteriaRules {
 
     // Updates the nutrient levels for diffusion after a single time step.
     public void updateNutrientLevelsAfterDiffusion() {
-        nutrientlvl = (DenseVector) update.multiply(nutrientlvl);
+        nutrientLevels = (DenseVector) updateMatrixPeriodicBoundary.multiply(nutrientLevels);
     }
 
     // Sets the initial nutrient levels based on the array of values passes to it.
     private void setInitialNutrientLevels(double[] initialNutrientLevels) {
          for (int i=0; i<initialNutrientLevels.length; i++) {
-             nutrientlvl.set(i, initialNutrientLevels[i]);
+             nutrientLevels.set(i, initialNutrientLevels[i]);
          }
     }
     
     // Sets every cell to have 100 nutrient level.
     private void setInitialDefaultNutrientLevels() {
-		for (int i=0; i<nutrientlvl.length(); i++) {
-			nutrientlvl.set(i, 100.0);
+		for (int i=0; i<nutrientLevels.length(); i++) {
+			nutrientLevels.set(i, 100.0);
 		}
     }
     
     // Returns the nutrient level in the cell specified as an argument.
     public double getNutrientLevelOfCell (int i) {
-    		double nutrientLevelValue = nutrientlvl.get(i);
-    		
-    		if (nutrientLevelValue > 100) {
-    			return 100.0;
-    		}
-    		else {
-    			return nutrientLevelValue;
-    		}
+    		return nutrientLevels.get(i);
     }
     
     // Sets the nutrient level of the specified cell, to the amount of nutrient specified.
     public void setNutrientLevelOfCell (int i, double newNutrientLevel) {
-    		nutrientlvl.set(i, newNutrientLevel);
+    		nutrientLevels.set(i, newNutrientLevel);
     }
 
     // Updates nutrients levels after bacteria have consumed some nutrient.
@@ -188,9 +181,9 @@ public class CellularAutomataBacteriaRules {
     public void updateAliveGridSpace(Grid currentGrid, int x, int y) {
     		// Checks if there is enough food for the bacteria to survive, and then updates the nutrient
     		// and bacteria accordingly.
-	    	if (nutrientlvl.get(returnPositionInNutrientMatrix(x, y)) >= 10) {
+	    	if (nutrientLevels.get(returnPositionInNutrientMatrix(x, y)) >= 10) {
 			setNutrientLevelOfCell(returnPositionInNutrientMatrix(x, y), 
-			nutrientlvl.get(returnPositionInNutrientMatrix(x, y))-nutrientForSustenance);
+			nutrientLevels.get(returnPositionInNutrientMatrix(x, y))-nutrientForSustenance);
 		}
 		else {
 			currentGrid.setBacteriumDead(x, y);
@@ -202,10 +195,10 @@ public class CellularAutomataBacteriaRules {
     // occur.
     public void updateEmptyGridSpace(Grid currentGrid, Grid gridBeforeThisUpdate, int x, int y) {
     		// Checks if cell division conditions are met.
-	    	if (shouldCellDivisionOccur(gridBeforeThisUpdate, x, y) && nutrientlvl.get(returnPositionInNutrientMatrix(x, y)) >= 60) {
+	    	if (shouldCellDivisionOccur(gridBeforeThisUpdate, x, y) && nutrientLevels.get(returnPositionInNutrientMatrix(x, y)) >= 60) {
 			currentGrid.setBacteriumAlive(x, y);
 			setNutrientLevelOfCell(returnPositionInNutrientMatrix(x, y), 
-						nutrientlvl.get(returnPositionInNutrientMatrix(x, y))-nutrientForGrowth);
+						nutrientLevels.get(returnPositionInNutrientMatrix(x, y))-nutrientForGrowth);
 		}
     }
     
@@ -214,7 +207,7 @@ public class CellularAutomataBacteriaRules {
     // and the food in the cell, is greater than a given threshold for division. If it is greater than the
     // threshold then bacterium cell will appear in the grid space with probability 50%.
     public boolean shouldCellDivisionOccur(Grid gridBeforeUpdate, int x, int y) {   	
-    		double nutrientInCell = nutrientlvl.get(returnPositionInNutrientMatrix(x, y));
+    		double nutrientInCell = nutrientLevels.get(returnPositionInNutrientMatrix(x, y));
     		int numberOfNeighbours = returnNumberOfAliveNeighboursForPeriodicGrid(gridBeforeUpdate, x, y);
     		
     		// Check if crowding function * nutrient level is greater than threshold.

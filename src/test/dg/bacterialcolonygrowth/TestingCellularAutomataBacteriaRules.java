@@ -29,18 +29,18 @@ public class TestingCellularAutomataBacteriaRules {
 	public void testNutrientLevelsAreSetCorrectlyInitially() {
 		int width = 3;
 	    int height = 3;
-	    float delta = 0.4f;
-	    float[] initialNutrientLevels = new float[] {0,10.5f,45.8f,100.0f,0.3f,98,100,64.2f,25};
+	    double delta = 0.4;
+	    double[] initialNutrientLevels = new double[] {0,10.5,45.8,100.0,0.3,98,100,64.2,25};
 	    CellularAutomataBacteriaRules rules = new CellularAutomataBacteriaRules(width, height, initialNutrientLevels, delta);
 	    
 	    assertEquals(0, rules.getNutrientLevelOfCell(0), 0);
-	    assertEquals(10.5f, rules.getNutrientLevelOfCell(1), 0);
-	    assertEquals(45.8f, rules.getNutrientLevelOfCell(2),  0);
+	    assertEquals(10.5, rules.getNutrientLevelOfCell(1), 0);
+	    assertEquals(45.8, rules.getNutrientLevelOfCell(2),  0);
 	    assertEquals(100, rules.getNutrientLevelOfCell(3), 0);
-	    assertEquals(0.3f, rules.getNutrientLevelOfCell(4), 0);
+	    assertEquals(0.3, rules.getNutrientLevelOfCell(4), 0);
 	    assertEquals(98, rules.getNutrientLevelOfCell(5), 0);
 	    assertEquals(100, rules.getNutrientLevelOfCell(6), 0);
-	    assertEquals(64.2f, rules.getNutrientLevelOfCell(7), 0);
+	    assertEquals(64.2, rules.getNutrientLevelOfCell(7), 0);
 	    assertEquals(25, rules.getNutrientLevelOfCell(8), 0);
 	}
 	
@@ -49,8 +49,8 @@ public class TestingCellularAutomataBacteriaRules {
 	public void testNutrientDiffusesCorrectlyForPeriodicBoundary() {
 		int width = 3;
 		int height = 3;
-		float delta = 0.5f;
-		float[] initialNutrientLevels = new float[] {0,0,0,0,90.0f};
+		double delta = 0.5;
+		double[] initialNutrientLevels = new double[] {0,0,0,0,90.0,0,0,0,0};
 		CellularAutomataBacteriaRules rules = new CellularAutomataBacteriaRules(width, height, initialNutrientLevels, delta);
 		
 		// After one time step
@@ -99,8 +99,8 @@ public class TestingCellularAutomataBacteriaRules {
 	public void testNumberOfAliveNeighboursFunctionForPeriodicBoundary() {
 		int width = 3;
 		int height = 3;
-		float delta = 0.5f;
-		float[] initialNutrientLevels = new float[] {0,0,0,0,90};
+		double delta = 0.5;
+		double[] initialNutrientLevels = new double[] {0,0,0,0,90};
 		CellularAutomataBacteriaRules rules = new CellularAutomataBacteriaRules(width, height, initialNutrientLevels, delta);
 		
 		Grid grid = new Grid(width, height, 7, 7);
@@ -140,8 +140,8 @@ public class TestingCellularAutomataBacteriaRules {
 	public void testNutrientLevelsUpdateCorrectlyForBacteriaConsumption() {
 		int width = 3;
 		int height = 3;
-		float delta = 0.5f;
-		float[] initialNutrientLevels = new float[] {50,50,50,50,50,50,50,50,50};
+		double delta = 0.5f;
+		double[] initialNutrientLevels = new double[] {50,50,50,50,50,50,50,50,50};
 		CellularAutomataBacteriaRules rules = new CellularAutomataBacteriaRules(width, height, initialNutrientLevels, delta);
 		
 		Grid grid = new Grid(width, height, 7, 7);
@@ -178,10 +178,10 @@ public class TestingCellularAutomataBacteriaRules {
 	public void testShouldCellDivisionOccur() {
 		int width = 3;
 	    int height = 3;
-	    float delta = 0.4f;
+	    double delta = 0.4;
 	    
 	    // Create a new cellular automata within no nutrient.
-	    float[] initialNutrientLevels = new float[] {0,0,0,0,0,0,0,0,0};
+	    double[] initialNutrientLevels = new double[] {0,0,0,0,0,0,0,0,0};
 	    CellularAutomataBacteriaRules rules = new CellularAutomataBacteriaRules(width, height, initialNutrientLevels, delta);
 	    
 	    Grid grid = new Grid(width, height, 7, 7);
