@@ -15,6 +15,9 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+
+import org.junit.experimental.theories.Theories;
+
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -29,12 +32,12 @@ public class CellularAutomataGUI extends Application {
 	private VBox rootPane;
 	private Stage mainStage;
 	private Scene mainScene;
-	private double gridUpdateRate = 0.08; // In seconds.
+	private double gridUpdateRate = 0.001; // In seconds, default = 0.001
 	
 	// Visual properties of the cellular automata grid in the GUI.
 	private Grid grid;
-    private int gridWidth = 50;
-    private int gridHeight = 50;
+    private int gridWidth = 80;
+    private int gridHeight = 80;
     private int cellHeight = 5;
     private int cellWidth = 5;
     
@@ -43,7 +46,15 @@ public class CellularAutomataGUI extends Application {
     // Creates a Timeline that calls a function to continuously updates the grid every "gridUpdateRate" 
     // seconds.
     private Timeline timeline = new Timeline(new KeyFrame( Duration.seconds(gridUpdateRate),
-    								timelineEvent -> {rules.createUpdatedGrid(grid); }));
+    								timelineEvent -> { this.manageSimulation(); }));
+    
+    // Manages the simulation by repeatedly calling the update grid method and pausing the simulation
+    // until that method has finished executing.
+    private void manageSimulation() {
+    		timeline.stop();
+		rules.createUpdatedGrid(grid);
+		timeline.play();
+	}
 
 	// Displays the stage and creates the initial scene within it.
     @Override
