@@ -8,6 +8,8 @@
 
 package dg.bacterialcolonygrowth;
 
+import java.io.File;
+
 import org.la4j.matrix.sparse.CRSMatrix;
 import org.la4j.vector.DenseVector;
 
@@ -253,6 +255,11 @@ public class CellularAutomataBacteriaRules {
     		
     		return numberOfNeighbours;
     }
+    
+	// Sets the parameters of the program to those specified in the input file.
+	public void loadInputFile(File inputFile) {
+		System.out.println(inputFile.getName());
+	}
 
 	// Creates an updated grid after one iteration of the rules governing the bacterial colony.
 	public void createUpdatedGrid(Grid currentGrid) {

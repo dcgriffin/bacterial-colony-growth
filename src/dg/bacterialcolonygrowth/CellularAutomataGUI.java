@@ -14,7 +14,10 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
+import java.io.File;
 
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -120,8 +123,16 @@ public class CellularAutomataGUI extends Application {
 	    loadInputFile.setOnAction(new EventHandler<ActionEvent>() {
 	        @Override
 	        public void handle(ActionEvent event) {
-	            grid.loadInputFile();
-	        }
+	            FileChooser fileChooser = new FileChooser();
+	            File selectedFile = fileChooser.showOpenDialog(null);
+	            if (selectedFile != null) {
+	            		rules.loadInputFile(selectedFile);
+	            		//actionStatus.setText("File selected: " + selectedFile.getName());
+	            }
+	            else {
+	            		//actionStatus.setText("File selection cancelled.");
+	            }
+	        }		
 	    });
 	
 	    // Adds the buttons to the button pane.
