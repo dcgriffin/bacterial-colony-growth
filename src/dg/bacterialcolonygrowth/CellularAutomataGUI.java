@@ -42,7 +42,8 @@ public class CellularAutomataGUI extends Application {
     private int cellHeight = 5;
     private int cellWidth = 5;
     
-    private CellularAutomataBacteriaRules rules = new CellularAutomataBacteriaRules(gridWidth, gridHeight);
+    // Variable used to store the rules governing the bacteria simulation.
+    private CellularAutomataBacteriaRules rules;
 
     // Creates a Timeline that calls a function to continuously updates the grid every "gridUpdateRate" 
     // seconds.
@@ -63,6 +64,8 @@ public class CellularAutomataGUI extends Application {
 	    	mainStage = primaryStage;
 	    gridPane = new GridPane();
 	    gridPane.setPadding(new Insets(10, 10, 0, 10));
+	    
+	    rules = new CellularAutomataBacteriaRules(gridWidth, gridHeight);
 	    
 	    // Creates the grid.
 	    	grid = new Grid(gridWidth, gridHeight, cellWidth, cellHeight);

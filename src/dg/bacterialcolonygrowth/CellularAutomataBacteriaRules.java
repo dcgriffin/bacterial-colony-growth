@@ -17,8 +17,11 @@ import org.la4j.matrix.sparse.CRSMatrix;
 import org.la4j.vector.DenseVector;
 
 public class CellularAutomataBacteriaRules {
-    private int width;
-    private int height;
+	private Grid grid;
+    private int gridWidth = 40;
+    private int gridHeight = 40;
+    private int cellHeight = 7;
+    private int cellWidth = 7;
     private int numberOfCellsInGrid;
     
     // Every m time steps cell division occurs, the following two variables are used to keep track of when
@@ -42,9 +45,9 @@ public class CellularAutomataBacteriaRules {
 
     // Constructor which create a new rules object.
 	public CellularAutomataBacteriaRules(int x, int y) {
-        width = x;
-        height = y;
-        numberOfCellsInGrid = width * height;
+        numberOfCellsInGrid = gridWidth * gridHeight;
+        
+    		grid = new Grid(gridWidth, gridHeight, cellWidth, cellHeight);
         
         updateMatrixPeriodicBoundary = CRSMatrix.zero(numberOfCellsInGrid, numberOfCellsInGrid);
         nutrientLevels = DenseVector.unit(numberOfCellsInGrid);
@@ -55,9 +58,9 @@ public class CellularAutomataBacteriaRules {
 	
 	// Constructor which creates a new rules object with specified conditions.
 	public CellularAutomataBacteriaRules(int x, int y, double[] initialNutrientLevels, double deltaValue) {
-        width = x;
-        height = y;
-        numberOfCellsInGrid = width * height;
+        gridWidth = x;
+        gridHeight = y;
+        numberOfCellsInGrid = gridWidth * gridHeight;
 
         delta = deltaValue;
         updateMatrixPeriodicBoundary = CRSMatrix.zero(numberOfCellsInGrid, numberOfCellsInGrid);
@@ -73,32 +76,32 @@ public class CellularAutomataBacteriaRules {
             // The cell itself.
 	        updateMatrixPeriodicBoundary.set(i, i, 1 - delta);
             // Cell to the left.
-            if (i % width == 0) {
-                updateMatrixPeriodicBoundary.set(i, i + width - 1, delta/4);
+            if (i % gridWidth == 0) {
+                updateMatrixPeriodicBoundary.set(i, i + gridWidth - 1, delta/4);
             }
             else {
                 updateMatrixPeriodicBoundary.set(i, i - 1, delta/4);
             }
             // Cell to the right.
-            if ((i + 1) % width == 0) {
-                updateMatrixPeriodicBoundary.set(i, i - width + 1, delta/4);
+            if ((i + 1) % gridWidth == 0) {
+                updateMatrixPeriodicBoundary.set(i, i - gridWidth + 1, delta/4);
             }
             else {
                 updateMatrixPeriodicBoundary.set(i, i + 1, delta/4);
             }
             // Cell above.
-            if (i + width > numberOfCellsInGrid - 1) {
-                updateMatrixPeriodicBoundary.set(i, i - numberOfCellsInGrid + width, delta/4);
+            if (i + gridWidth > numberOfCellsInGrid - 1) {
+                updateMatrixPeriodicBoundary.set(i, i - numberOfCellsInGrid + gridWidth, delta/4);
             }
             else {
-                updateMatrixPeriodicBoundary.set(i, i + width, delta/4);
+                updateMatrixPeriodicBoundary.set(i, i + gridWidth, delta/4);
             }
             // Cell below.
-            if (i - width < 0) {
-                updateMatrixPeriodicBoundary.set(i, i + numberOfCellsInGrid - width, delta/4);
+            if (i - gridWidth < 0) {
+                updateMatrixPeriodicBoundary.set(i, i + numberOfCellsInGrid - gridWidth, delta/4);
             }
             else {
-                updateMatrixPeriodicBoundary.set(i, i - width, delta/4);
+                updateMatrixPeriodicBoundary.set(i, i - gridWidth, delta/4);
             }
         }
     }
@@ -106,7 +109,7 @@ public class CellularAutomataBacteriaRules {
     // From 2D coordinates of a grid position, return the position this corresponds to in the 1D nutrient
     // matrix.
     public int returnPositionInNutrientMatrix(int x, int y) {
-    		return x + y*height;
+    		return x + y*gridHeight;
     }
 
     // Updates the nutrient levels for diffusion after a single time step.
@@ -149,8 +152,8 @@ public class CellularAutomataBacteriaRules {
 		}
 		
 		// Loops through all the grid spaces in the cellular automata.
-        for (int x=0; x<width; x++) {
-	    		for (int y=0; y<height; y++) {
+        for (int x=0; x<gridWidth; x++) {
+	    		for (int y=0; y<gridHeight; y++) {
 	    			// If grid is alive, then bacteria eat nutrient of the required amount to survive. If there
 	    			// is not enough they will consume all the nutrient and then die.
 	    			if (gridBeforeThisUpdate.cellAlive(x, y) == true) {
@@ -237,15 +240,15 @@ public class CellularAutomataBacteriaRules {
                 int tempRow = row;
                 int tempCol = col;
 
-                if (tempCol == width)
+                if (tempCol == gridWidth)
                     tempCol = 0;
                 else if (tempCol == -1)
-                    tempCol = width - 1;
+                    tempCol = gridWidth - 1;
 
-                if (tempRow == height)
+                if (tempRow == gridHeight)
                     tempRow = 0;
                 else if (tempRow == -1)
-                    tempRow = height - 1;
+                    tempRow = gridHeight - 1;
 
                 if (currentGrid.cellAlive(tempCol, tempRow) == true) {
     					// Make sure it is not the cell itself that is being counted.
@@ -278,6 +281,11 @@ public class CellularAutomataBacteriaRules {
             System.out.println("Error: Input file " + inputFile.getName() + " cannot be read.");                  
         }
     }
+	
+	// Returns the Grid object 'grid'.
+	public Grid returnCellularAutomataGrid() {
+		return grid;
+	}
 
 	// Creates an updated grid after one iteration of the rules governing the bacterial colony.
 	public void createUpdatedGrid(Grid currentGrid) {
