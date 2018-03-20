@@ -35,12 +35,8 @@ public class CellularAutomataGUI extends Application {
 	private Scene mainScene;
 	private double gridUpdateRate = 0.001; // In seconds, default = 0.001
 	
-	// Visual properties of the cellular automata grid in the GUI.
+	// The cellular automata grid.
 	private Grid grid;
-    private int gridWidth = 80;
-    private int gridHeight = 80;
-    private int cellHeight = 5;
-    private int cellWidth = 5;
     
     // Variable used to store the rules governing the bacteria simulation.
     private CellularAutomataBacteriaRules rules;
@@ -54,7 +50,7 @@ public class CellularAutomataGUI extends Application {
     // until that method has finished executing.
     private void manageSimulation() {
     		timeline.stop();
-		rules.createUpdatedGrid(grid);
+		rules.createUpdatedGrid();
 		timeline.play();
 	}
 
@@ -65,16 +61,16 @@ public class CellularAutomataGUI extends Application {
 	    gridPane = new GridPane();
 	    gridPane.setPadding(new Insets(10, 10, 0, 10));
 	    
-	    rules = new CellularAutomataBacteriaRules(gridWidth, gridHeight);
+	    rules = new CellularAutomataBacteriaRules();
 	    
 	    // Creates the grid.
-	    	grid = new Grid(gridWidth, gridHeight, cellWidth, cellHeight);
+	    	grid = rules.getCellularAutomataGrid();
 	
 	    Cell cellsOfGrid[][] = grid.getCells();
 	    	
 	    	// Add the cells of the grid to the gridPane in order to show them visually.
-	    	for (int x=0; x<gridWidth; x++) {
-	    		for (int y=0; y<gridHeight; y++) {
+	    	for (int x=0; x<grid.getGridWidth(); x++) {
+	    		for (int y=0; y<grid.getGridHeight(); y++) {
 		        Cell c = cellsOfGrid[x][y];
 	            gridPane.add(c,x,y);
 	
@@ -109,7 +105,7 @@ public class CellularAutomataGUI extends Application {
 	        }
 	    });
 	
-	    Button showOnlyBacteriaButton = new Button("End Simulation: Show Only Bacteria");
+	    Button showOnlyBacteriaButton = new Button("Show final bacteria pattern");
 	
 	    // Stops the simulation and calls a function to show only bacteria cells.
 	    showOnlyBacteriaButton.setOnAction(new EventHandler<ActionEvent>() {

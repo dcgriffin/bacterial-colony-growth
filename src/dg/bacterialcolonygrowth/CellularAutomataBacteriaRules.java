@@ -44,7 +44,7 @@ public class CellularAutomataBacteriaRules {
     private int[] crowdingFunctionValues = {0, 40, 40, 40, 30, 20, 10, 0, 0}; // Default = 0,40,40,40,30,20,10,0,0
 
     // Constructor which create a new rules object.
-	public CellularAutomataBacteriaRules(int x, int y) {
+	public CellularAutomataBacteriaRules() {
         numberOfCellsInGrid = gridWidth * gridHeight;
         
     		grid = new Grid(gridWidth, gridHeight, cellWidth, cellHeight);
@@ -58,9 +58,9 @@ public class CellularAutomataBacteriaRules {
 	
 	// Constructor which creates a new rules object with specified conditions.
 	public CellularAutomataBacteriaRules(int x, int y, double[] initialNutrientLevels, double deltaValue) {
-        gridWidth = x;
-        gridHeight = y;
         numberOfCellsInGrid = gridWidth * gridHeight;
+        
+        grid = new Grid(gridWidth, gridHeight, cellWidth, cellHeight);
 
         delta = deltaValue;
         updateMatrixPeriodicBoundary = CRSMatrix.zero(numberOfCellsInGrid, numberOfCellsInGrid);
@@ -142,7 +142,7 @@ public class CellularAutomataBacteriaRules {
     }
 
     // Updates nutrients levels after bacteria have consumed some nutrient.
-    public void updateBacteriaAndNutrientAfterConsumptionAndCellDivision(Grid currentGrid, Grid gridBeforeThisUpdate) {
+    public void updateBacteriaAndNutrientAfterConsumptionAndCellDivision(Grid gridBeforeThisUpdate) {
     		// Variable that is set to true during time steps where cell division can occur.
     		boolean checkForCellDivision = false;
     		
@@ -157,18 +157,18 @@ public class CellularAutomataBacteriaRules {
 	    			// If grid is alive, then bacteria eat nutrient of the required amount to survive. If there
 	    			// is not enough they will consume all the nutrient and then die.
 	    			if (gridBeforeThisUpdate.cellAlive(x, y) == true) {
-	    				updateAliveGridSpace(currentGrid, x, y);
+	    				updateAliveGridSpace(x, y);
 	    			}
 	    			// In the case where they is no alive or previously alive bacterium cell occupying the 
 	    			// grid space.
 	    			else if (gridBeforeThisUpdate.cellAliveOrContainsRemains(x, y) == false) {
 	    				// Check value of flag used to indicate that cell division may occur this times step.
 	    				if (checkForCellDivision == true) {
-	    					updateEmptyGridSpace(currentGrid,gridBeforeThisUpdate, x, y);
+	    					updateEmptyGridSpace(gridBeforeThisUpdate, x, y);
 	    				}
 	    			}
 	    			// Set the colour of the grid cell.
-	    			currentGrid.setNutrientLevelColor(x, y, 0, getNutrientLevelOfCell(returnPositionInNutrientMatrix(x, y))/100, 1);
+	    			this.grid.setNutrientLevelColor(x, y, 0, getNutrientLevelOfCell(returnPositionInNutrientMatrix(x, y))/100, 1);
 	    		}
         }
         
@@ -186,7 +186,7 @@ public class CellularAutomataBacteriaRules {
     
     // Carries out the necessary updates to the nutrient matrix and to the bacteria for a grid space that
     // contains an alive cell.
-    public void updateAliveGridSpace(Grid currentGrid, int x, int y) {
+    public void updateAliveGridSpace(int x, int y) {
     		// Checks if there is enough food for the bacteria to survive, and then updates the nutrient
     		// and bacteria accordingly.
 	    	if (nutrientLevels.get(returnPositionInNutrientMatrix(x, y)) >= 10) {
@@ -194,17 +194,17 @@ public class CellularAutomataBacteriaRules {
 			nutrientLevels.get(returnPositionInNutrientMatrix(x, y))-nutrientForSustenance);
 		}
 		else {
-			currentGrid.setBacteriumDead(x, y);
+			this.grid.setBacteriumDead(x, y);
 			setNutrientLevelOfCell(returnPositionInNutrientMatrix(x, y),0);
 		}
     }
     
     // Carries out the necessary update for an empty grid cell, for time steps in which cell division can
     // occur.
-    public void updateEmptyGridSpace(Grid currentGrid, Grid gridBeforeThisUpdate, int x, int y) {
+    public void updateEmptyGridSpace(Grid gridBeforeThisUpdate, int x, int y) {
     		// Checks if cell division conditions are met.
 	    	if (shouldCellDivisionOccur(gridBeforeThisUpdate, x, y) && nutrientLevels.get(returnPositionInNutrientMatrix(x, y)) >= 60) {
-			currentGrid.setBacteriumAlive(x, y);
+			this.grid.setBacteriumAlive(x, y);
 			setNutrientLevelOfCell(returnPositionInNutrientMatrix(x, y), 
 						nutrientLevels.get(returnPositionInNutrientMatrix(x, y))-nutrientForGrowth);
 		}
@@ -231,7 +231,7 @@ public class CellularAutomataBacteriaRules {
     
     // Returns the number of alive neighbours of cell x,y in the grid passed to this function.
     // Will return -1 if the cell itself and all its neighbours are dead.
-    public int returnNumberOfAliveNeighboursForPeriodicGrid(Grid currentGrid, int x, int y) {
+    public int returnNumberOfAliveNeighboursForPeriodicGrid(Grid gridBeforeThisUpdate, int x, int y) {
 		int numberOfNeighbours = 0;
 
 		// Loops through 9 cells, the cell in question along with the surrounding 8.
@@ -250,7 +250,7 @@ public class CellularAutomataBacteriaRules {
                 else if (tempRow == -1)
                     tempRow = gridHeight - 1;
 
-                if (currentGrid.cellAlive(tempCol, tempRow) == true) {
+                if (gridBeforeThisUpdate.cellAlive(tempCol, tempRow) == true) {
     					// Make sure it is not the cell itself that is being counted.
     					if (tempCol != x || tempRow != y) {
     						numberOfNeighbours++;
@@ -283,18 +283,18 @@ public class CellularAutomataBacteriaRules {
     }
 	
 	// Returns the Grid object 'grid'.
-	public Grid returnCellularAutomataGrid() {
+	public Grid getCellularAutomataGrid() {
 		return grid;
 	}
 
 	// Creates an updated grid after one iteration of the rules governing the bacterial colony.
-	public void createUpdatedGrid(Grid currentGrid) {
+	public void createUpdatedGrid() {
 		long startTime = System.currentTimeMillis();
 		
 		long startTime4 = System.currentTimeMillis();
 		
 		// Creates a copy of the current grid.
-		Grid copyOfCurrentGrid = new Grid(currentGrid);
+		Grid copyOfCurrentGrid = new Grid(this.grid);
 		
 		long stopTime4 = System.currentTimeMillis();
         long elapsedTime4 = stopTime4 - startTime4;
@@ -312,7 +312,7 @@ public class CellularAutomataBacteriaRules {
         long startTime3 = System.currentTimeMillis();
         
         // Update for bacteria consuming nutrient and reproducing.
-        this.updateBacteriaAndNutrientAfterConsumptionAndCellDivision(currentGrid, copyOfCurrentGrid);
+        this.updateBacteriaAndNutrientAfterConsumptionAndCellDivision(copyOfCurrentGrid);
         
         long stopTime3 = System.currentTimeMillis();
         long elapsedTime3 = stopTime3 - startTime3;
