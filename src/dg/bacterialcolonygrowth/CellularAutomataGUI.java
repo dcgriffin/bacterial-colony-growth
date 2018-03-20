@@ -16,8 +16,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
-import org.junit.experimental.theories.Theories;
-
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -115,15 +113,26 @@ public class CellularAutomataGUI extends Application {
 	            timeline.stop();
 	        }
 	    });
+	    
+	    Button loadInputFile = new Button("Load input file");
+		
+	    // Calls a function to deal with setting parameters of the simulation from an input file.
+	    loadInputFile.setOnAction(new EventHandler<ActionEvent>() {
+	        @Override
+	        public void handle(ActionEvent event) {
+	            grid.loadInputFile();
+	        }
+	    });
 	
 	    // Adds the buttons to the button pane.
 	    buttonPane = new GridPane();
 	    buttonPane.setHgap(10);
 	    buttonPane.setVgap(10);
-	    buttonPane.setPadding(new Insets(0, 0, 0, 180));
+	    buttonPane.setPadding(new Insets(0, 0, 0, 0));
 	    buttonPane.add(startButton,1,1);
 	    buttonPane.add(stopButton,2,1);
 	    buttonPane.add(showOnlyBacteriaButton,3,1);
+	    buttonPane.add(loadInputFile,4,1);
 	
 	    // Add the grid and buttons to the rootPane.
 	    rootPane = new VBox(5);

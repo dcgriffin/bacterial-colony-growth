@@ -6,6 +6,8 @@
 
 package dg.bacterialcolonygrowth;
 
+import org.junit.validator.PublicClassValidator;
+
 import javafx.scene.paint.Color;
 
 
@@ -94,6 +96,11 @@ public class Grid {
 		public Boolean cellAliveOrContainsRemains(int x, int y) {
 			return cells[x][y].cellAliveOrContainsRemains();
 		}
+	
+	// Sets the parameters of the program to those specified in the input file.
+	public void loadInputFile() {
+		
+	}
 
     // Shows only bacteria as squares and removes the nutrient as a way of viewing the final image.
     public void showOnlyBacteriaAsSquares() {
