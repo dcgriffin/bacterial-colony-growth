@@ -125,12 +125,9 @@ public class CellularAutomataGUI extends Application {
 	        public void handle(ActionEvent event) {
 	            FileChooser fileChooser = new FileChooser();
 	            File selectedFile = fileChooser.showOpenDialog(null);
+	            
 	            if (selectedFile != null) {
-	            		rules.loadInputFile(selectedFile);
-	            		//actionStatus.setText("File selected: " + selectedFile.getName());
-	            }
-	            else {
-	            		//actionStatus.setText("File selection cancelled.");
+	            		rules.setParametersFromInputFile(selectedFile);
 	            }
 	        }		
 	    });

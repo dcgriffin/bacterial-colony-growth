@@ -8,7 +8,10 @@
 
 package dg.bacterialcolonygrowth;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 
 import org.la4j.matrix.sparse.CRSMatrix;
 import org.la4j.vector.DenseVector;
@@ -257,9 +260,24 @@ public class CellularAutomataBacteriaRules {
     }
     
 	// Sets the parameters of the program to those specified in the input file.
-	public void loadInputFile(File inputFile) {
-		System.out.println(inputFile.getName());
-	}
+	public void setParametersFromInputFile(File inputFile) {
+		// Used to store the contents of an individual line.
+        String line = null;
+
+        // Opens the file and reads each line.
+        try {   	
+        		BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+
+            while((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }   
+
+            reader.close();         
+        }
+        catch(IOException e) {
+            System.out.println("Error: Input file " + inputFile.getName() + " cannot be read.");                  
+        }
+    }
 
 	// Creates an updated grid after one iteration of the rules governing the bacterial colony.
 	public void createUpdatedGrid(Grid currentGrid) {
