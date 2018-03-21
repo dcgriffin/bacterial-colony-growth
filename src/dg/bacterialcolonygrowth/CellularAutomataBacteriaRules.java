@@ -41,9 +41,9 @@ public class CellularAutomataBacteriaRules {
     private int[] crowdingFunctionValues = {0, 40, 40, 40, 30, 20, 10, 0, 0}; // Default = 0,40,40,40,30,20,10,0,0
 
     
-    /* **************************************
+    /* ****************************************************************************
 	* Constructors
-	*****************************************/
+	*******************************************************************************/
     
     // Constructor which create a new rules object.
 	public CellularAutomataBacteriaRules() {
@@ -89,9 +89,9 @@ public class CellularAutomataBacteriaRules {
         this.createUpdateMatrixForPeriodicBoundary();
 	}
 	
-	/* **************************************
+	/* ****************************************************************************
 	* Setters
-	*****************************************/
+	*******************************************************************************/
 
 	// Set grid height.
 	public void setGridHeight(int x) {
@@ -122,6 +122,25 @@ public class CellularAutomataBacteriaRules {
 		delta = x;
 	}
 	
+	// Set nutrient for sustenance.
+	public void setNutrientForSustenance(int x) {
+		nutrientForSustenance = x;
+	}
+	
+	// Set nutrient for growth.
+	public void setNutrientForGrowth(int x) {
+		nutrientForGrowth = x;
+	}
+	
+	// Set threshold for cell division.
+	public void setThresholdForCellDivision(int x) {
+		thresholdForDivision = x;
+	}
+	
+	// Set crowding function.
+	public void setCrowdingFunctionValues(int[] x) {
+		crowdingFunctionValues = x;
+	}
 	
 	// Sets every cell to have 100 nutrient level.
     private void setInitialDefaultNutrientLevels() {
@@ -136,6 +155,29 @@ public class CellularAutomataBacteriaRules {
              nutrientLevels.set(i, initialNutrientLevels[i]);
          }
     }
+    
+    // Sets the nutrient level of the specified cell, to the amount of nutrient specified.
+    public void setNutrientLevelOfCell (int i, double newNutrientLevel) {
+    		nutrientLevels.set(i, newNutrientLevel);
+    }
+    
+    /* ****************************************************************************
+	* Getters
+	*******************************************************************************/
+    
+    // Returns the nutrient level in the cell specified as an argument.
+    public double getNutrientLevelOfCell (int i) {
+    		return nutrientLevels.get(i);
+    }
+    
+    // Returns the Grid object 'grid'.
+ 	public Grid getCellularAutomataGrid() {
+ 		return grid;
+ 	}
+    
+    /* ****************************************************************************
+	* General Methods
+	*******************************************************************************/
     
     // Creates a new grid after the gird width or height has being changed/set.
     public void createNewGridAfterDimensionChange() {
@@ -187,16 +229,6 @@ public class CellularAutomataBacteriaRules {
     // Updates the nutrient levels for diffusion after a single time step.
     public void updateNutrientLevelsAfterDiffusion() {
         nutrientLevels = (DenseVector) updateMatrixPeriodicBoundary.multiply(nutrientLevels);
-    }
-    
-    // Returns the nutrient level in the cell specified as an argument.
-    public double getNutrientLevelOfCell (int i) {
-    		return nutrientLevels.get(i);
-    }
-    
-    // Sets the nutrient level of the specified cell, to the amount of nutrient specified.
-    public void setNutrientLevelOfCell (int i, double newNutrientLevel) {
-    		nutrientLevels.set(i, newNutrientLevel);
     }
 
     // Updates nutrients levels after bacteria have consumed some nutrient.
@@ -319,11 +351,6 @@ public class CellularAutomataBacteriaRules {
     		
     		return numberOfNeighbours;
     }
-	
-	// Returns the Grid object 'grid'.
-	public Grid getCellularAutomataGrid() {
-		return grid;
-	}
 
 	// Creates an updated grid after one iteration of the rules governing the bacterial colony.
 	public void createUpdatedGrid() {
