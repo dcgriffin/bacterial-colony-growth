@@ -8,18 +8,13 @@
 
 package dg.bacterialcolonygrowth;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-
 import org.la4j.matrix.sparse.CRSMatrix;
 import org.la4j.vector.DenseVector;
 
 public class CellularAutomataBacteriaRules {
 	private Grid grid;
-    private int gridWidth = 40;
-    private int gridHeight = 40;
+    private int gridWidth = 80;
+    private int gridHeight = 80;
     private int cellHeight = 7;
     private int cellWidth = 7;
     private int numberOfCellsInGrid;
@@ -43,6 +38,11 @@ public class CellularAutomataBacteriaRules {
     // is then used to determine if cell division takes place.
     private int[] crowdingFunctionValues = {0, 40, 40, 40, 30, 20, 10, 0, 0}; // Default = 0,40,40,40,30,20,10,0,0
 
+    
+    /* **************************************
+	* Constructors
+	*****************************************/
+    
     // Constructor which create a new rules object.
 	public CellularAutomataBacteriaRules() {
         numberOfCellsInGrid = gridWidth * gridHeight;
@@ -69,7 +69,52 @@ public class CellularAutomataBacteriaRules {
         this.setInitialNutrientLevels(initialNutrientLevels);
         this.createUpdateMatrixForPeriodicBoundary();
 	}
+	
+	/* **************************************
+	* Setters
+	*****************************************/
 
+	// Set grid height.
+	public void setGridHeight(int x) {
+		gridHeight = x;
+		this.createNewGridAfterDimensionChange();
+	}
+	
+	// Set grid width.
+	public void setGridWidth(int x) {
+		gridWidth = x;
+		this.createNewGridAfterDimensionChange();
+	}
+	
+	// Set cell height.
+	
+	
+	// Set cell width.
+	
+	
+	// Set rate of diffusion (delta)
+	
+	
+	
+	// Sets every cell to have 100 nutrient level.
+    private void setInitialDefaultNutrientLevels() {
+		for (int i=0; i<nutrientLevels.length(); i++) {
+			nutrientLevels.set(i, 100.0);
+		}
+    }
+    
+    // Sets the initial nutrient levels based on the array of values passes to it.
+    private void setInitialNutrientLevels(double[] initialNutrientLevels) {
+         for (int i=0; i<initialNutrientLevels.length; i++) {
+             nutrientLevels.set(i, initialNutrientLevels[i]);
+         }
+    }
+    
+    // Creates a new grid after the gird width or height has being changed/set.
+    public void createNewGridAfterDimensionChange() {
+    		grid = new Grid(gridHeight, gridWidth, cellHeight, cellWidth);
+    }
+    
     // Creates the update matrix for a cellular automata with a periodic boundary.
     private void createUpdateMatrixForPeriodicBoundary() {
         for (int i=0; i<numberOfCellsInGrid; i++) {
@@ -115,20 +160,6 @@ public class CellularAutomataBacteriaRules {
     // Updates the nutrient levels for diffusion after a single time step.
     public void updateNutrientLevelsAfterDiffusion() {
         nutrientLevels = (DenseVector) updateMatrixPeriodicBoundary.multiply(nutrientLevels);
-    }
-
-    // Sets the initial nutrient levels based on the array of values passes to it.
-    private void setInitialNutrientLevels(double[] initialNutrientLevels) {
-         for (int i=0; i<initialNutrientLevels.length; i++) {
-             nutrientLevels.set(i, initialNutrientLevels[i]);
-         }
-    }
-    
-    // Sets every cell to have 100 nutrient level.
-    private void setInitialDefaultNutrientLevels() {
-		for (int i=0; i<nutrientLevels.length(); i++) {
-			nutrientLevels.set(i, 100.0);
-		}
     }
     
     // Returns the nutrient level in the cell specified as an argument.
@@ -260,26 +291,6 @@ public class CellularAutomataBacteriaRules {
     		}
     		
     		return numberOfNeighbours;
-    }
-    
-	// Sets the parameters of the program to those specified in the input file.
-	public void setParametersFromInputFile(File inputFile) {
-		// Used to store the contents of an individual line.
-        String line = null;
-
-        // Opens the file and reads each line.
-        try {   	
-        		BufferedReader reader = new BufferedReader(new FileReader(inputFile));
-
-            while((line = reader.readLine()) != null) {
-                System.out.println(line);
-            }   
-
-            reader.close();         
-        }
-        catch(IOException e) {
-            System.out.println("Error: Input file " + inputFile.getName() + " cannot be read.");                  
-        }
     }
 	
 	// Returns the Grid object 'grid'.

@@ -15,9 +15,9 @@ public class Grid {
     private int width, height;
 
 	// Constructor which creates an x by y sized array of Cells.
-	public Grid(int x, int y, int cellHeight, int cellWidth) {
-        width = x;
-        height = y;   
+	public Grid(int gridHeight, int gridWidth, int cellHeight, int cellWidth) {
+        height = gridHeight;
+        width = gridWidth;   
         cells = new Cell[width][height];
         
         // Adds each cell to the cells array.

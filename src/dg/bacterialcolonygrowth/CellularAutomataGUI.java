@@ -45,14 +45,6 @@ public class CellularAutomataGUI extends Application {
     // seconds.
     private Timeline timeline = new Timeline(new KeyFrame( Duration.seconds(gridUpdateRate),
     								timelineEvent -> { this.manageSimulation(); }));
-    
-    // Manages the simulation by repeatedly calling the update grid method and pausing the simulation
-    // until that method has finished executing.
-    private void manageSimulation() {
-    		timeline.stop();
-		rules.createUpdatedGrid();
-		timeline.play();
-	}
 
 	// Displays the stage and creates the initial scene within it.
     @Override
@@ -65,24 +57,8 @@ public class CellularAutomataGUI extends Application {
 	    
 	    // Creates the grid.
 	    	grid = rules.getCellularAutomataGrid();
-	
-	    Cell cellsOfGrid[][] = grid.getCells();
 	    	
-	    	// Add the cells of the grid to the gridPane in order to show them visually.
-	    	for (int x=0; x<grid.getGridWidth(); x++) {
-	    		for (int y=0; y<grid.getGridHeight(); y++) {
-		        Cell c = cellsOfGrid[x][y];
-	            gridPane.add(c,x,y);
-	
-	            // Mouse click event that is called when a cell is clicked.
-	            c.setOnMouseClicked(new EventHandler<MouseEvent>() {
-	                @Override
-	                public void handle(MouseEvent t) {
-	                    c.cellClicked();
-	                }
-	            });
-	    		}
-	    }
+	    	this.addGridToGridpane();
 	
 	    	Button startButton = new Button("Start");
 	
@@ -118,7 +94,8 @@ public class CellularAutomataGUI extends Application {
 	    
 	    Button loadInputFile = new Button("Load input file");
 		
-	    // Calls a function to deal with setting parameters of the simulation from an input file.
+	    // Allows a user to select a file by graphically selecting a file from their directories.
+	    // Then calls a function to deal with setting the simulation parameters to those in the input file.
 	    loadInputFile.setOnAction(new EventHandler<ActionEvent>() {
 	        @Override
 	        public void handle(ActionEvent event) {
@@ -126,7 +103,13 @@ public class CellularAutomataGUI extends Application {
 	            File selectedFile = fileChooser.showOpenDialog(null);
 	            
 	            if (selectedFile != null) {
-	            		rules.setParametersFromInputFile(selectedFile);
+	            		InputFileReader inputFileReader = new InputFileReader();
+	            		inputFileReader.setParametersFromInputFile(rules, selectedFile);
+	            		
+	            		// Gets the new grid to display graphically in case it has changed.
+	            		grid = rules.getCellularAutomataGrid();
+	            		gridPane.getChildren().clear();
+	            		addGridToGridpane();
 	            }
 	        }		
 	    });
@@ -153,8 +136,37 @@ public class CellularAutomataGUI extends Application {
 	    mainStage.setScene(mainScene);
 	    mainStage.show();
 	}
+    
+    // Manages the simulation by repeatedly calling the update grid method and pausing the simulation
+    // until that method has finished executing.
+    private void manageSimulation() {
+    		timeline.stop();
+		rules.createUpdatedGrid();
+		timeline.play();
+	}
+    
+    // Adds the cellular automata Grid to the gridpane to show them on screen.
+    private void addGridToGridpane() {
+	    Cell cellsOfGrid[][] = grid.getCells();
+    	
+	    	// Add each cell of the grid to the gridPane.
+	    	for (int x=0; x<grid.getGridWidth(); x++) {
+	    		for (int y=0; y<grid.getGridHeight(); y++) {
+		        Cell c = cellsOfGrid[x][y];
+	            gridPane.add(c,x,y);
+	
+	            // Mouse click event that is called when a cell is clicked.
+	            c.setOnMouseClicked(new EventHandler<MouseEvent>() {
+	                @Override
+	                public void handle(MouseEvent t) {
+	                    c.cellClicked();
+	                }
+	            });
+	    		}
+	    }
+    }
 
     public static void main(String[] args) {
-    	launch(args);
+    		launch(args);
     }
 }

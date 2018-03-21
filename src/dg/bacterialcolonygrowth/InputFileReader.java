@@ -27,9 +27,10 @@ public class InputFileReader {
                 System.out.println(line);
             }
             
-            
+           rules.setGridHeight(10);
+           rules.setGridWidth(10);
 
-            reader.close();         
+           reader.close();         
         }
         catch(IOException e) {
             System.out.println("Error: Input file " + inputFile.getName() + " cannot be read.");                  
