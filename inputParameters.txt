@@ -1,6 +1,6 @@
-cell height:5
+grid height:30
+grid width:30
+cell height:
 cell width:
-grid height:
-grid width:
 rate of diffusion:
 
