@@ -11,6 +11,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 
+import com.sun.xml.internal.ws.client.sei.ValueSetter;
+
 public class InputFileReader {
 	
 	private File inputFile;
@@ -35,16 +37,28 @@ public class InputFileReader {
             while((line = reader.readLine()) != null) {
                 String[] parts = line.split(":");
                 
-                if (parts[0].equals("grid height"))
-                		rules.setGridHeight(Integer.parseInt(parts[1]));
-                else if (parts[0].equals("grid width"))
-                		rules.setGridWidth(Integer.parseInt(parts[1]));
-                else if (parts[0].equals("cell height"))
-            			rules.setCellHeight(Integer.parseInt(parts[1]));
-                else if (parts[0].equals("cell width"))
-            			rules.setCellWidth(Integer.parseInt(parts[1]));
-                else if (parts[0].equals("rate of diffusion"))
-            			rules.setDiffusionRate(Double.parseDouble((parts[1])));
+                if (parts.length == 2) {
+                		parts[1] = parts[1].replaceAll("\\s","");
+                		
+	                if (parts[0].equals("grid height"))
+	                		rules.setGridHeight(Integer.parseInt(parts[1]));
+	                else if (parts[0].equals("grid width"))
+	                		rules.setGridWidth(Integer.parseInt(parts[1]));
+	                else if (parts[0].equals("cell height"))
+	            			rules.setCellHeight(Integer.parseInt(parts[1]));
+	                else if (parts[0].equals("cell width"))
+	            			rules.setCellWidth(Integer.parseInt(parts[1]));
+	                else if (parts[0].equals("rate of diffusion"))
+	            			rules.setDiffusionRate(Double.parseDouble((parts[1])));
+	                else if (parts[0].equals("nutrient for sustenance"))
+	        				rules.setNutrientForSustenance(Integer.parseInt(parts[1]));
+	                else if (parts[0].equals("nutrient for growth"))
+	    					rules.setNutrientForGrowth(Integer.parseInt(parts[1]));
+	                else if (parts[0].equals("threshold for cell division"))
+	    					rules.setThresholdForCellDivision(Integer.parseInt(parts[1]));
+	                else if (parts[0].equals("crowding function"))
+    						this.checkCrowdingFunctionIsCorrectFormat(parts[1]);
+                }
             }
 
            reader.close();         
@@ -52,5 +66,28 @@ public class InputFileReader {
         catch(IOException e) {
             System.out.println("Error: Input file " + inputFile.getName() + " cannot be read.");                  
         }
+        catch(Exception e) {
+        		System.out.println("Input file not correct format.");
+        }
     }
+	
+	// Checks the crowding function specified in the input file is the correct format.
+	private void checkCrowdingFunctionIsCorrectFormat(String crowdingFunctionInput) {
+		String values [] = crowdingFunctionInput.split(",");
+		
+		// Check input is correct length i.e. 8, if it is create array of integers of the values and
+		// then call function to set those values.
+		if (values.length != 8) {
+			System.out.println("Error");
+		}
+		else {
+			int crowdingFunctionValues [] = new int[8];
+			
+			for (int i = 0; i < 8; i++) {
+				crowdingFunctionValues[i] = Integer.parseInt(values[i]);
+			}
+			
+			rules.setCrowdingFunctionValues(crowdingFunctionValues);
+		}	
+	}
 }
