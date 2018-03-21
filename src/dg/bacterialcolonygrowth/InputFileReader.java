@@ -13,9 +13,18 @@ import java.io.IOException;
 
 public class InputFileReader {
 	
+	private File inputFile;
+	private CellularAutomataBacteriaRules rules;
+	
+	// Constructor.
+	public InputFileReader(File input, CellularAutomataBacteriaRules rulesObject) {
+		inputFile = input;
+		rules = rulesObject;
+	}
+	
 	// Sets the parameters of the CullularAutomataBacteriaRules object that is passed to this method
 	// based on the values specified in the input file passed to this method.
-	public void setParametersFromInputFile(CellularAutomataBacteriaRules rules, File inputFile) {
+	public void setParametersFromInputFile() {
 		// Used to store the contents of an individual line.
         String line = null;
 

@@ -8,20 +8,22 @@
 
 package dg.bacterialcolonygrowth;
 
+import java.io.File;
+
 import org.la4j.matrix.sparse.CRSMatrix;
 import org.la4j.vector.DenseVector;
 
 public class CellularAutomataBacteriaRules {
 	private Grid grid;
-    private int gridWidth = 40;
-    private int gridHeight = 40;
+    private int gridHeight = 100;
+    private int gridWidth = 80;
     private int cellHeight = 5;
     private int cellWidth = 5;
     private int numberOfCellsInGrid;
     
     // Every m time steps cell division occurs, the following two variables are used to keep track of when
     // cell division should occur.
-    private int timeStepForCellDivisionCounter = 1;
+    private int timeStepForCellDivisionCounter = 1; // Default = 1
     private int numberOfTimeStepsForCellDivision = 8; // Default = 8
     
     private int nutrientForSustenance = 10; // Default = 10
@@ -47,7 +49,24 @@ public class CellularAutomataBacteriaRules {
 	public CellularAutomataBacteriaRules() {
         numberOfCellsInGrid = gridWidth * gridHeight;
         
-    		grid = new Grid(gridWidth, gridHeight, cellWidth, cellHeight);
+    		grid = new Grid(gridHeight, gridWidth, cellHeight, cellWidth);
+        
+        updateMatrixPeriodicBoundary = CRSMatrix.zero(numberOfCellsInGrid, numberOfCellsInGrid);
+        nutrientLevels = DenseVector.unit(numberOfCellsInGrid);
+        
+        this.setInitialDefaultNutrientLevels();
+        this.createUpdateMatrixForPeriodicBoundary();
+	}
+	
+	// Constructor which creates a rules object with the parameters specified in an input file.
+	public CellularAutomataBacteriaRules(File inputFile) {
+		// Reads the input file and sets the parameters.
+		InputFileReader inputFileReader = new InputFileReader(inputFile, this);
+		inputFileReader.setParametersFromInputFile();
+		
+        numberOfCellsInGrid = gridWidth * gridHeight;
+        
+        grid = new Grid(gridHeight, gridWidth, cellHeight, cellWidth);
         
         updateMatrixPeriodicBoundary = CRSMatrix.zero(numberOfCellsInGrid, numberOfCellsInGrid);
         nutrientLevels = DenseVector.unit(numberOfCellsInGrid);
@@ -162,7 +181,7 @@ public class CellularAutomataBacteriaRules {
     // From 2D coordinates of a grid position, return the position this corresponds to in the 1D nutrient
     // matrix.
     public int returnPositionInNutrientMatrix(int x, int y) {
-    		return x + y*gridHeight;
+    		return x + y*gridWidth;
     }
 
     // Updates the nutrient levels for diffusion after a single time step.

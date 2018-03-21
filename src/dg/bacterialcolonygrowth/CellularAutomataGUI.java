@@ -105,8 +105,8 @@ public class CellularAutomataGUI extends Application {
 	            File selectedFile = fileChooser.showOpenDialog(null);
 	            
 	            if (selectedFile != null) {
-	            		InputFileReader inputFileReader = new InputFileReader();
-	            		inputFileReader.setParametersFromInputFile(rules, selectedFile);
+	            		// Creates new rule set the parameters specified in the selected file.
+	            		rules = new CellularAutomataBacteriaRules(selectedFile);
 	            		
 	            		// Gets the new grid to display graphically in case it has changed.
 	            		grid = rules.getCellularAutomataGrid();
