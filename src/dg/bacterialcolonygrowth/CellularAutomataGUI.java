@@ -99,6 +99,8 @@ public class CellularAutomataGUI extends Application {
 	    loadInputFile.setOnAction(new EventHandler<ActionEvent>() {
 	        @Override
 	        public void handle(ActionEvent event) {
+	        		timeline.stop();
+	        		
 	            FileChooser fileChooser = new FileChooser();
 	            File selectedFile = fileChooser.showOpenDialog(null);
 	            

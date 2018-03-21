@@ -1,6 +1,5 @@
-grid height:30
-grid width:30
-cell height:
-cell width:
-rate of diffusion:
-
+grid height:70
+grid width:70
+cell height:5
+cell width:5
+rate of diffusion:0.4

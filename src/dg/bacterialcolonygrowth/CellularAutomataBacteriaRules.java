@@ -13,10 +13,10 @@ import org.la4j.vector.DenseVector;
 
 public class CellularAutomataBacteriaRules {
 	private Grid grid;
-    private int gridWidth = 80;
-    private int gridHeight = 80;
-    private int cellHeight = 7;
-    private int cellWidth = 7;
+    private int gridWidth = 40;
+    private int gridHeight = 40;
+    private int cellHeight = 5;
+    private int cellWidth = 5;
     private int numberOfCellsInGrid;
     
     // Every m time steps cell division occurs, the following two variables are used to keep track of when
@@ -87,13 +87,21 @@ public class CellularAutomataBacteriaRules {
 	}
 	
 	// Set cell height.
-	
+	public void setCellHeight(int x) {
+		cellHeight = x;
+		this.createNewGridAfterDimensionChange();
+	}
 	
 	// Set cell width.
-	
+	public void setCellWidth(int x) {
+		cellWidth = x;
+		this.createNewGridAfterDimensionChange();
+	}
 	
 	// Set rate of diffusion (delta)
-	
+	public void setDiffusionRate(double x) {
+		delta = x;
+	}
 	
 	
 	// Sets every cell to have 100 nutrient level.

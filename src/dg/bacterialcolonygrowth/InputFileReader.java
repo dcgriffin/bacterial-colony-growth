@@ -24,11 +24,19 @@ public class InputFileReader {
         		BufferedReader reader = new BufferedReader(new FileReader(inputFile));
 
             while((line = reader.readLine()) != null) {
-                System.out.println(line);
+                String[] parts = line.split(":");
+                
+                if (parts[0].equals("grid height"))
+                		rules.setGridHeight(Integer.parseInt(parts[1]));
+                else if (parts[0].equals("grid width"))
+                		rules.setGridWidth(Integer.parseInt(parts[1]));
+                else if (parts[0].equals("cell height"))
+            			rules.setCellHeight(Integer.parseInt(parts[1]));
+                else if (parts[0].equals("cell width"))
+            			rules.setCellWidth(Integer.parseInt(parts[1]));
+                else if (parts[0].equals("rate of diffusion"))
+            			rules.setDiffusionRate(Double.parseDouble((parts[1])));
             }
-            
-           rules.setGridHeight(10);
-           rules.setGridWidth(10);
 
            reader.close();         
         }
