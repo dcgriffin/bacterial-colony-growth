@@ -9,6 +9,7 @@
 package dg.bacterialcolonygrowth;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.la4j.matrix.sparse.CRSMatrix;
 import org.la4j.vector.DenseVector;
@@ -59,7 +60,7 @@ public class CellularAutomataBacteriaRules {
 	}
 	
 	// Constructor which creates a rules object with the parameters specified in an input file.
-	public CellularAutomataBacteriaRules(File inputFile) {
+	public CellularAutomataBacteriaRules(File inputFile) throws IOException, Exception {
 		// Reads the input file and sets the parameters.
 		InputFileReader inputFileReader = new InputFileReader(inputFile, this);
 		inputFileReader.setParametersFromInputFile();
@@ -140,6 +141,11 @@ public class CellularAutomataBacteriaRules {
 	// Set crowding function.
 	public void setCrowdingFunctionValues(int[] x) {
 		crowdingFunctionValues = x;
+	}
+	
+	// Set number of time steps for cell division.
+	public void setNumberOfTimestepsForCellDivision(int x) {
+		numberOfTimeStepsForCellDivision = x;
 	}
 	
 	// Sets every cell to have 100 nutrient level.

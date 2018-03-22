@@ -1,9 +1,10 @@
-grid height:gfdg
-grid width:50
+grid height:120
+grid width:120
 cell height:2
 cell width:2
 rate of diffusion:0.4
-nutrient for sustenance:
-nutrient for growth:
-threshold for cell division:
-crowding function:
+nutrient for sustenance: 10
+nutrient for growth:60
+threshold for cell division: 10
+crowding function:0, 40, 40, 40, 30, 20, 10, 0, 0
+number of timesteps for cell division:8

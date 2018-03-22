@@ -10,7 +10,10 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.input.MouseEvent;
@@ -18,6 +21,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.IOException;
 
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
@@ -106,7 +110,17 @@ public class CellularAutomataGUI extends Application {
 	            
 	            if (selectedFile != null) {
 	            		// Creates new rule set the parameters specified in the selected file.
-	            		rules = new CellularAutomataBacteriaRules(selectedFile);
+	            		try {
+	            			rules = new CellularAutomataBacteriaRules(selectedFile);
+	            		}
+	            		catch(IOException e) {
+	                     Alert alert = new Alert(AlertType.ERROR, "Cannot read input file.", ButtonType.OK);
+	                     alert.showAndWait();
+	                }
+                    catch(Exception e) {
+                    		Alert alert = new Alert(AlertType.ERROR, "Input file is not the correct format.", ButtonType.OK);
+                    		alert.showAndWait();
+                    }
 	            		
 	            		// Gets the new grid to display graphically in case it has changed.
 	            		grid = rules.getCellularAutomataGrid();
