@@ -16,8 +16,8 @@ import org.la4j.vector.DenseVector;
 
 public class CellularAutomataBacteriaRules {
 	private Grid grid;
-    private int gridHeight = 100;
-    private int gridWidth = 80;
+    private int gridHeight = 3;
+    private int gridWidth = 3;
     private int cellHeight = 5;
     private int cellWidth = 5;
     private int numberOfCellsInGrid;
@@ -31,7 +31,9 @@ public class CellularAutomataBacteriaRules {
     private int nutrientForGrowth = 60; // Default = 60
     private int thresholdForDivision = 2600; // Default = 2600
     
+    private String boundaryType;
     private CRSMatrix updateMatrixPeriodicBoundary;
+    private CRSMatrix updateMatrix;
     private DenseVector nutrientLevels;
     
     // Rate of diffusion (value should be between 0 and 1).
@@ -53,10 +55,12 @@ public class CellularAutomataBacteriaRules {
     		grid = new Grid(gridHeight, gridWidth, cellHeight, cellWidth);
         
         updateMatrixPeriodicBoundary = CRSMatrix.zero(numberOfCellsInGrid, numberOfCellsInGrid);
+        updateMatrix = CRSMatrix.zero(numberOfCellsInGrid, numberOfCellsInGrid);
         nutrientLevels = DenseVector.unit(numberOfCellsInGrid);
         
         this.setInitialDefaultNutrientLevels();
         this.createUpdateMatrixForPeriodicBoundary();
+        this.createUpdateMatrixForAbsorbantBoundary();
 	}
 	
 	// Constructor which creates a rules object with the parameters specified in an input file.
@@ -192,38 +196,67 @@ public class CellularAutomataBacteriaRules {
     
     // Creates the update matrix for a cellular automata with a periodic boundary.
     private void createUpdateMatrixForPeriodicBoundary() {
+    		// Loop through each cell and set the values for that row in that matrix.
         for (int i=0; i<numberOfCellsInGrid; i++) {
             // The cell itself.
 	        updateMatrixPeriodicBoundary.set(i, i, 1 - delta);
             // Cell to the left.
             if (i % gridWidth == 0) {
-                updateMatrixPeriodicBoundary.set(i, i + gridWidth - 1, delta/4);
+                updateMatrixPeriodicBoundary.set(i + gridWidth - 1, i, delta/4);
             }
             else {
-                updateMatrixPeriodicBoundary.set(i, i - 1, delta/4);
+                updateMatrixPeriodicBoundary.set(i-1, i, delta/4);
             }
             // Cell to the right.
             if ((i + 1) % gridWidth == 0) {
-                updateMatrixPeriodicBoundary.set(i, i - gridWidth + 1, delta/4);
+                updateMatrixPeriodicBoundary.set(i - gridWidth + 1, i, delta/4);
             }
             else {
-                updateMatrixPeriodicBoundary.set(i, i + 1, delta/4);
+                updateMatrixPeriodicBoundary.set(i + 1, i, delta/4);
             }
             // Cell above.
             if (i + gridWidth > numberOfCellsInGrid - 1) {
-                updateMatrixPeriodicBoundary.set(i, i - numberOfCellsInGrid + gridWidth, delta/4);
+                updateMatrixPeriodicBoundary.set(i - numberOfCellsInGrid + gridWidth, i, delta/4);
             }
             else {
-                updateMatrixPeriodicBoundary.set(i, i + gridWidth, delta/4);
+                updateMatrixPeriodicBoundary.set(i + gridWidth, i, delta/4);
             }
             // Cell below.
             if (i - gridWidth < 0) {
-                updateMatrixPeriodicBoundary.set(i, i + numberOfCellsInGrid - gridWidth, delta/4);
+                updateMatrixPeriodicBoundary.set(i + numberOfCellsInGrid - gridWidth, i, delta/4);
             }
             else {
-                updateMatrixPeriodicBoundary.set(i, i - gridWidth, delta/4);
+                updateMatrixPeriodicBoundary.set(i - gridWidth, i, delta/4);
             }
         }
+    }
+    
+    // Creates the update matrix for a cellular automata with an absorbant boundary.
+    private void createUpdateMatrixForAbsorbantBoundary() {
+        for (int i=0; i<numberOfCellsInGrid; i++) {
+        	// The cell itself.
+	        updateMatrix.set(i, i, 1 - delta);
+            // Cell to the left.
+            if (i % gridWidth != 0) {
+            		updateMatrix.set(i-1, i, delta/4);
+            }
+            // Cell to the right.
+            if ((i + 1) % gridWidth != 0) {
+            		updateMatrix.set(i + 1, i, delta/4);
+            }
+            // Cell above.
+            if (!(i + gridWidth > numberOfCellsInGrid - 1)) {
+            		updateMatrix.set(i + gridWidth, i, delta/4);
+            }
+            // Cell below.
+            if (!(i - gridWidth < 0)) {
+            		updateMatrix.set(i - gridWidth, i, delta/4);
+            }
+            for(int x=0; x<9; x++) {
+    				System.out.print(updateMatrix.get(x, i) + "   ");
+            }
+            System.out.println("");
+        }   
     }
     
     // From 2D coordinates of a grid position, return the position this corresponds to in the 1D nutrient

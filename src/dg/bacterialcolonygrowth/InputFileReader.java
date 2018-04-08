@@ -71,7 +71,7 @@ public class InputFileReader {
 		
 		// Check input is correct length i.e. 8, if it is create array of integers of the values and
 		// then call function to set those values.
-		if (values.length != 8) {
+		if (values.length != 9) {
 			System.out.println("Error");
 		}
 		else {

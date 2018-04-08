@@ -123,8 +123,8 @@ public class CellularAutomataGUI extends Application {
                     }
 	            		
 	            		// Gets the new grid to display graphically in case it has changed.
-	            		grid = rules.getCellularAutomataGrid();
-	            		gridPane.getChildren().clear();
+	            		grid = rules.getCellularAutomataGrid();	            		
+	            		gridPane.getChildren().clear();	            		
 	            		addGridToGridpane();
 	            }
 	        }		
@@ -142,7 +142,7 @@ public class CellularAutomataGUI extends Application {
 	
 	    // Add the grid and buttons to the rootPane.
 	    rootPane = new VBox(5);
-	    rootPane.getChildren().addAll(gridPane, buttonPane);
+	    rootPane.getChildren().addAll(buttonPane, gridPane);
 	
 	    // Adds the rootpane to the scene.
 	    mainScene = new Scene(rootPane,700,700);
