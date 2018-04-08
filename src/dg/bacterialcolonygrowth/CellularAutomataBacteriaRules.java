@@ -60,7 +60,7 @@ public class CellularAutomataBacteriaRules {
         
         this.setInitialDefaultNutrientLevels();
         this.createUpdateMatrixForPeriodicBoundary();
-        this.createUpdateMatrixForAbsorbantBoundary();
+        this.createUpdateMatrixForReflectingBoundary();
 	}
 	
 	// Constructor which creates a rules object with the parameters specified in an input file.
@@ -234,7 +234,7 @@ public class CellularAutomataBacteriaRules {
     // Creates the update matrix for a cellular automata with an absorbant boundary.
     private void createUpdateMatrixForAbsorbantBoundary() {
         for (int i=0; i<numberOfCellsInGrid; i++) {
-        	// The cell itself.
+        		// The cell itself.
 	        updateMatrix.set(i, i, 1 - delta);
             // Cell to the left.
             if (i % gridWidth != 0) {
@@ -252,10 +252,54 @@ public class CellularAutomataBacteriaRules {
             if (!(i - gridWidth < 0)) {
             		updateMatrix.set(i - gridWidth, i, delta/4);
             }
-            for(int x=0; x<9; x++) {
-    				System.out.print(updateMatrix.get(x, i) + "   ");
+        }   
+    }
+    
+ // Creates the update matrix for a cellular automata with a reflecting boundary.
+    private void createUpdateMatrixForReflectingBoundary() {
+        for (int i=0; i<numberOfCellsInGrid; i++) {
+        		// The cell itself 
+        		// (for corner cells)
+        		if(i == 0 || i == gridWidth-1 || i == numberOfCellsInGrid - gridWidth || i == numberOfCellsInGrid - 1) {
+        			updateMatrix.set(i, i, 1 - delta/2);
+        		}
+        		// (for left boundary)
+        		else if (i % gridWidth == 0) {
+        			updateMatrix.set(i, i, 1 - (3*delta/4));
+        		}
+        		// (for right boundary)
+        		else if ((i+1) % gridWidth == 0) {
+        			updateMatrix.set(i, i, 1 - (3*delta/4));
+        		}
+        		// (for lower boundary)
+        		else if (i > numberOfCellsInGrid - gridWidth) {
+        			updateMatrix.set(i, i, 1 - (3*delta/4));
+        		}
+        		// (for upper boundary)
+        		else if (i < gridWidth - 1) {
+        			updateMatrix.set(i, i, 1 - (3*delta/4));
+        		}
+        		// (any other position in the cellular automata, i.e. not on a boundary)
+        		else {
+        			updateMatrix.set(i, i, 1 - delta);
+        		}
+        		
+            // Cell to the right.
+            if ((i + 1) % gridWidth != 0) {
+            		updateMatrix.set(i + 1, i, delta/4);
             }
-            System.out.println("");
+            // Cell to the left.
+            if (i % gridWidth != 0) {
+            		updateMatrix.set(i-1, i, delta/4);
+            }
+            // Cell above.
+            if (!(i + gridWidth > numberOfCellsInGrid - 1)) {
+            		updateMatrix.set(i + gridWidth, i, delta/4);
+            }
+            // Cell below.
+            if (!(i - gridWidth < 0)) {
+            		updateMatrix.set(i - gridWidth, i, delta/4);
+            }
         }   
     }
     
