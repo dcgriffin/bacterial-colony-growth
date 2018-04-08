@@ -93,6 +93,10 @@ public class CellularAutomataGUI extends Application {
 	        public void handle(ActionEvent event) {
 	            grid.showOnlyBacteriaAsSquares();
 	            timeline.stop();
+	            
+	            // Remove start and stop buttons after final pattern is shown.
+	            buttonPane.getChildren().remove(startButton);
+	            buttonPane.getChildren().remove(stopButton);
 	        }
 	    });
 	    
@@ -112,6 +116,14 @@ public class CellularAutomataGUI extends Application {
 	            		// Creates new rule set the parameters specified in the selected file.
 	            		try {
 	            			rules = new CellularAutomataBacteriaRules(selectedFile);
+	            			
+	            			// Display start and stop buttons if they are not currently displayed.
+	            			if (!(buttonPane.getChildren().contains(startButton))) {
+	            				buttonPane.getChildren().add(0, startButton);
+	            			}
+	            			if (!(buttonPane.getChildren().contains(stopButton))) {
+	            				buttonPane.getChildren().add(1, stopButton);
+	            			}
 	            		}
 	            		catch(IOException e) {
 	                     Alert alert = new Alert(AlertType.ERROR, "Cannot read input file.", ButtonType.OK);

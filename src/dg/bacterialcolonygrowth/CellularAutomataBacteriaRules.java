@@ -16,8 +16,8 @@ import org.la4j.vector.DenseVector;
 
 public class CellularAutomataBacteriaRules {
 	private Grid grid;
-    private int gridHeight = 3;
-    private int gridWidth = 3;
+    private int gridHeight = 40;
+    private int gridWidth = 40;
     private int cellHeight = 5;
     private int cellWidth = 5;
     private int numberOfCellsInGrid;
@@ -31,8 +31,7 @@ public class CellularAutomataBacteriaRules {
     private int nutrientForGrowth = 60; // Default = 60
     private int thresholdForDivision = 2600; // Default = 2600
     
-    private String boundaryType;
-    private CRSMatrix updateMatrixPeriodicBoundary;
+    private String boundaryType = "periodic";
     private CRSMatrix updateMatrix;
     private DenseVector nutrientLevels;
     
@@ -54,13 +53,21 @@ public class CellularAutomataBacteriaRules {
         
     		grid = new Grid(gridHeight, gridWidth, cellHeight, cellWidth);
         
-        updateMatrixPeriodicBoundary = CRSMatrix.zero(numberOfCellsInGrid, numberOfCellsInGrid);
         updateMatrix = CRSMatrix.zero(numberOfCellsInGrid, numberOfCellsInGrid);
         nutrientLevels = DenseVector.unit(numberOfCellsInGrid);
         
         this.setInitialDefaultNutrientLevels();
-        this.createUpdateMatrixForPeriodicBoundary();
-        this.createUpdateMatrixForReflectingBoundary();
+        
+        // Create update matrix for the desired boundary condition.
+        if (boundaryType.equals("absorbant")) {
+        		this.createUpdateMatrixForAbsorbantBoundary();
+        }
+        else if (boundaryType.equals("periodic")) {
+    			this.createUpdateMatrixForPeriodicBoundary();
+        }
+        else {
+        		this.createUpdateMatrixForReflectingBoundary();
+        }
 	}
 	
 	// Constructor which creates a rules object with the parameters specified in an input file.
@@ -73,11 +80,21 @@ public class CellularAutomataBacteriaRules {
         
         grid = new Grid(gridHeight, gridWidth, cellHeight, cellWidth);
         
-        updateMatrixPeriodicBoundary = CRSMatrix.zero(numberOfCellsInGrid, numberOfCellsInGrid);
+        updateMatrix = CRSMatrix.zero(numberOfCellsInGrid, numberOfCellsInGrid);
         nutrientLevels = DenseVector.unit(numberOfCellsInGrid);
         
         this.setInitialDefaultNutrientLevels();
-        this.createUpdateMatrixForPeriodicBoundary();
+        
+        // Create update matrix for the desired boundary condition.
+        if (boundaryType.equals("absorbant")) {
+        		this.createUpdateMatrixForAbsorbantBoundary();
+        }
+        else if (boundaryType.equals("periodic")) {
+    			this.createUpdateMatrixForPeriodicBoundary();
+        }
+        else {
+        		this.createUpdateMatrixForReflectingBoundary();
+        }
 	}
 	
 	// Constructor which creates a new rules object with specified conditions.
@@ -87,11 +104,21 @@ public class CellularAutomataBacteriaRules {
         grid = new Grid(gridWidth, gridHeight, cellWidth, cellHeight);
 
         delta = deltaValue;
-        updateMatrixPeriodicBoundary = CRSMatrix.zero(numberOfCellsInGrid, numberOfCellsInGrid);
+        updateMatrix = CRSMatrix.zero(numberOfCellsInGrid, numberOfCellsInGrid);
         nutrientLevels = DenseVector.unit(numberOfCellsInGrid);
         
         this.setInitialNutrientLevels(initialNutrientLevels);
-        this.createUpdateMatrixForPeriodicBoundary();
+        
+        // Create update matrix for the desired boundary condition.
+        if (boundaryType.equals("absorbant")) {
+        		this.createUpdateMatrixForAbsorbantBoundary();
+        }
+        else if (boundaryType.equals("periodic")) {
+    			this.createUpdateMatrixForPeriodicBoundary();
+        }
+        else {
+        		this.createUpdateMatrixForReflectingBoundary();
+        }
 	}
 	
 	/* ****************************************************************************
@@ -199,34 +226,34 @@ public class CellularAutomataBacteriaRules {
     		// Loop through each cell and set the values for that row in that matrix.
         for (int i=0; i<numberOfCellsInGrid; i++) {
             // The cell itself.
-	        updateMatrixPeriodicBoundary.set(i, i, 1 - delta);
+	        updateMatrix.set(i, i, 1 - delta);
             // Cell to the left.
             if (i % gridWidth == 0) {
-                updateMatrixPeriodicBoundary.set(i + gridWidth - 1, i, delta/4);
+                updateMatrix.set(i + gridWidth - 1, i, delta/4);
             }
             else {
-                updateMatrixPeriodicBoundary.set(i-1, i, delta/4);
+                updateMatrix.set(i-1, i, delta/4);
             }
             // Cell to the right.
             if ((i + 1) % gridWidth == 0) {
-                updateMatrixPeriodicBoundary.set(i - gridWidth + 1, i, delta/4);
+                updateMatrix.set(i - gridWidth + 1, i, delta/4);
             }
             else {
-                updateMatrixPeriodicBoundary.set(i + 1, i, delta/4);
+                updateMatrix.set(i + 1, i, delta/4);
             }
             // Cell above.
             if (i + gridWidth > numberOfCellsInGrid - 1) {
-                updateMatrixPeriodicBoundary.set(i - numberOfCellsInGrid + gridWidth, i, delta/4);
+                updateMatrix.set(i - numberOfCellsInGrid + gridWidth, i, delta/4);
             }
             else {
-                updateMatrixPeriodicBoundary.set(i + gridWidth, i, delta/4);
+                updateMatrix.set(i + gridWidth, i, delta/4);
             }
             // Cell below.
             if (i - gridWidth < 0) {
-                updateMatrixPeriodicBoundary.set(i + numberOfCellsInGrid - gridWidth, i, delta/4);
+                updateMatrix.set(i + numberOfCellsInGrid - gridWidth, i, delta/4);
             }
             else {
-                updateMatrixPeriodicBoundary.set(i - gridWidth, i, delta/4);
+                updateMatrix.set(i - gridWidth, i, delta/4);
             }
         }
     }
@@ -311,7 +338,7 @@ public class CellularAutomataBacteriaRules {
 
     // Updates the nutrient levels for diffusion after a single time step.
     public void updateNutrientLevelsAfterDiffusion() {
-        nutrientLevels = (DenseVector) updateMatrixPeriodicBoundary.multiply(nutrientLevels);
+        nutrientLevels = (DenseVector) updateMatrix.multiply(nutrientLevels);
     }
 
     // Updates nutrients levels after bacteria have consumed some nutrient.
@@ -389,7 +416,15 @@ public class CellularAutomataBacteriaRules {
     // threshold then bacterium cell will appear in the grid space with probability 50%.
     public boolean shouldCellDivisionOccur(Grid gridBeforeUpdate, int x, int y) {   	
     		double nutrientInCell = nutrientLevels.get(returnPositionInNutrientMatrix(x, y));
-    		int numberOfNeighbours = returnNumberOfAliveNeighboursForPeriodicGrid(gridBeforeUpdate, x, y);
+    		int numberOfNeighbours; 
+    		
+    		// Check boundary condition type and find number of neighbours for the cell.
+    		if (boundaryType == "periodic") {
+    			numberOfNeighbours = returnNumberOfAliveNeighboursForPeriodicGrid(gridBeforeUpdate, x, y);
+    		}
+    		else {
+    			numberOfNeighbours = returnNumberOfAliveNeighboursForRelectingOrAbsorbantGrids(gridBeforeUpdate, x, y);
+    		}
     		
     		// Check if crowding function * nutrient level is greater than threshold.
     		if (crowdingFunctionValues[numberOfNeighbours] * nutrientInCell > thresholdForDivision) {
@@ -403,7 +438,6 @@ public class CellularAutomataBacteriaRules {
     }
     
     // Returns the number of alive neighbours of cell x,y in the grid passed to this function.
-    // Will return -1 if the cell itself and all its neighbours are dead.
     public int returnNumberOfAliveNeighboursForPeriodicGrid(Grid gridBeforeThisUpdate, int x, int y) {
 		int numberOfNeighbours = 0;
 
@@ -429,6 +463,32 @@ public class CellularAutomataBacteriaRules {
     						numberOfNeighbours++;
     					}
 				}
+    			}
+    		}
+    		
+    		return numberOfNeighbours;
+    }
+    
+    // Returns the number of alive neighbours of cell x,y in the grid passed to this function.
+    public int returnNumberOfAliveNeighboursForRelectingOrAbsorbantGrids(Grid gridBeforeThisUpdate, int x, int y) {
+		int numberOfNeighbours = 0;
+
+		// Loops through 9 cells, the cell in question along with the surrounding 8.
+    		for (int col = (x-1); col<(x+2); col++) {
+    			for (int row = (y-1); row<(y+2); row++) {
+                int tempRow = row;
+                int tempCol = col;
+
+                	// If cell is not an edge cell.
+                if (!(tempCol == gridWidth) && !(tempCol == -1)  && !(tempRow == gridHeight)  && !(tempRow == -1)) {
+                		// If cell is alive.
+					if (gridBeforeThisUpdate.cellAlive(tempCol, tempRow) == true) {
+						// Make sure it is not the cell itself that is being counted.
+						if (tempCol != x || tempRow != y) {
+							numberOfNeighbours++;
+						}
+					}
+                }     
     			}
     		}
     		
