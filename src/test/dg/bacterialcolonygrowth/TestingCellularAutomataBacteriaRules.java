@@ -3,57 +3,43 @@ package dg.bacterialcolonygrowth;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
+import com.sun.javafx.scene.control.ReadOnlyUnbackedObservableList;
+
 public class TestingCellularAutomataBacteriaRules {
 	
-	// Test the constructor that requires just height and width correctly creates a grid with the default
-	// nutrient values.
+	// Test the default constructor creates a grid with initial nutrient levels set to 100.
 	@Test
-	public void testSimpleConstructor() {
-		int width = 3;
-		int height = 3;
-		CellularAutomataBacteriaRules rules = new CellularAutomataBacteriaRules(width, height);
+	public void testDefaultConstructor() {
+		CellularAutomataBacteriaRules rules = new CellularAutomataBacteriaRules();
 		
+		// Get size of grid.
+		Grid grid = rules.getCellularAutomataGrid();
+		int height = grid.getGridHeight();
+		int width = grid.getGridWidth();
+		
+		// Test first cell, last cell and a middle cell are all set to 100 nutrient level.
 		assertEquals(100, rules.getNutrientLevelOfCell(0), 0);
-		assertEquals(100, rules.getNutrientLevelOfCell(1), 0);
-		assertEquals(100, rules.getNutrientLevelOfCell(2), 0);
-		assertEquals(100, rules.getNutrientLevelOfCell(3), 0);
-		assertEquals(100, rules.getNutrientLevelOfCell(4), 0);
-		assertEquals(100, rules.getNutrientLevelOfCell(5), 0);
-		assertEquals(100, rules.getNutrientLevelOfCell(6), 0);
-		assertEquals(100, rules.getNutrientLevelOfCell(7), 0);
-		assertEquals(100, rules.getNutrientLevelOfCell(8), 0);
-	}
-	
-	// Test nutrient levels are set correctly.
-	@Test
-	public void testNutrientLevelsAreSetCorrectlyInitially() {
-		int width = 3;
-	    int height = 3;
-	    double delta = 0.4;
-	    double[] initialNutrientLevels = new double[] {0,10.5,45.8,100.0,0.3,98,100,64.2,25};
-	    CellularAutomataBacteriaRules rules = new CellularAutomataBacteriaRules(width, height, initialNutrientLevels, delta);
-	    
-	    assertEquals(0, rules.getNutrientLevelOfCell(0), 0);
-	    assertEquals(10.5, rules.getNutrientLevelOfCell(1), 0);
-	    assertEquals(45.8, rules.getNutrientLevelOfCell(2),  0);
-	    assertEquals(100, rules.getNutrientLevelOfCell(3), 0);
-	    assertEquals(0.3, rules.getNutrientLevelOfCell(4), 0);
-	    assertEquals(98, rules.getNutrientLevelOfCell(5), 0);
-	    assertEquals(100, rules.getNutrientLevelOfCell(6), 0);
-	    assertEquals(64.2, rules.getNutrientLevelOfCell(7), 0);
-	    assertEquals(25, rules.getNutrientLevelOfCell(8), 0);
+		assertEquals(100, rules.getNutrientLevelOfCell((height*width - 1)/2), 0);
+		assertEquals(100, rules.getNutrientLevelOfCell(height*width - 1), 0);
 	}
 	
 	// Test diffusion after one time step.
 	@Test
 	public void testNutrientDiffusesCorrectlyForPeriodicBoundary() {
-		int width = 3;
-		int height = 3;
 		double delta = 0.5;
 		double[] initialNutrientLevels = new double[] {0,0,0,0,90.0,0,0,0,0};
-		CellularAutomataBacteriaRules rules = new CellularAutomataBacteriaRules(width, height, initialNutrientLevels, delta);
+		CellularAutomataBacteriaRules rules = new CellularAutomataBacteriaRules();
 		
-		// After one time step
+		// Make cellular automata 3 x 3.
+		rules.setGridHeight(3);
+		rules.setGridWidth(3);
+		
+		// Set inital nutirent and diffusion rate.
+		rules.setNutrientLevelsToSpecifiedValues(initialNutrientLevels);
+		rules.setDiffusionRate(delta);
+		rules.setBoundaryCondition("periodic");
+		
+		// Test after one time step.
 		rules.updateNutrientLevelsAfterDiffusion();
 		assertEquals(0, rules.getNutrientLevelOfCell(0),  0);
 		assertEquals(11.25, rules.getNutrientLevelOfCell(1), 0);
@@ -94,16 +80,18 @@ public class TestingCellularAutomataBacteriaRules {
 		
 	}
 	
-	// Tests the number of alive neighbours function works correctly.
+	// Tests the number of alive neighbours function works correctly for periodic boundary.
 	@Test
 	public void testNumberOfAliveNeighboursFunctionForPeriodicBoundary() {
-		int width = 3;
 		int height = 3;
-		double delta = 0.5;
-		double[] initialNutrientLevels = new double[] {0,0,0,0,90};
-		CellularAutomataBacteriaRules rules = new CellularAutomataBacteriaRules(width, height, initialNutrientLevels, delta);
+		int width = 3;
+		CellularAutomataBacteriaRules rules = new CellularAutomataBacteriaRules();
 		
-		Grid grid = new Grid(width, height, 7, 7);
+		// Make cellular automata height x width.
+		rules.setGridHeight(height);
+		rules.setGridWidth(width);
+		
+		Grid grid = rules.getCellularAutomataGrid();
 	
 		// No bacteria should initially be present, so check each cell has 0 live neighbours.
 		assertEquals(0, rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 0, 0), 0);
@@ -140,9 +128,15 @@ public class TestingCellularAutomataBacteriaRules {
 	public void testNutrientLevelsUpdateCorrectlyForBacteriaConsumption() {
 		int width = 3;
 		int height = 3;
-		double delta = 0.5f;
+		double delta = 0.5;
 		double[] initialNutrientLevels = new double[] {50,50,50,50,50,50,50,50,50};
-		CellularAutomataBacteriaRules rules = new CellularAutomataBacteriaRules(width, height, initialNutrientLevels, delta);
+		CellularAutomataBacteriaRules rules = new CellularAutomataBacteriaRules();
+		
+		// Make width x height cellular automata with specified nutrient levels and delta value.
+		rules.setGridHeight(height);
+		rules.setGridWidth(width);
+		rules.setNutrientLevelsToSpecifiedValues(initialNutrientLevels);
+		rules.setDiffusionRate(delta);
 		
 		Grid grid = new Grid(width, height, 7, 7);
 		
@@ -159,7 +153,7 @@ public class TestingCellularAutomataBacteriaRules {
 		
 		Grid copyOfGrid = new Grid(grid);
 		
-		rules.updateBacteriaAndNutrientAfterConsumptionAndCellDivision(grid, copyOfGrid);
+		rules.updateBacteriaAndNutrientAfterConsumptionAndCellDivision(copyOfGrid);
 		
 		assertEquals(40, rules.getNutrientLevelOfCell(0), 0);
 		assertEquals(40, rules.getNutrientLevelOfCell(1), 0);
@@ -178,13 +172,16 @@ public class TestingCellularAutomataBacteriaRules {
 	public void testShouldCellDivisionOccur() {
 		int width = 3;
 	    int height = 3;
-	    double delta = 0.4;
-	    
-	    // Create a new cellular automata within no nutrient.
 	    double[] initialNutrientLevels = new double[] {0,0,0,0,0,0,0,0,0};
-	    CellularAutomataBacteriaRules rules = new CellularAutomataBacteriaRules(width, height, initialNutrientLevels, delta);
 	    
-	    Grid grid = new Grid(width, height, 7, 7);
+	    CellularAutomataBacteriaRules rules = new CellularAutomataBacteriaRules();
+	    
+	    // Make width x height cellular automata with specified nutrient levels and delta value.
+ 		rules.setGridHeight(height);
+ 		rules.setGridWidth(width);
+ 		rules.setNutrientLevelsToSpecifiedValues(initialNutrientLevels);
+	    
+	    Grid grid = rules.getCellularAutomataGrid();
 	    
 	    // Set top row bacteria to be alive.
  		for (int x=0; x<width; x++) {
@@ -204,9 +201,13 @@ public class TestingCellularAutomataBacteriaRules {
 	    assertFalse(rules.shouldCellDivisionOccur(grid, 2, 2));
 	    
 	    // Create a new cellular automata with 100 nutrient.
-	    rules = new CellularAutomataBacteriaRules(width, height);
+	    rules = new CellularAutomataBacteriaRules();
 	    
-	    grid = new Grid(width, height, 7, 7);
+	    // Make the new cellularr automata width x height size with specified nutrient levels and delta value.
+ 		rules.setGridHeight(height);
+ 		rules.setGridWidth(width);
+	    
+	    grid = rules.getCellularAutomataGrid();
 	    
 	    // All bacteria in the new grid are initially dead, so cell division should not occur even with
 	    // sufficient nutrient.
@@ -224,9 +225,7 @@ public class TestingCellularAutomataBacteriaRules {
 	// Test a specific cells nutrient level can be set correctly.
 	@Test
 	public void testSetNutrientLevelOfCell() {
-		int width = 3;
-		int height = 3;
-		CellularAutomataBacteriaRules rules = new CellularAutomataBacteriaRules(width, height);
+		CellularAutomataBacteriaRules rules = new CellularAutomataBacteriaRules();
 		
 		rules.setNutrientLevelOfCell(0, 24);
 		assertEquals(24, rules.getNutrientLevelOfCell(0), 0);
@@ -236,9 +235,11 @@ public class TestingCellularAutomataBacteriaRules {
 	// Test correct position on 1D nutrient array is returned for a given x,y grid position.
 	@Test
 	public void testCorrect1DNutrientArrayPositionIsReturnedForAGridPosition() {
-		int width = 3;
-		int height = 3;
-		CellularAutomataBacteriaRules rules = new CellularAutomataBacteriaRules(width, height);
+		CellularAutomataBacteriaRules rules = new CellularAutomataBacteriaRules();
+		
+		// Make cellular automata 3 x 3.
+		rules.setGridHeight(3);
+		rules.setGridWidth(3);
 		
 		assertEquals(0, rules.returnPositionInNutrientMatrix(0, 0), 0);
 		assertEquals(1, rules.returnPositionInNutrientMatrix(1, 0), 0);
