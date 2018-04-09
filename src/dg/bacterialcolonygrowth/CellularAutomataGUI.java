@@ -129,8 +129,8 @@ public class CellularAutomataGUI extends Application {
 	                     Alert alert = new Alert(AlertType.ERROR, "Cannot read input file.", ButtonType.OK);
 	                     alert.showAndWait();
 	                }
-                    catch(Exception e) {
-                    		Alert alert = new Alert(AlertType.ERROR, "Input file is not the correct format.", ButtonType.OK);
+                    catch(IllegalArgumentException e) {
+                    		Alert alert = new Alert(AlertType.ERROR, "Input file is not the correct format.\n\n" + e.getMessage(), ButtonType.OK);
                     		alert.showAndWait();
                     }
 	            		

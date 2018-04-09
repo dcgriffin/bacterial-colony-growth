@@ -31,7 +31,7 @@ public class CellularAutomataBacteriaRules {
     private int nutrientForGrowth = 60; // Default = 60
     private int thresholdForDivision = 2600; // Default = 2600
     
-    private String boundaryType = "periodic";
+    private String boundaryType = "reflecting";
     private CRSMatrix updateMatrix;
     private DenseVector nutrientLevels;
     
@@ -71,7 +71,7 @@ public class CellularAutomataBacteriaRules {
 	}
 	
 	// Constructor which creates a rules object with the parameters specified in an input file.
-	public CellularAutomataBacteriaRules(File inputFile) throws IOException, Exception {
+	public CellularAutomataBacteriaRules(File inputFile) throws IOException, IllegalArgumentException {
 		// Reads the input file and sets the parameters.
 		InputFileReader inputFileReader = new InputFileReader(inputFile, this);
 		inputFileReader.setParametersFromInputFile();
@@ -196,6 +196,11 @@ public class CellularAutomataBacteriaRules {
     // Sets the nutrient level of the specified cell, to the amount of nutrient specified.
     public void setNutrientLevelOfCell (int i, double newNutrientLevel) {
     		nutrientLevels.set(i, newNutrientLevel);
+    }
+    
+    // Sets the boundary condition to the string specified as an argument.
+    public void setBoundaryCondition(String newBoundaryCondition) {
+    		boundaryType = newBoundaryCondition;
     }
     
     /* ****************************************************************************
@@ -419,7 +424,7 @@ public class CellularAutomataBacteriaRules {
     		int numberOfNeighbours; 
     		
     		// Check boundary condition type and find number of neighbours for the cell.
-    		if (boundaryType == "periodic") {
+    		if (boundaryType.equals("periodic")) {
     			numberOfNeighbours = returnNumberOfAliveNeighboursForPeriodicGrid(gridBeforeUpdate, x, y);
     		}
     		else {
