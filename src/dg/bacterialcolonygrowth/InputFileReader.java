@@ -47,6 +47,7 @@ public class InputFileReader {
 	            		// illegal argument exception with a reason.
 	                if (parts[0].equals("grid height")) {
 	                		int gridHeight = Integer.parseInt(parts[1]);
+	                		
 	                		if (gridHeight >= 1) {
 	                			rules.setGridHeight(gridHeight);
 	                		}
@@ -54,6 +55,7 @@ public class InputFileReader {
 	                }
 	                else if (parts[0].equals("grid width")) {
 		            		int gridWidth = Integer.parseInt(parts[1]);
+		            		
 		            		if (gridWidth >= 1) {
 		            			rules.setGridWidth(gridWidth);
 		            		}
@@ -61,6 +63,7 @@ public class InputFileReader {
 	                }
 	                else if (parts[0].equals("cell height")) {
 	            			int cellHeight = Integer.parseInt(parts[1]);
+	            			
 	            			if (cellHeight >= 1) {
 	            				rules.setCellHeight(cellHeight);
 	            			}
@@ -68,6 +71,7 @@ public class InputFileReader {
 	                }               
 	                else if (parts[0].equals("cell width")) {
 	            			int cellWidth = Integer.parseInt(parts[1]);
+	            			
 	            			if (cellWidth >= 1) {
 	            				rules.setCellWidth(cellWidth);
 	            			}
@@ -75,6 +79,7 @@ public class InputFileReader {
 	                }                              
 	                else if (parts[0].equals("rate of diffusion")) {
 	            			double diffusionRate = Double.parseDouble(parts[1]);
+	            			
 	            			if (diffusionRate >= 0 && diffusionRate <= 1) {
 	            				rules.setDiffusionRate(diffusionRate);
 	            			}
@@ -82,6 +87,7 @@ public class InputFileReader {
 	                }
 	                else if (parts[0].equals("nutrient for sustenance")) {
 	            			int nutrientForSustenance = Integer.parseInt(parts[1]);
+	            			
 	            			if (nutrientForSustenance >= 0 && nutrientForSustenance <=100) {
 	            				rules.setNutrientForSustenance(nutrientForSustenance);
 	            			}
@@ -89,6 +95,7 @@ public class InputFileReader {
 	                }                
 	                else if (parts[0].equals("nutrient for growth")) {
 	            			int nutrientForGrowth = Integer.parseInt(parts[1]);
+	            			
 	            			if (nutrientForGrowth >= 0 && nutrientForGrowth <= 100) {
 	            				rules.setNutrientForGrowth(nutrientForGrowth);
 	            			}
@@ -96,6 +103,7 @@ public class InputFileReader {
 	                }
 	                else if (parts[0].equals("threshold for cell division")) {
 	            			int thresholdForCellDivision = Integer.parseInt(parts[1]);
+	            			
 	            			if (thresholdForCellDivision >= 0) {
 	            				rules.setThresholdForCellDivision(thresholdForCellDivision);
 	            			}
@@ -103,6 +111,7 @@ public class InputFileReader {
 	                }
 	                else if (parts[0].equals("number of timesteps for cell division")) {
 	            			int timestepForCellDivision = Integer.parseInt(parts[1]);
+	            			
 	            			if (timestepForCellDivision >= 1) {
 	            				rules.setNumberOfTimestepsForCellDivision(timestepForCellDivision);
 	            			}
@@ -110,10 +119,27 @@ public class InputFileReader {
 	                }
 	                else if (parts[0].equals("boundary condition")) {
 		        			String boundaryCondition = parts[1];
+		        			
 		        			if (boundaryCondition.equals("reflecting") || boundaryCondition.equals("absorbant") || boundaryCondition.equals("periodic")) {
 		        				rules.setBoundaryCondition(boundaryCondition);
 		        			}
 		        			else throw new IllegalArgumentException("Timestep for cell division must be an integer greater than 0.");
+	                }
+	                else if (parts[0].equals("initial nutrient pattern")) {
+		        			String pattern = parts[1];
+		        			
+		        			if (pattern.equals("missingmiddle") || pattern.equals("random")) {
+		        				rules.setNutrientLevelPatternChoice(pattern);
+		        			}
+		        			else throw new IllegalArgumentException("Initial nutrient pattern can be either 'random' or 'default'.");
+	                }
+	                else if (parts[0].equals("probability of cell division")) {
+	            			double probability = Double.parseDouble(parts[1]);
+	            			
+	            			if (probability >= 0 && probability <= 1) {
+	            				rules.setProbabilityOfCellDivision(probability);
+	            			}
+	            			else throw new IllegalArgumentException("probability of cell division must be between 0 and 1.");
 	                }
 	                else if (parts[0].equals("crowding function"))
 						this.checkCrowdingFunctionIsCorrectFormat(parts[1]);

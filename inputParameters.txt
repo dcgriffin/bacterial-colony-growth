@@ -1,5 +1,5 @@
-grid height:60
-grid width:60
+grid height:80
+grid width:80
 cell height:5
 cell width:5
 rate of diffusion:0.4
@@ -9,3 +9,5 @@ threshold for cell division: 10
 crowding function:0, 40, 40, 40, 30, 20, 10, 0, 0
 number of timesteps for cell division:8
 boundary condition: periodic
+initial nutrient pattern: missing middle
+probability of cell division: 1

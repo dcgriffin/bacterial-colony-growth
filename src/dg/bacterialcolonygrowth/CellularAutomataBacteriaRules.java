@@ -10,14 +10,18 @@ package dg.bacterialcolonygrowth;
 
 import java.io.File;
 import java.io.IOException;
+import java.time.Year;
+import java.util.Random;
 
 import org.la4j.matrix.sparse.CRSMatrix;
 import org.la4j.vector.DenseVector;
 
+import com.sun.javafx.image.IntToBytePixelConverter;
+
 public class CellularAutomataBacteriaRules {
 	private Grid grid;
-    private int gridHeight = 40;
-    private int gridWidth = 40;
+    private int gridHeight = 80;
+    private int gridWidth = 80;
     private int cellHeight = 5;
     private int cellWidth = 5;
     private int numberOfCellsInGrid;
@@ -30,10 +34,12 @@ public class CellularAutomataBacteriaRules {
     private int nutrientForSustenance = 10; // Default = 10
     private int nutrientForGrowth = 60; // Default = 60
     private int thresholdForDivision = 2600; // Default = 2600
+    private double probabilityOfCellDivision = 0.5; // Default = 0.5
     
     private String boundaryType = "reflecting";
     private CRSMatrix updateMatrix;
     private DenseVector nutrientLevels;
+    private String initalNutrientPattern = "default";
     
     // Rate of diffusion (value should be between 0 and 1).
     private double delta = 0.4; // Default = 0.4
@@ -83,7 +89,7 @@ public class CellularAutomataBacteriaRules {
         updateMatrix = CRSMatrix.zero(numberOfCellsInGrid, numberOfCellsInGrid);
         nutrientLevels = DenseVector.unit(numberOfCellsInGrid);
         
-        this.setInitialDefaultNutrientLevels();
+        this.setInitialNutrientLevels();
         
         // Create update matrix for the desired boundary condition.
         if (boundaryType.equals("absorbant")) {
@@ -186,6 +192,40 @@ public class CellularAutomataBacteriaRules {
 		}
     }
     
+    // Set initial nutrient pattern string.
+    public void setNutrientLevelPatternChoice(String nutrientPattern) {
+    		initalNutrientPattern = nutrientPattern;
+    }
+    
+    // Sets the initial nutrient levels to one that is specified.
+    private void setInitialNutrientLevels() {	
+//   		// Creates a nutrient pattern where there is a gap in the middle.
+//    		if (initalNutrientPattern.equals("missingmiddle")) {
+//    			System.out.println("here");
+//    			// Make sure grid is at least 3 high.
+//    			if (gridHeight < 3) throw new IllegalArgumentException("Grid width not large enough for missing middle pattern.");
+//    				// Find values in the nutirent matrix that correspond to the middle row of the cellular automata.
+//    				int middleRow = (int)(gridHeight/2);
+//    				int nutrientMatrixValueForStartOfMiddleRow = returnPositionInNutrientMatrix(0, middleRow);
+//    				int nutrientMatrixValueForEndOfMiddleRow = nutrientMatrixValueForStartOfMiddleRow + gridWidth - 1;
+//    				
+//				for (int i=0; i<nutrientLevels.length(); i++) {
+//					// Set all cells to 100 except the middle column.
+//					if(!(i >= nutrientMatrixValueForStartOfMiddleRow && i <= nutrientMatrixValueForEndOfMiddleRow)) {
+//						nutrientLevels.set(i, 100.0);
+//					}
+//				}
+//    		}
+    		// Set random nutrient level in each cell.
+		if (initalNutrientPattern.equals("random")) {
+			Random random = new Random();
+			for (int i=0; i<nutrientLevels.length(); i++) {			
+				nutrientLevels.set(i, (double)random.nextInt(101));
+			}
+		}
+		else setInitialDefaultNutrientLevels();
+    	}
+    
     // Sets the initial nutrient levels based on the array of values passes to it.
     private void setInitialNutrientLevels(double[] initialNutrientLevels) {
          for (int i=0; i<initialNutrientLevels.length; i++) {
@@ -201,6 +241,11 @@ public class CellularAutomataBacteriaRules {
     // Sets the boundary condition to the string specified as an argument.
     public void setBoundaryCondition(String newBoundaryCondition) {
     		boundaryType = newBoundaryCondition;
+    }
+    
+    public void setProbabilityOfCellDivision(double probabilty) {
+    		probabilityOfCellDivision = probabilty;
+    		System.out.println(probabilityOfCellDivision);
     }
     
     /* ****************************************************************************
@@ -433,8 +478,8 @@ public class CellularAutomataBacteriaRules {
     		
     		// Check if crowding function * nutrient level is greater than threshold.
     		if (crowdingFunctionValues[numberOfNeighbours] * nutrientInCell > thresholdForDivision) {
-    			// If a random number from 0 up to 1 is greater than 0.5 then cell division takes place.
-    			if (Math.random() >= 0.5) {
+    			// If a random number from 0 up to 1 is less than 0.5 then cell division takes place.
+    			if (Math.random() <= probabilityOfCellDivision) {
     				return true;
     			}
     		}
