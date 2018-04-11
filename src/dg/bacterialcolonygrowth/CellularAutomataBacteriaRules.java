@@ -15,8 +15,8 @@ import org.la4j.vector.DenseVector;
 
 public class CellularAutomataBacteriaRules {
 	private Grid grid;
-    private int gridHeight = 100;
-    private int gridWidth = 100;
+    private int gridHeight = 80;
+    private int gridWidth = 80;
     private int cellHeight = 3;
     private int cellWidth = 3;
     private int numberOfCellsInGrid;
@@ -26,7 +26,7 @@ public class CellularAutomataBacteriaRules {
     private int timeStepForCellDivisionCounter = 1; // Default = 1
     private int numberOfTimeStepsForCellDivision = 8; // Default = 8
     
-    private int nutrientForSustenance = 10; // Default = 10
+    private int nutrientForSustenance = 1; // Default = 10
     private int nutrientForGrowth = 60; // Default = 60
     private int thresholdForDivision = 2600; // Default = 2600
     private double probabilityOfCellDivision = 0.5; // Default = 0.5 (value should be between 0 and 1).
@@ -146,7 +146,7 @@ public class CellularAutomataBacteriaRules {
 	
 	// Set crowding function.
 	public void setCrowdingFunctionValues(int[] x) {
-		crowdingFunctionValues = x;
+		crowdingFunctionValues = x.clone();
 	}
 	
 	// Set number of time steps for cell division.
@@ -246,8 +246,8 @@ public class CellularAutomataBacteriaRules {
     
     // Creates the update matrix specified by the boundaryType parameter.
     private void createUpdateMatrix() {
-        if (boundaryType.equals("absorbant")) {
-        		this.createUpdateMatrixForAbsorbantBoundary();
+        if (boundaryType.equals("absorbent")) {
+        		this.createUpdateMatrixForAbsorbentBoundary();
         }
         else if (boundaryType.equals("periodic")) {
     			this.createUpdateMatrixForPeriodicBoundary();
@@ -294,8 +294,8 @@ public class CellularAutomataBacteriaRules {
         }
     }
     
-    // Creates the update matrix for a cellular automata with an absorbant boundary.
-    private void createUpdateMatrixForAbsorbantBoundary() {
+    // Creates the update matrix for a cellular automata with an absorbent boundary.
+    private void createUpdateMatrixForAbsorbentBoundary() {
         for (int i=0; i<numberOfCellsInGrid; i++) {
         		// The cell itself.
 	        updateMatrix.set(i, i, 1 - delta);
@@ -472,7 +472,7 @@ public class CellularAutomataBacteriaRules {
     			numberOfNeighbours = returnNumberOfAliveNeighboursForPeriodicGrid(gridBeforeUpdate, x, y);
     		}
     		else {
-    			numberOfNeighbours = returnNumberOfAliveNeighboursForRelectingOrAbsorbantGrids(gridBeforeUpdate, x, y);
+    			numberOfNeighbours = returnNumberOfAliveNeighboursForRelectingOrAbsorbentGrids(gridBeforeUpdate, x, y);
     		}
     		
     		// Check if crowding function * nutrient level is greater than threshold.
@@ -519,7 +519,7 @@ public class CellularAutomataBacteriaRules {
     }
     
     // Returns the number of alive neighbours of cell x,y in the grid passed to this function.
-    public int returnNumberOfAliveNeighboursForRelectingOrAbsorbantGrids(Grid gridBeforeThisUpdate, int x, int y) {
+    public int returnNumberOfAliveNeighboursForRelectingOrAbsorbentGrids(Grid gridBeforeThisUpdate, int x, int y) {
 		int numberOfNeighbours = 0;
 
 		// Loops through 9 cells, the cell in question along with the surrounding 8.

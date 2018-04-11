@@ -120,18 +120,18 @@ public class InputFileReader {
 	                else if (parts[0].equals("boundary condition")) {
 		        			String boundaryCondition = parts[1];
 		        			
-		        			if (boundaryCondition.equals("reflecting") || boundaryCondition.equals("absorbant") || boundaryCondition.equals("periodic")) {
+		        			if (boundaryCondition.equals("reflecting") || boundaryCondition.equals("absorbent") || boundaryCondition.equals("periodic")) {
 		        				rules.setBoundaryCondition(boundaryCondition);
 		        			}
-		        			else throw new IllegalArgumentException("Timestep for cell division must be an integer greater than 0.");
+		        			else throw new IllegalArgumentException("Boundary condition must be either 'reflecting', 'absorbent' or 'periodic'.");
 	                }
 	                else if (parts[0].equals("initial nutrient pattern")) {
 		        			String pattern = parts[1];
 		        			
-		        			if (pattern.equals("absorbingmiddle") || pattern.equals("random")) {
+		        			if (pattern.equals("absorbingmiddle") || pattern.equals("random") || pattern.equals("default")) {
 		        				rules.setNutrientLevelPatternChoice(pattern);
 		        			}
-		        			else throw new IllegalArgumentException("Initial nutrient pattern can be either 'random' or 'default'.");
+		        			else throw new IllegalArgumentException("Initial nutrient pattern can be either 'absorbingmiddle', 'random' or 'default'.");
 	                }
 	                else if (parts[0].equals("probability of cell division")) {
 	            			double probability = Double.parseDouble(parts[1]);
@@ -161,9 +161,9 @@ public class InputFileReader {
 			throw new IllegalArgumentException("There should be 9 values for the crowding function.");
 		}
 		else {
-			int crowdingFunctionValues [] = new int[8];
+			int crowdingFunctionValues [] = new int[9];
 			
-			for (int i = 0; i < 8; i++) {
+			for (int i = 0; i < 9; i++) {
 				crowdingFunctionValues[i] = Integer.parseInt(values[i]);
 			}
 			
