@@ -3,8 +3,6 @@ package dg.bacterialcolonygrowth;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-import com.sun.javafx.scene.control.ReadOnlyUnbackedObservableList;
-
 public class TestingCellularAutomataBacteriaRules {
 	
 	// Test the default constructor creates a grid with initial nutrient levels set to 100.

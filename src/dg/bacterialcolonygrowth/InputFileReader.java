@@ -128,7 +128,7 @@ public class InputFileReader {
 	                else if (parts[0].equals("initial nutrient pattern")) {
 		        			String pattern = parts[1];
 		        			
-		        			if (pattern.equals("missingmiddle") || pattern.equals("random")) {
+		        			if (pattern.equals("absorbingmiddle") || pattern.equals("random")) {
 		        				rules.setNutrientLevelPatternChoice(pattern);
 		        			}
 		        			else throw new IllegalArgumentException("Initial nutrient pattern can be either 'random' or 'default'.");

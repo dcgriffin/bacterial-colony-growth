@@ -1,8 +1,6 @@
 /* *****************************************************************************
-* Description: A class used to simulate the rules of a bacterial colony.
-* The grid wraps around so the bottom meets up with the top, and the left side
-* meets up with the right side.
-*
+* Description: A class used to represent the cellular automata model of a bacterial colony.
+* 
 * Author: Daniel Griffin
 ******************************************************************************/
 
@@ -17,10 +15,10 @@ import org.la4j.vector.DenseVector;
 
 public class CellularAutomataBacteriaRules {
 	private Grid grid;
-    private int gridHeight = 80;
-    private int gridWidth = 80;
-    private int cellHeight = 5;
-    private int cellWidth = 5;
+    private int gridHeight = 100;
+    private int gridWidth = 100;
+    private int cellHeight = 3;
+    private int cellWidth = 3;
     private int numberOfCellsInGrid;
     
     // Every m time steps cell division occurs, the following two variables are used to keep track of when
@@ -31,12 +29,12 @@ public class CellularAutomataBacteriaRules {
     private int nutrientForSustenance = 10; // Default = 10
     private int nutrientForGrowth = 60; // Default = 60
     private int thresholdForDivision = 2600; // Default = 2600
-    private double probabilityOfCellDivision = 0.5; // Default = 0.5
+    private double probabilityOfCellDivision = 0.5; // Default = 0.5 (value should be between 0 and 1).
     
-    private String boundaryType = "reflecting";
+    private String boundaryType = "reflecting"; // Default = "reflecting"
     private CRSMatrix updateMatrix;
     private DenseVector nutrientLevels;
-    private String initalNutrientPattern = "default";
+    private String initalNutrientPattern = "default"; // Default = "default"
     
     // Rate of diffusion (value should be between 0 and 1).
     private double delta = 0.4; // Default = 0.4
@@ -61,6 +59,8 @@ public class CellularAutomataBacteriaRules {
         
         this.setInitialDefaultNutrientLevels();        
         this.createUpdateMatrix();
+        
+        grid.setBacteriumAlive(gridWidth/2, gridWidth/2);
 	}
 	
 	// Constructor which creates a rules object with the parameters specified in an input file.
@@ -79,30 +79,6 @@ public class CellularAutomataBacteriaRules {
         this.setInitialNutrientLevels();        
         this.createUpdateMatrix();
 	}
-	
-//	// Constructor which creates a new rules object with specified conditions.
-//	public CellularAutomataBacteriaRules(int x, int y, double[] initialNutrientLevels, double deltaValue) {
-//        numberOfCellsInGrid = gridWidth * gridHeight;
-//        
-//        grid = new Grid(gridWidth, gridHeight, cellWidth, cellHeight);
-//
-//        delta = deltaValue;
-//        updateMatrix = CRSMatrix.zero(numberOfCellsInGrid, numberOfCellsInGrid);
-//        nutrientLevels = DenseVector.unit(numberOfCellsInGrid);
-//        
-//        this.setInitialNutrientLevels(initialNutrientLevels);
-//        
-//        // Create update matrix for the desired boundary condition.
-//        if (boundaryType.equals("absorbant")) {
-//        		this.createUpdateMatrixForAbsorbantBoundary();
-//        }
-//        else if (boundaryType.equals("periodic")) {
-//    			this.createUpdateMatrixForPeriodicBoundary();
-//        }
-//        else {
-//        		this.createUpdateMatrixForReflectingBoundary();
-//        }
-//	}
 	
 	/* ****************************************************************************
 	* Setters
@@ -192,23 +168,22 @@ public class CellularAutomataBacteriaRules {
     
     // Sets the initial nutrient levels to one that is specified.
     private void setInitialNutrientLevels() {	
-//   		// Creates a nutrient pattern where there is a gap in the middle.
-//    		if (initalNutrientPattern.equals("missingmiddle")) {
-//    			System.out.println("here");
-//    			// Make sure grid is at least 3 high.
-//    			if (gridHeight < 3) throw new IllegalArgumentException("Grid width not large enough for missing middle pattern.");
-//    				// Find values in the nutirent matrix that correspond to the middle row of the cellular automata.
-//    				int middleRow = (int)(gridHeight/2);
-//    				int nutrientMatrixValueForStartOfMiddleRow = returnPositionInNutrientMatrix(0, middleRow);
-//    				int nutrientMatrixValueForEndOfMiddleRow = nutrientMatrixValueForStartOfMiddleRow + gridWidth - 1;
-//    				
-//				for (int i=0; i<nutrientLevels.length(); i++) {
-//					// Set all cells to 100 except the middle column.
-//					if(!(i >= nutrientMatrixValueForStartOfMiddleRow && i <= nutrientMatrixValueForEndOfMiddleRow)) {
-//						nutrientLevels.set(i, 100.0);
-//					}
-//				}
-//    		}
+   		// Creates a nutrient pattern where there is a gap in the middle.
+    		if (initalNutrientPattern.equals("absorbingmiddle")) {
+    			// Make sure grid is at least 3 high.
+    			if (gridHeight < 3) throw new IllegalArgumentException("Grid width not large enough for absorbing middle pattern.");
+    				// Find values in the nutirent matrix that correspond to the middle row of the cellular automata.
+    				int middleRow = (int)(gridHeight/2);
+    				int nutrientMatrixValueForStartOfMiddleRow = returnPositionInNutrientMatrix(0, middleRow);
+    				int nutrientMatrixValueForEndOfMiddleRow = nutrientMatrixValueForStartOfMiddleRow + gridWidth - 1;
+    				
+				for (int i=0; i<nutrientLevels.length(); i++) {
+					// Set all cells to 100 except the middle column.
+					if(!(i >= nutrientMatrixValueForStartOfMiddleRow && i <= nutrientMatrixValueForEndOfMiddleRow)) {
+						nutrientLevels.set(i, 100.0);
+					}
+				}
+    		}
     		// Set random nutrient level in each cell.
 		if (initalNutrientPattern.equals("random")) {
 			Random random = new Random();
@@ -400,6 +375,19 @@ public class CellularAutomataBacteriaRules {
     // Updates the nutrient levels for diffusion after a single time step.
     public void updateNutrientLevelsAfterDiffusion() {
         nutrientLevels = (DenseVector) updateMatrix.multiply(nutrientLevels);
+        
+        // Check if absorbing middle pattern has been selected.
+		if (initalNutrientPattern.equals("absorbingmiddle")) {
+			// Find values in the nutirent matrix that correspond to the middle row of the cellular automata.
+			int middleRow = (int)(gridHeight/2);
+			int nutrientMatrixValueForStartOfMiddleRow = returnPositionInNutrientMatrix(0, middleRow);
+			int nutrientMatrixValueForEndOfMiddleRow = nutrientMatrixValueForStartOfMiddleRow + gridWidth - 1;
+			
+			// Remove nutrient from the absorbing middle section.
+			for (int i=nutrientMatrixValueForStartOfMiddleRow; i<nutrientMatrixValueForEndOfMiddleRow + 1; i++) {
+				nutrientLevels.set(i, 0.0);
+			}
+		}
     }
 
     // Updates nutrients levels after bacteria have consumed some nutrient.
@@ -490,7 +478,7 @@ public class CellularAutomataBacteriaRules {
     		// Check if crowding function * nutrient level is greater than threshold.
     		if (crowdingFunctionValues[numberOfNeighbours] * nutrientInCell > thresholdForDivision) {
     			// If a random number from 0 up to 1 is less than 0.5 then cell division takes place.
-    			if (Math.random() <= probabilityOfCellDivision) {
+    			if (Math.random() < probabilityOfCellDivision) {
     				return true;
     			}
     		}
