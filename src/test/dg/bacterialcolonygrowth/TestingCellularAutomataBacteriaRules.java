@@ -21,7 +21,7 @@ public class TestingCellularAutomataBacteriaRules {
 		assertEquals(100, rules.getNutrientLevelOfCell(height*width - 1), 0);
 	}
 	
-	// Test diffusion after one time step.
+	// Test nutrient diffuses correctly for periodic boundary.
 	@Test
 	public void testNutrientDiffusesCorrectlyForPeriodicBoundary() {
 		double delta = 0.5;
@@ -55,7 +55,7 @@ public class TestingCellularAutomataBacteriaRules {
 		assertEquals(12.65625, rules.getNutrientLevelOfCell(1), 0);
 		assertEquals(2.8125, rules.getNutrientLevelOfCell(2), 0);
 		assertEquals(12.65625, rules.getNutrientLevelOfCell(3), 0);
-		assertEquals(8.125, rules.getNutrientLevelOfCell(4), 20);
+		assertEquals(28.125, rules.getNutrientLevelOfCell(4), 0);
 		assertEquals(12.65625, rules.getNutrientLevelOfCell(5), 0);
 		assertEquals(2.8125, rules.getNutrientLevelOfCell(6), 0);
 		assertEquals(12.65625, rules.getNutrientLevelOfCell(7), 0);
@@ -66,15 +66,144 @@ public class TestingCellularAutomataBacteriaRules {
 			rules.updateNutrientLevelsAfterDiffusion();
 		}
 		
-		assertEquals(10, rules.getNutrientLevelOfCell(0), 0);
-		assertEquals(10, rules.getNutrientLevelOfCell(1), 0);
-		assertEquals(10, rules.getNutrientLevelOfCell(2), 0);
-		assertEquals(10, rules.getNutrientLevelOfCell(3), 0);
-		assertEquals(10, rules.getNutrientLevelOfCell(4), 0);
-		assertEquals(10, rules.getNutrientLevelOfCell(5), 0);
-		assertEquals(10, rules.getNutrientLevelOfCell(6), 0);
-		assertEquals(10, rules.getNutrientLevelOfCell(7), 0);
-		assertEquals(10, rules.getNutrientLevelOfCell(8), 0);
+		// Each is rounded to 5 decimal places.
+		assertEquals(10.0, Math.round(rules.getNutrientLevelOfCell(0) * 100000d) / 100000d, 0);
+		assertEquals(10.0, Math.round(rules.getNutrientLevelOfCell(1) * 100000d) / 100000d, 0);
+		assertEquals(10.0, Math.round(rules.getNutrientLevelOfCell(2) * 100000d) / 100000d, 0);
+		assertEquals(10.0, Math.round(rules.getNutrientLevelOfCell(3) * 100000d) / 100000d, 0);
+		assertEquals(10.0, Math.round(rules.getNutrientLevelOfCell(4) * 100000d) / 100000d, 0);
+		assertEquals(10.0, Math.round(rules.getNutrientLevelOfCell(5) * 100000d) / 100000d, 0);
+		assertEquals(10.0, Math.round(rules.getNutrientLevelOfCell(6) * 100000d) / 100000d, 0);
+		assertEquals(10.0, Math.round(rules.getNutrientLevelOfCell(7) * 100000d) / 100000d, 0);
+		assertEquals(10.0, Math.round(rules.getNutrientLevelOfCell(8) * 100000d) / 100000d, 0);
+		
+	}
+	
+	// Test nutrient diffuses correctly for reflecting boundary.
+	@Test
+	public void testNutrientDiffusesCorrectlyForReflectingBoundary() {
+		double delta = 0.5;
+		double[] initialNutrientLevels = new double[] {0,0,0,0,90.0,0,0,0,0};
+		CellularAutomataBacteriaRules rules = new CellularAutomataBacteriaRules();
+		
+		// Make cellular automata 3 x 3.
+		rules.setGridHeight(3);
+		rules.setGridWidth(3);
+		
+		// Set inital nutirent and diffusion rate.
+		rules.setNutrientLevelsToSpecifiedValues(initialNutrientLevels);
+		rules.setDiffusionRate(delta);
+		rules.setBoundaryCondition("reflecting");
+		
+		// Test after one time step.
+		rules.updateNutrientLevelsAfterDiffusion();
+		assertEquals(0, rules.getNutrientLevelOfCell(0),  0);
+		assertEquals(11.25, rules.getNutrientLevelOfCell(1), 0);
+		assertEquals(0, rules.getNutrientLevelOfCell(2), 0);
+		assertEquals(11.25, rules.getNutrientLevelOfCell(3), 0);
+		assertEquals(45, rules.getNutrientLevelOfCell(4), 0);
+		assertEquals(11.25, rules.getNutrientLevelOfCell(5), 0);
+		assertEquals(0, rules.getNutrientLevelOfCell(6), 0);
+		assertEquals(11.25, rules.getNutrientLevelOfCell(7), 0);
+		assertEquals(0, rules.getNutrientLevelOfCell(8), 0);
+		
+		// After two time steps
+		rules.updateNutrientLevelsAfterDiffusion();
+		assertEquals(2.8125, rules.getNutrientLevelOfCell(0), 0);
+		assertEquals(12.65625, rules.getNutrientLevelOfCell(1), 0);
+		assertEquals(2.8125, rules.getNutrientLevelOfCell(2), 0);
+		assertEquals(12.65625, rules.getNutrientLevelOfCell(3), 0);
+		assertEquals(28.125, rules.getNutrientLevelOfCell(4), 0);
+		assertEquals(12.65625, rules.getNutrientLevelOfCell(5), 0);
+		assertEquals(2.8125, rules.getNutrientLevelOfCell(6), 0);
+		assertEquals(12.65625, rules.getNutrientLevelOfCell(7), 0);
+		assertEquals(2.8125, rules.getNutrientLevelOfCell(8), 0);
+		
+		// After 100 time steps
+		for (int i=0; i<100; i++) {
+			rules.updateNutrientLevelsAfterDiffusion();
+		}
+		
+		// Each is rounded to 5 decimal places.
+		assertEquals(10.0, Math.round(rules.getNutrientLevelOfCell(0) * 100000d) / 100000d, 0);
+		assertEquals(10.0, Math.round(rules.getNutrientLevelOfCell(1) * 100000d) / 100000d, 0);
+		assertEquals(10.0, Math.round(rules.getNutrientLevelOfCell(2) * 100000d) / 100000d, 0);
+		assertEquals(10.0, Math.round(rules.getNutrientLevelOfCell(3) * 100000d) / 100000d, 0);
+		assertEquals(10.0, Math.round(rules.getNutrientLevelOfCell(4) * 100000d) / 100000d, 0);
+		assertEquals(10.0, Math.round(rules.getNutrientLevelOfCell(5) * 100000d) / 100000d, 0);
+		assertEquals(10.0, Math.round(rules.getNutrientLevelOfCell(6) * 100000d) / 100000d, 0);
+		assertEquals(10.0, Math.round(rules.getNutrientLevelOfCell(7) * 100000d) / 100000d, 0);
+		assertEquals(10.0, Math.round(rules.getNutrientLevelOfCell(8) * 100000d) / 100000d, 0);
+		
+	}
+	
+	// Test nutrient diffuses correctly for reflecting boundary.
+	@Test
+	public void testNutrientDiffusesCorrectlyForAbsorbentBoundary() {
+		double delta = 0.5;
+		double[] initialNutrientLevels = new double[] {0,0,0,0,90.0,0,0,0,0};
+		CellularAutomataBacteriaRules rules = new CellularAutomataBacteriaRules();
+		
+		// Make cellular automata 3 x 3.
+		rules.setGridHeight(3);
+		rules.setGridWidth(3);
+		
+		// Set inital nutirent and diffusion rate.
+		rules.setNutrientLevelsToSpecifiedValues(initialNutrientLevels);
+		rules.setDiffusionRate(delta);
+		rules.setBoundaryCondition("absorbent");
+		
+		// Test after one time step.
+		rules.updateNutrientLevelsAfterDiffusion();
+		assertEquals(0, rules.getNutrientLevelOfCell(0),  0);
+		assertEquals(11.25, rules.getNutrientLevelOfCell(1), 0);
+		assertEquals(0, rules.getNutrientLevelOfCell(2), 0);
+		assertEquals(11.25, rules.getNutrientLevelOfCell(3), 0);
+		assertEquals(45, rules.getNutrientLevelOfCell(4), 0);
+		assertEquals(11.25, rules.getNutrientLevelOfCell(5), 0);
+		assertEquals(0, rules.getNutrientLevelOfCell(6), 0);
+		assertEquals(11.25, rules.getNutrientLevelOfCell(7), 0);
+		assertEquals(0, rules.getNutrientLevelOfCell(8), 0);
+		
+		// After two time steps
+		rules.updateNutrientLevelsAfterDiffusion();
+		assertEquals(2.8125, rules.getNutrientLevelOfCell(0), 0);
+		assertEquals(11.25, rules.getNutrientLevelOfCell(1), 0);
+		assertEquals(2.8125, rules.getNutrientLevelOfCell(2), 0);
+		assertEquals(11.25, rules.getNutrientLevelOfCell(3), 0);
+		assertEquals(28.125, rules.getNutrientLevelOfCell(4), 0);
+		assertEquals(11.25, rules.getNutrientLevelOfCell(5), 0);
+		assertEquals(2.8125, rules.getNutrientLevelOfCell(6), 0);
+		assertEquals(11.25, rules.getNutrientLevelOfCell(7), 0);
+		assertEquals(2.8125, rules.getNutrientLevelOfCell(8), 0);
+		
+		// After three time steps (in order to test corner cells).
+		rules.updateNutrientLevelsAfterDiffusion();
+		assertEquals(4.21875, rules.getNutrientLevelOfCell(0), 0);
+		assertEquals(9.84375, rules.getNutrientLevelOfCell(1), 0);
+		assertEquals(4.21875, rules.getNutrientLevelOfCell(2), 0);
+		assertEquals(9.84375, rules.getNutrientLevelOfCell(3), 0);
+		assertEquals(19.6875, rules.getNutrientLevelOfCell(4), 0);
+		assertEquals(9.84375, rules.getNutrientLevelOfCell(5), 0);
+		assertEquals(4.21875, rules.getNutrientLevelOfCell(6), 0);
+		assertEquals(9.84375, rules.getNutrientLevelOfCell(7), 0);
+		assertEquals(4.21875, rules.getNutrientLevelOfCell(8), 0);
+		
+		// After 100 time steps
+		for (int i=0; i<100; i++) {
+			rules.updateNutrientLevelsAfterDiffusion();
+		}
+		
+		// Each is rounded to 5 decimal places.
+		assertEquals(0.0, Math.round(rules.getNutrientLevelOfCell(0) * 100000d) / 100000d, 0);
+		assertEquals(0.0, Math.round(rules.getNutrientLevelOfCell(1) * 100000d) / 100000d, 0);
+		assertEquals(0.0, Math.round(rules.getNutrientLevelOfCell(2) * 100000d) / 100000d, 0);
+		assertEquals(0.0, Math.round(rules.getNutrientLevelOfCell(3) * 100000d) / 100000d, 0);
+		assertEquals(0.0, Math.round(rules.getNutrientLevelOfCell(4) * 100000d) / 100000d, 0);
+		assertEquals(0.0, Math.round(rules.getNutrientLevelOfCell(5) * 100000d) / 100000d, 0);
+		assertEquals(0.0, Math.round(rules.getNutrientLevelOfCell(6) * 100000d) / 100000d, 0);
+		assertEquals(0.0, Math.round(rules.getNutrientLevelOfCell(7) * 100000d) / 100000d, 0);
+		assertEquals(0.0, Math.round(rules.getNutrientLevelOfCell(8) * 100000d) / 100000d, 0);
 		
 	}
 	
@@ -85,9 +214,10 @@ public class TestingCellularAutomataBacteriaRules {
 		int width = 3;
 		CellularAutomataBacteriaRules rules = new CellularAutomataBacteriaRules();
 		
-		// Make cellular automata height x width.
+		// Make cellular automata height x width, and set boundary condition.
 		rules.setGridHeight(height);
 		rules.setGridWidth(width);
+		rules.setBoundaryCondition("periodic");
 		
 		Grid grid = rules.getCellularAutomataGrid();
 	
@@ -119,6 +249,49 @@ public class TestingCellularAutomataBacteriaRules {
 		assertEquals(8, rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 2, 0), 0);
 		assertEquals(8, rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 2, 1), 0);
 		assertEquals(8, rules.returnNumberOfAliveNeighboursForPeriodicGrid(grid, 2, 2), 0);
+	}
+	
+	// Tests the number of alive neighbours function works correctly for absorbent and reflecting.
+	@Test
+	public void testNumberOfAliveNeighboursFunctionForAbsorbentAndReflectingBoundaries() {
+		int height = 3;
+		int width = 3;
+		CellularAutomataBacteriaRules rules = new CellularAutomataBacteriaRules();
+		
+		// Make cellular automata height x width, and set boundary condition.
+		rules.setGridHeight(height);
+		rules.setGridWidth(width);
+		
+		Grid grid = rules.getCellularAutomataGrid();
+	
+		// No bacteria should initially be present, so check each cell has 0 live neighbours.
+		assertEquals(0, rules.returnNumberOfAliveNeighboursForRelectingOrAbsorbentGrids(grid, 0, 0), 0);
+		assertEquals(0, rules.returnNumberOfAliveNeighboursForRelectingOrAbsorbentGrids(grid, 0, 1), 0);
+		assertEquals(0, rules.returnNumberOfAliveNeighboursForRelectingOrAbsorbentGrids(grid, 0, 2), 0);
+		assertEquals(0, rules.returnNumberOfAliveNeighboursForRelectingOrAbsorbentGrids(grid, 1, 0), 0);
+		assertEquals(0, rules.returnNumberOfAliveNeighboursForRelectingOrAbsorbentGrids(grid, 1, 1), 0);
+		assertEquals(0, rules.returnNumberOfAliveNeighboursForRelectingOrAbsorbentGrids(grid, 1, 2), 0);
+		assertEquals(0, rules.returnNumberOfAliveNeighboursForRelectingOrAbsorbentGrids(grid, 2, 0), 0);
+		assertEquals(0, rules.returnNumberOfAliveNeighboursForRelectingOrAbsorbentGrids(grid, 2, 1), 0);
+		assertEquals(0, rules.returnNumberOfAliveNeighboursForRelectingOrAbsorbentGrids(grid, 2, 2), 0);
+		
+		// Set bacteria alive in each cell.
+		for (int x=0; x<width; x++) {
+    			for (int y=0; y<height; y++) {
+		        grid.setBacteriumAlive(x, y);
+    			}
+		}
+		
+		// Check each cell has the correct number of neighbours when all cells are alive.
+		assertEquals(3, rules.returnNumberOfAliveNeighboursForRelectingOrAbsorbentGrids(grid, 0, 0), 0);
+		assertEquals(5, rules.returnNumberOfAliveNeighboursForRelectingOrAbsorbentGrids(grid, 0, 1), 0);
+		assertEquals(3, rules.returnNumberOfAliveNeighboursForRelectingOrAbsorbentGrids(grid, 0, 2), 0);
+		assertEquals(5, rules.returnNumberOfAliveNeighboursForRelectingOrAbsorbentGrids(grid, 1, 0), 0);
+		assertEquals(8, rules.returnNumberOfAliveNeighboursForRelectingOrAbsorbentGrids(grid, 1, 1), 0);
+		assertEquals(5, rules.returnNumberOfAliveNeighboursForRelectingOrAbsorbentGrids(grid, 1, 2), 0);
+		assertEquals(3, rules.returnNumberOfAliveNeighboursForRelectingOrAbsorbentGrids(grid, 2, 0), 0);
+		assertEquals(5, rules.returnNumberOfAliveNeighboursForRelectingOrAbsorbentGrids(grid, 2, 1), 0);
+		assertEquals(3, rules.returnNumberOfAliveNeighboursForRelectingOrAbsorbentGrids(grid, 2, 2), 0);
 	}
 	
 	// Test nutrient levels correctly update for bacteria consumption of nutrient.

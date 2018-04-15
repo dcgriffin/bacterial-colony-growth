@@ -8,6 +8,6 @@ nutrient for growth:60
 threshold for cell division: 2600
 crowding function:0, 40, 40, 40, 30, 20, 10, 0, 0
 number of timesteps for cell division:8
-boundary condition: periodic
-initial nutrient pattern: absorbingmiddle
+boundary condition: reflecting
+initial nutrient pattern: default
 probability of cell division: 0.5

@@ -17,8 +17,8 @@ public class CellularAutomataBacteriaRules {
 	private Grid grid;
     private int gridHeight = 80;
     private int gridWidth = 80;
-    private int cellHeight = 3;
-    private int cellWidth = 3;
+    private int cellHeight = 5;
+    private int cellWidth = 5;
     private int numberOfCellsInGrid;
     
     // Every m time steps cell division occurs, the following two variables are used to keep track of when
@@ -26,9 +26,9 @@ public class CellularAutomataBacteriaRules {
     private int timeStepForCellDivisionCounter = 1; // Default = 1
     private int numberOfTimeStepsForCellDivision = 8; // Default = 8
     
-    private int nutrientForSustenance = 1; // Default = 10
+    private int nutrientForSustenance = 10; // Default = 10
     private int nutrientForGrowth = 60; // Default = 60
-    private int thresholdForDivision = 2600; // Default = 2600
+    private int thresholdForDivision = 100; // Default = 2600
     private double probabilityOfCellDivision = 0.5; // Default = 0.5 (value should be between 0 and 1).
     
     private String boundaryType = "reflecting"; // Default = "reflecting"
@@ -78,6 +78,8 @@ public class CellularAutomataBacteriaRules {
         
         this.setInitialNutrientLevels();        
         this.createUpdateMatrix();
+        
+        grid.setBacteriumAlive(gridWidth/2, gridWidth/2);
 	}
 	
 	/* ****************************************************************************
@@ -555,7 +557,7 @@ public class CellularAutomataBacteriaRules {
 		
 		long stopTime4 = System.currentTimeMillis();
         long elapsedTime4 = stopTime4 - startTime4;
-        System.out.println("Time to make a copy of current grid: " + elapsedTime4);
+        //System.out.println("Time to make a copy of current grid: " + elapsedTime4);
 		
 		long startTime2 = System.currentTimeMillis();
 		
@@ -564,7 +566,7 @@ public class CellularAutomataBacteriaRules {
         
         long stopTime2 = System.currentTimeMillis();
         long elapsedTime2 = stopTime2 - startTime2;
-        System.out.println("Time to for matrix multiplication: " + elapsedTime2);
+        //System.out.println("Time to for matrix multiplication: " + elapsedTime2);
         
         long startTime3 = System.currentTimeMillis();
         
@@ -573,10 +575,10 @@ public class CellularAutomataBacteriaRules {
         
         long stopTime3 = System.currentTimeMillis();
         long elapsedTime3 = stopTime3 - startTime3;
-        System.out.println("Time to update grid with new nutrient levels and bacteria: " + elapsedTime3);
+        //System.out.println("Time to update grid with new nutrient levels and bacteria: " + elapsedTime3);
         
         long stopTime = System.currentTimeMillis();
         long elapsedTime = stopTime - startTime;
-        System.out.println("Time for overall update of grid: " + elapsedTime);
+        //System.out.println("Time for overall update of grid: " + elapsedTime);
 	}
 }

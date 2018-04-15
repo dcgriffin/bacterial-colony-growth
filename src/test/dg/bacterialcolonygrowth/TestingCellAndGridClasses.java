@@ -27,6 +27,7 @@ public class TestingCellAndGridClasses {
 		// Check cell is correctly set to dead.
 		cell.setBacteriumDead();
 		assertFalse(cell.cellAlive());
+		assertTrue(cell.cellAliveOrContainsRemains());
 	}
 	
 	// Test a particular cells bacterium part can be set to alive within a Grid.
