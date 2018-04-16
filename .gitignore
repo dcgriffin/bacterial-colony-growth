@@ -4,3 +4,5 @@
 *.jar
 *.classpath
 *.project
+*.jpg
+*.ucls
