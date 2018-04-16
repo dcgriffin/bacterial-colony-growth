@@ -8,16 +8,24 @@ package dg.bacterialcolonygrowth;
 
 import javafx.scene.paint.Color;
 
+
 public class Grid {
 
 	private Cell[][] cells;
     private int width, height;
 
 	// Constructor which creates an x by y sized array of Cells.
-	public Grid(int x, int y) {
-        width = x;
-        height = y;
-		cells = new Cell[width][height];
+	public Grid(int gridHeight, int gridWidth, int cellHeight, int cellWidth) {
+        height = gridHeight;
+        width = gridWidth;   
+        cells = new Cell[width][height];
+        
+        // Adds each cell to the cells array.
+        for (int i=0; i<width; i++) {
+	    		for (int j=0; j<height; j++) {
+	    			cells[i][j] = new Cell(cellHeight, cellWidth, Color.WHITE);
+	    		}
+        }	
 	}
 	
 	// Constructor used to create a deep copy of the grid passed to it.
@@ -87,25 +95,23 @@ public class Grid {
 			return cells[x][y].cellAliveOrContainsRemains();
 		}
 
-    // Shows only bacteria and removes the nutrient.
-    public void showOnlyBacteria() {
+    // Shows only bacteria as squares and removes the nutrient as a way of viewing the final image.
+    public void showOnlyBacteriaAsSquares() {
         for (int x=0; x<width; x++) {
             for (int y=0; y<height; y++) {
-            		cells[x][y].setColorOfCell(0, 0, 1);
-        			cells[x][y].setGridSpaceBorderColor(Color.WHITE);
+            		// If cell contains either alive or dead bacteria, then remove the bacteria circle and
+            		// set the grid space & border to be completely black.
+	            	if (cells[x][y].cellAliveOrContainsRemains()) {
+	            		cells[x][y].setBacteriumEmpty();
+	            		cells[x][y].setColorOfCell(0, 0, 0);
+	            		cells[x][y].setGridSpaceBorderColor(Color.BLACK);
+	            	}
+	            	else {
+	            		// Set colour of cell and border to white.
+	            		cells[x][y].setColorOfCell(0, 0, 1);
+	            		cells[x][y].setGridSpaceBorderColor(Color.WHITE);
+	            	}           	
             }
-        }
+        }	
     }
-
-	// Returns true if there are any live cells left in the grid visible to the user.
-	public boolean gridStatus() {
-		for (int x=0; x<width; x++) {
-	    		for (int y=0; y<height; y++) {
-			        if (this.cellAlive(x, y) == true) {
-			        		return true;
-			        }
-	    		}
-        }
-		return false;
-	}
 }

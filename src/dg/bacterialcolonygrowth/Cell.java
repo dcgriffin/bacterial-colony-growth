@@ -1,20 +1,18 @@
 /* *****************************************************************************
 * Description: A class used to represent and store the details of the cells in
-* a cellular automata grid. It extends the Rectangle Class.
+* a cellular automata grid.
 *
 * Author: Daniel Griffin
 ******************************************************************************/
 
 package dg.bacterialcolonygrowth;
 
-import com.sun.org.apache.bcel.internal.generic.RETURN;
-import com.sun.tracing.dtrace.ProviderAttributes;
-
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
+
 
 public class Cell extends StackPane {
 	
@@ -28,12 +26,13 @@ public class Cell extends StackPane {
 	private int width;
 
     // Constructor which creates a new Cell.
-    public Cell(int cellHeight, int cellWidth, Color color) {
+    public Cell(int cellWidth, int cellHeight, Color color) {
     		height = cellHeight;
     		width = cellWidth;
         cellArea = new Rectangle(height, width, color);
+        cellArea.setStrokeWidth(1);
         cellArea.setStroke(Color.GRAY);
-        bacteria = new Circle(width/2.5);
+        bacteria = new Circle(width/2);
         bacteria.setFill(Color.WHITE);
         this.getChildren().addAll(cellArea, bacteria);
     }

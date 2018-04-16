@@ -1,10 +1,7 @@
 package dg.bacterialcolonygrowth;
 
 import static org.junit.Assert.*;
-
 import org.junit.Test;
-
-import com.sun.imageio.plugins.gif.GIFImageReader;
 
 import javafx.scene.paint.Color;
 
@@ -35,10 +32,7 @@ public class TestingCellAndGridClasses {
 	// Test a particular cells bacterium part can be set to alive within a Grid.
 	@Test
 	public void testBactriaChangeColorCorrectlyUsingGridClassMethods() {
-		Grid grid = new Grid(3,3);
-		Cell cell = new Cell(5, 5, Color.BLUE);
-		
-		grid.add(cell, 0, 0);
+		Grid grid = new Grid(3,3,7,7);
 		
 		// Bacteria should initially be dead.
 		assertFalse(grid.cellAlive(0, 0));
@@ -60,7 +54,7 @@ public class TestingCellAndGridClasses {
 	// Test correct size grid is created.
 	@Test
 	public void testCorrectSizedGridIsCreated() {
-		Grid grid = new Grid(5, 5);
+		Grid grid = new Grid(5, 5, 7, 7);
 		
 		assertEquals(5, grid.getGridHeight(), 0);
 		assertEquals(5, grid.getGridWidth(), 0);
@@ -69,17 +63,9 @@ public class TestingCellAndGridClasses {
 	// Tests that the deep copy constructor correctly creates a deep copy of the grid passed to it.
 	@Test
 	public void testDeepCopyContructorForGrid() {
-		Grid grid = new Grid(2,2);
-		Cell cell = new Cell(5, 5, Color.WHITE);
-		Cell cell2 = new Cell(5, 5, Color.WHITE);
-		Cell cell3 = new Cell(5, 5, Color.WHITE);
-		Cell cell4 = new Cell(5, 5, Color.WHITE);
+		Grid grid = new Grid(2, 2, 7, 7);
 		
-		cell.setBacteriumAlive();
-		grid.add(cell, 0, 0);
-		grid.add(cell2, 0, 1);
-		grid.add(cell3, 1, 0);
-		grid.add(cell4, 1, 1);
+		grid.setBacteriumAlive(0, 0);
 		
 		// Test initial alive or non existent status for the bacteria is set correctly.
 		assertTrue(grid.cellAlive(0, 0));

@@ -1,0 +1,13 @@
+grid height:80
+grid width:80
+cell height:5
+cell width:5
+rate of diffusion:0.4
+nutrient for sustenance: 10
+nutrient for growth:60
+threshold for cell division: 2600
+crowding function:0, 40, 40, 40, 30, 20, 10, 0, 0
+number of timesteps for cell division:8
+boundary condition: periodic
+initial nutrient pattern: absorbingmiddle
+probability of cell division: 0.5
