@@ -1,6 +1,6 @@
 /* *****************************************************************************
 * Description: A class used to represent and store the details of the cells in
-* a cellular automata grid.
+* a cellular automaton grid.
 *
 * Author: Daniel Griffin
 ******************************************************************************/
