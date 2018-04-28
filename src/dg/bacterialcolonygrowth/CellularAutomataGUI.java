@@ -1,5 +1,5 @@
 /* *****************************************************************************
-* Description: A class used to create the visuals of the cellular automata.
+* Description: A class used to create the visuals of the cellular automaton
 *
 * Author: Daniel Griffin
 ******************************************************************************/
@@ -46,7 +46,7 @@ public class CellularAutomataGUI extends Application {
     private CellularAutomataBacteriaRules rules;
 
     // Creates a Timeline that calls a function to continuously updates the grid every "gridUpdateRate" 
-    // seconds.
+    // seconds. Or as quick as possible if this time can't be achieved.
     private Timeline timeline = new Timeline(new KeyFrame( Duration.seconds(gridUpdateRate),
     								timelineEvent -> { this.manageSimulation(); }));
 

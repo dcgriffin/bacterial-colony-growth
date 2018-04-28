@@ -1,5 +1,5 @@
 /* *****************************************************************************
-* Description: A class used to represent the cellular automata model of a bacterial colony.
+* Description: A class used to represent the cellular automaton model of a bacterial colony.
 * 
 * Author: Daniel Griffin
 ******************************************************************************/
@@ -15,10 +15,10 @@ import org.la4j.vector.DenseVector;
 
 public class CellularAutomataBacteriaRules {
 	private Grid grid;
-    private int gridHeight = 80;
-    private int gridWidth = 80;
-    private int cellHeight = 5;
-    private int cellWidth = 5;
+    private int gridHeight = 80; // Default = 80
+    private int gridWidth = 80; // Default = 80
+    private int cellHeight = 5; // Default = 5
+    private int cellWidth = 5; // Default = 5
     private int numberOfCellsInGrid;
     
     // Every m time steps cell division occurs, the following two variables are used to keep track of when
@@ -548,37 +548,13 @@ public class CellularAutomataBacteriaRules {
 
 	// Creates an updated grid after one iteration of the rules governing the bacterial colony.
 	public void createUpdatedGrid() {
-		long startTime = System.currentTimeMillis();
-		
-		long startTime4 = System.currentTimeMillis();
-		
 		// Creates a copy of the current grid.
 		Grid copyOfCurrentGrid = new Grid(this.grid);
-		
-		long stopTime4 = System.currentTimeMillis();
-        long elapsedTime4 = stopTime4 - startTime4;
-        //System.out.println("Time to make a copy of current grid: " + elapsedTime4);
-		
-		long startTime2 = System.currentTimeMillis();
 		
 		// Update for diffusion.
         this.updateNutrientLevelsAfterDiffusion();
         
-        long stopTime2 = System.currentTimeMillis();
-        long elapsedTime2 = stopTime2 - startTime2;
-        //System.out.println("Time to for matrix multiplication: " + elapsedTime2);
-        
-        long startTime3 = System.currentTimeMillis();
-        
         // Update for bacteria consuming nutrient and reproducing.
         this.updateBacteriaAndNutrientAfterConsumptionAndCellDivision(copyOfCurrentGrid);
-        
-        long stopTime3 = System.currentTimeMillis();
-        long elapsedTime3 = stopTime3 - startTime3;
-        //System.out.println("Time to update grid with new nutrient levels and bacteria: " + elapsedTime3);
-        
-        long stopTime = System.currentTimeMillis();
-        long elapsedTime = stopTime - startTime;
-        //System.out.println("Time for overall update of grid: " + elapsedTime);
 	}
 }

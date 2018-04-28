@@ -1,5 +1,5 @@
 /* *****************************************************************************
-* Description: A class used to represent the grid of a cellular automata.
+* Description: A class used to represent the grid of a cellular automaton
 *
 * Author: Daniel Griffin
 ******************************************************************************/
