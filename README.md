@@ -18,3 +18,6 @@ Uses a cellular automata to model the growth of bacterial cell colonies and visu
 - "ant compile": Compiles all the source files
 - "ant jar": Creates a jar file of the program
 - "ant clean": Removes the compiled source code and the jar file
+
+### How to use the program
+See 'UserManual.pdf'.
